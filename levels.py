@@ -40,3 +40,57 @@ class Level:
 			# Sauvegarde de la structure
 			self.structure = structure_level
 
+########################
+# Classes pour les cases
+########################
+
+class Square(object):
+	def __init__(self, x, y):
+		self.x = x
+		self.y = y
+
+class EmptySquare(Square):
+	def __init__(self, has_power_pill):
+		self.is_empty = True
+		self.has_pill = True # Vaut True tant qu'une pillule est présente
+		self.has_power_pill = has_power_pill # Vaut True si la pillule est une power pill
+
+	def eat_pill(self):
+		self.has_pill = False
+
+		# mettre à jour le rendu graphique --> la pillule disparait
+
+		#if self.has_power_pill:
+		#lancer la fonction de la power pill --> ???
+
+
+class Wall(Square):
+	def __init__(self):
+		self.is_empty = False
+
+###########################
+# Classes pour les pillules
+###########################
+
+class Pill(object):
+	def __init__(self, square):
+		self.points = 10
+
+	def render(self):
+		pass
+
+class PowerPill(Pill):
+	def __init__(self, square):
+		Pill.__init__(self, square)
+		### Compléter
+
+	def render(self):
+		pass
+
+class BonusPill(Pill):
+	def __init__(self, square):
+		Pill.__init__(self, square)
+		### Compléter
+
+	def render(self):
+		pass
