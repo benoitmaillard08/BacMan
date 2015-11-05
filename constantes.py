@@ -1,3 +1,4 @@
-EMPTY_SQUARE = "*"
 WALL = "#"
+STANDARD_PILL = "*"
 POWER_PILL = "P"
+BONUS_PILL = "B"
