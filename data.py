@@ -1,0 +1,1 @@
+"""Gestion de la base de données du jeu >BacMan the baccalaureates Adventure!<"""

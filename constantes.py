@@ -1,0 +1,1 @@
+"""Liste des constantes du jeu >BacMan the baccalaureates Adventure!<"""

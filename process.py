@@ -1,0 +1,1 @@
+""" Gestion du processus 'In Game' du jeu >BacMan the baccalaureates Adventure!< """
