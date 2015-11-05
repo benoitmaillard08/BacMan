@@ -1,4 +1,4 @@
-""" Classes permettant la gestion et génération des niveaux du Jeu >BacMan: --- Adventures<"""
+""" Classes permettant la gestion et génération des niveaux du Jeu >BacMan the baccalaureates Adventure!< """
 
 # Importation du module pygame et du fichier contenant les constantes du jeu
 
@@ -10,9 +10,7 @@ class Level:
 	"""Classe permettant de créer un niveau"""
 	
 	# Définit les classes à utiliser pour les différents types de cases sans mur
-	ELEMENTS = {
-		STANDARD_PILL = Empt
-	}
+	
 
 
 	def __init__(self, level_filename):
@@ -38,26 +36,6 @@ class Level:
 			for char in line:
 				if char in Level.EMPTY_SQUARES:
 					square = EmptySquare(pill = Level.EMPTY_SQUARES)
-
-
-			# structure_level = []
-
-			# # Parcours des lignes du fichier
-			# for line in fichier:
-			# 	line_level = []
-
-			# 	# Parcours des sprites contenus dans le fichier
-			# 	for sprite in line:
-			# 		# On ignore les '\n' des fins de lignes
-			# 		if sprite != '\n':
-			# 			# Ajout de la ligne à la liste du level
-			# 			line_level.append(sprite)
-
-			# 	# On ajoute la liste de la ligne à la liste de la structure
-			# 	structure_level.append(line_level)
-
-			# # Sauvegarde de la structure
-			# self.structure = structure_level
 
 ########################
 # Classes pour les cases
@@ -97,9 +75,6 @@ class Pill(EmptySquare): # Classe abstraite
 
 		self.effect()
 
-	def effect(self):
-		pass
-
 class StandardPill(Pill):
 	def __init__(self):
 		Pill.__init__(self)
@@ -124,3 +99,9 @@ class BonusPill(StandardPill):
 		Pill.__init__(self)
 		
 		##### Valeur et image
+
+##############################
+# Classes pour les personnages
+##############################
+
+class PacMan()

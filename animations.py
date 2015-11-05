@@ -1,0 +1,1 @@
+""" Gestion des animations du jeu >BacMan the baccalaureates Adventure!<"""
