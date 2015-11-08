@@ -13,12 +13,13 @@ BONUS_PILL = "B"
 #------------------------------------------------------------
 # Menu
 COTE_FOND = 800 #pixels
-PATH_PIC_MAIN_MENU = 'images/main_menu.png'
-PATH_PIC_BUTTON = 'images/button.png'
+PATH_PIC_MAIN_MENU = 'ressources/main_menu.png'
+PATH_PIC_BUTTON = 'ressources/button.png'
 
 #Postions boutons (Tuples)
 POS_CTRL_BUT = (100, 400)
 
-DICTIO_POS_BUTS = {}
+# Chemin Police
+PATH_FONT = 'ressources/8bit_font.ttf'
 
 #------------------------------------------------------------
