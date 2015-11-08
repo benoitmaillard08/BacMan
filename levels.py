@@ -6,65 +6,6 @@ import pygame
 from pygame.locals import *
 import constantes
 
-class Level:
-	SQUARES = {
-		"#" : Wall,
-		"*" : StandardPill,
-		"%" : PowerPill,
-		"+" : BonusPill,
-	}
-
-	CHARS = {
-		"M" : PacMan,
-		"B" : Blinky,
-		"P" : Pinky,
-		"I" : Inky,
-		"C" : Clyde,
-	}
-
-	"""Classe permettant de créer un niveau"""
-	
-	# Définit les classes à utiliser pour les différents types de cases sans mur
-	
-
-
-	def __init__(self, level_filename):
-
-		self.level_filename = filename
-		self.structure = []
-
-	def generation(self):
-		""" Méthode permettant de générer le niveau en fonction du fichier.
-		On crée une liste générale, contenant une liste par ligne à afficher."""
-
-		### Penser à gérer les erreurs en cas d'anomalité dans le fichier de level
-
-		# Ouverture du fichier
-		level_file = open(self.level_filename, 'r')
-		content = level_file.read()
-
-		l_lines = content.split("\n")
-
-		for line in l_lines:
-			level_line = []
-			square = None
-
-			for char in line:
-				if char in Level.SQUARES:
-					square = Level.SQUARES[char]
-
-				elif char in Level.CHARS:
-					# Instanciation du perso
-
-					square = EmptySquare()
-
-				else:
-					pass ### Penser à lever une exception ici
-
-				line_level.append(square) # La case es ajoutée à la ligne
-
-			self.structure.append()
-
 
 ########################
 # Classes pour les cases
@@ -127,11 +68,68 @@ class PowerPill(Pill):
 class BonusPill(StandardPill):
 	def __init__(self):
 		Pill.__init__(self)
+
+class Level:
+	SQUARES = {
+		"#" : Wall,
+		"*" : StandardPill,
+		"%" : PowerPill,
+		"+" : BonusPill,
+	}
+
+	# CHARS = {
+	# 	"M" : PacMan,
+	# 	"B" : Blinky,
+	# 	"P" : Pinky,
+	# 	"I" : Inky,
+	# 	"C" : Clyde,
+	# }
+
+	"""Classe permettant de créer un niveau"""
+	
+	# Définit les classes à utiliser pour les différents types de cases sans mur
+	
+
+
+	def __init__(self, level_filename):
+
+		self.level_filename = filename
+		self.structure = []
+
+	def generation(self):
+		""" Méthode permettant de générer le niveau en fonction du fichier.
+		On crée une liste générale, contenant une liste par ligne à afficher."""
+
+		### Penser à gérer les erreurs en cas d'anomalité dans le fichier de level
+
+		# Ouverture du fichier
+		level_file = open(self.level_filename, 'r')
+		content = level_file.read()
+
+		l_lines = content.split("\n")
+
+		for line in l_lines:
+			level_line = []
+			square = None
+
+			for char in line:
+				if char in Level.SQUARES:
+					square = Level.SQUARES[char]
+
+				# elif char in Level.CHARS:
+					# Instanciation du perso
+
+					square = EmptySquare()
+
+				else:
+					pass ### Penser à lever une exception ici
+
+				line_level.append(square) # La case es ajoutée à la ligne
+
+			self.structure.append()
 		
 		##### Valeur et image
 
 ##############################
 # Classes pour les personnages
 ##############################
-
-class PacMan()
