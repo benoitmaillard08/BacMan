@@ -17,9 +17,11 @@ PATH_PIC_MAIN_MENU = 'ressources/main_menu.png'
 PATH_PIC_BUTTON = 'ressources/button.png'
 
 #Postions boutons (Tuples)
-POS_CTRL_BUT = (100, 400)
+POS_BUT = (100, 400)
 
 # Chemin Police
-PATH_FONT = 'ressources/8bit_font.ttf'
+FONT_PATH = 'ressources/8bit_font.ttf'
+FONT_SIZE = 20 #pixels
+
 
 #------------------------------------------------------------
