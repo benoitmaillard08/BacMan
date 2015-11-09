@@ -35,3 +35,4 @@ GAME_BACKGROUND = "background/bg.gif"
 TERRAIN_DIR = "terrain/"
 TEXT_DIR = "text/"
 
+FILENAME_PATTERN = "n{}.level"
