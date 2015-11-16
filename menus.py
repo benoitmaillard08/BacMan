@@ -18,19 +18,19 @@ class MainMenu:
         Méthode créant le menu principal
         """
         # Création de la fenêtre
-        fenetre = pygame.display.set_mode((constantes.COTE_FOND, constantes.COTE_FOND), RESIZABLE)
+        window = pygame.display.set_mode((constantes.COTE_FOND, constantes.COTE_FOND), RESIZABLE)
 
         # Importation des images
         # Menu
         background = pygame.image.load(constantes.PATH_PIC_MAIN_MENU).convert()
-        fenetre.blit(background,(0,0))
+        window.blit(background,(0,0))
 
         #---------------
 
         # Rafrachissement de l'écran
         pygame.display.flip()
 
-
+        #Gestionnaire d'événements
         flag = 1
 
         while flag:
@@ -56,6 +56,40 @@ class MainMenu:
         """
         x = pos_x
         y = pos_y
+
+
+class RulesPage:
+    """
+    Classe permettant la création de la page informant le joueur sur les règles du jeu.
+    """
+    def __init__(self):
+        """
+        Méthode créant la page.
+        """
+        pygame.init()
+
+        window = pygame.display.set_mode((constantes.COTE_FOND, constantes.COTE_FOND), RESIZABLE)
+
+        #Chargement du fond
+        background = pygame.image.load(constantes.PATH_PIC_PAGES)
+        window.blit(background, (0,0))
+
+        #Chargement du titre
+        font = pygame.font.Font((constantes.FONT_PATH, constantes.FONT_SIZE)
+        title = font.render(constantes.RULES_TITLE, 0, constantes.RGB_WHITE)
+        window.blit(title, (10,10)) # Chargement dans la fenêtre aux positions p.e. (10,10)
+
+        #Chargement du texte
+        rules = font.render(constantes.RULES_TEXT, 0, constantes.RGB_WHITE)
+        window.blit(rules, (20,10))
+
+        #Mise à jour de la page
+        window.display.flip()
+
+
+        ##### MANQUE LE GESTIONNAIRE D'EVENEMENTS   ###########
+
+
 
 class Button:
     """
@@ -86,8 +120,8 @@ class Button:
         """
 
         # Chargement de la police + taille de la police
-        font = pygame.font.Font(FONT_PATH, FONT_SIZE)
-        text = font.render(text_str, 0, (255,255,255)) # Le RGBA du blanc = (255,255,255), du noir (0,0,0)
+        font = pygame.font.Font(constantes.FONT_PATH, constantes.FONT_SIZE)
+        text = font.render(text_str, 0, constantes.RGB_WHITE)
 
         text_size = text.get_rect() # Enregistrement de la zone de texte dans un tuple (x,y)
 
