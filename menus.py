@@ -75,7 +75,7 @@ class RulesPage:
         window.blit(background, (0,0))
 
         #Chargement du titre
-        font = pygame.font.Font((constantes.MENUFONT_DIR, constantes.MENUFONT_SIZE)
+        font = pygame.font.Font((constantes.MENUFONT_DIR, constantes.MENUFONT_SIZE))
         title = font.render(constantes.RULES_TITLE, 0, constantes.RGB_WHITE)
         window.blit(title, (10,10)) # Chargement dans la fenêtre aux positions p.e. (10,10)
 
@@ -109,7 +109,17 @@ class ControlesPage:
     """
     Classe créant la page d'explication des contrôles du jeu
     """
+def __init__(self):
     pygame.init()
+
+    window = pygame.display.set_mode((constantes.COTE_FOND, constantes.COTE_FOND), RESIZABLE)
+
+    #Fond
+    background = pygame.image.load(constantes,PATH_PIC_PAGES)
+    window.blit(background, (0,0))
+
+    # Images
+    
     pass
 
 class SignUpPage: #Nécessite l'utilisation de Tkinter
