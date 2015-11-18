@@ -75,19 +75,63 @@ class RulesPage:
         window.blit(background, (0,0))
 
         #Chargement du titre
-        font = pygame.font.Font((constantes.FONT_PATH, constantes.FONT_SIZE)
+        font = pygame.font.Font((constantes.MENUFONT_DIR, constantes.MENUFONT_SIZE)
         title = font.render(constantes.RULES_TITLE, 0, constantes.RGB_WHITE)
         window.blit(title, (10,10)) # Chargement dans la fenêtre aux positions p.e. (10,10)
-
-        #Chargement du texte
-        rules = font.render(constantes.RULES_TEXT, 0, constantes.RGB_WHITE)
-        window.blit(rules, (20,10))
 
         #Mise à jour de la page
         window.display.flip()
 
 
         ##### MANQUE LE GESTIONNAIRE D'EVENEMENTS   ###########
+
+    def text_display(self):
+        """
+        Affichage du texte sur le fond
+        """
+        text_to_display = readlines(open(RULES_TEXT, 'r'))
+        line = 100  #Ligne de départ en pixel
+
+        """for elt in text_to_display: # Pour chaque ligne de texte, on crée un nouvel objet text.
+
+            font = pygame.font.Font((constantes.TEXTFONT_DIR, constantes.TEXTFONT_SIZE)
+            text = font.render(elt, 0, constantes.RGB_WHITE)
+            window.blit(text, (line, 25)) # 'Collage' de la ligne, avec 25 pixels de marge à gauche
+            line += TEXTFONT_SIZE + 10  #La position de la prochaine ligne est placée à 25 + 10 pixels plus bas
+        """
+        window.display.flip()
+
+
+
+
+
+class ControlesPage:
+    """
+    Classe créant la page d'explication des contrôles du jeu
+    """
+    pygame.init()
+    pass
+
+class SignUpPage: #Nécessite l'utilisation de Tkinter
+    """
+    Classe créant la page permettant à un nouveau joueur de créer un nouveau profil.
+    """
+    pygame.init()
+    pass
+
+class LoginPage: #Nécessite l'utilisation de Tkinter
+    """
+    Classe créant la page permettant à un joueur existant de se logger.
+    """
+    pygame.init()
+    pass
+
+class HighscoresPage:
+    """
+    Classe créant la page affichant les highscores du jeu ET du joueur s'il est loggé.
+    """
+    pygame.init()
+    pass
 
 
 
