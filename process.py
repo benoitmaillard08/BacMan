@@ -23,23 +23,27 @@ import constantes
 # Classes pour les cases
 ########################
 
-class Square(object):
-	def __init__(self):
-		pass
+class Square: pass
 
-	def render(self):
-		pass
-
-		## Rendu de la case
-
-class EmptySquare(Square):
-	def __init__(self):
+class StandardSquare(Square):
+	def __init__(self, level, pill=None,):
 		Square.__init__(self)
 		self.is_empty = True # Le fantôme peut passer sur la case
-		self.pill = False
+		self.pill = pill
+
+	def eat(self):
+		self.pill.effect()
+		self.pill = None # La pillule est supprimée
+
+	def render(self):
+		###
+
+		if self.pill:
+			pass
+			###
 
 class Wall(Square):
-	def __init__(self):
+	def __init__(self, level):
 		Square.__init__(self)
 		self.is_empty = False # Le fantôme ne peut pas passer sur la case
 
@@ -47,19 +51,10 @@ class Wall(Square):
 # Classes pour les pillules
 ###########################
 
-class Pill(EmptySquare): # Classe abstraite
-	def __init__(self):
-		EmptySquare.__init__(self)
-		self.pill = True
-
-	def eat(self):
-		self.pill = False # La pillule n'est plus là
-		self.picture = "" # Redevient une case vide
-
-		self.effect()
+class Pill: pass
 
 class StandardPill(Pill):
-	def __init__(self):
+	def __init__(self, level):
 		Pill.__init__(self)
 		self.points = 10
 		self.picture = ""
@@ -69,7 +64,7 @@ class StandardPill(Pill):
 		## Augmentation des points
 
 class PowerPill(Pill):
-	def __init__(self):
+	def __init__(self, level):
 		Pill.__init__(self)
 		self.picture = ""
 
@@ -78,15 +73,22 @@ class PowerPill(Pill):
 		## Les fantômes s'arrêtent
 
 class BonusPill(StandardPill):
-	def __init__(self):
+	def __init__(self, level):
 		Pill.__init__(self)
+
+
+
+######################
+#                    #
+######################
 
 class Level:
 	"""Classe permettant de créer un niveau"""
 
 	# Définit les classes à utiliser pour les différents types de cases
-	SQUARES = {
-		"#" : Wall,
+	WALL = "#"
+
+	PILLS = {
 		"*" : StandardPill,
 		"%" : PowerPill,
 		"+" : BonusPill,
@@ -109,6 +111,7 @@ class Level:
 		self.structure = []
 
 		self.score = 0
+		self.n_level = n_level
 
 	def parse(self):
 		""" Méthode permettant de générer le niveau en fonction du fichier.
@@ -127,13 +130,18 @@ class Level:
 			square = None
 
 			for char in line:
-				if char in Level.SQUARES:
-					square = Level.SQUARES[char]()
+				if char == Level.WALL:
+					square = Wall()
 
+				elif char in Level.PILLS:
+					square = StandardSquare()
+					pill = Level.PILLS[char]
+					
+					
 				elif char in Level.CHARS:
 					### Instanciation du perso ici
 
-					square = EmptySquare()
+					square = StandardSquare()
 
 				else:
 					pass ### Penser à lever une exception ici
