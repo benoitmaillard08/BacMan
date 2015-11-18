@@ -21,7 +21,7 @@ PATH_PIC_PAGES = "ressources/pages_bg.png"
 
 #Règles
 RULES_TITLE = 'Règlement'
-RULES_TEXT = 
+RULES_TEXT = 'ressources/rules.txt'
 #############
 
 
@@ -33,8 +33,11 @@ RULES_TEXT =
 POS_BUT = (100, 400)
 
 # Chemin Police
-FONT_PATH = "ressources/8bit_font.ttf"
-FONT_SIZE = 20 #pixels
+MENUFONT_DIR = "ressources/8bit_font.ttf"
+TEXTFONT_DIR = "ressources/monofonto.ttf"
+
+MENUFONT_SIZE = 20 #pixels
+TEXTFONT_SIZE = 25
 
 # Couleurs (Tuples)
 RGB_WHITE = (255,255,255)  # Le RGBA du blanc = (255,255,255), du noir (0,0,0)
