@@ -1,6 +1,7 @@
 import levels
 import pygame
 import constantes
+from shortcuts import *
 
 """ Gestion du processus 'In Game' du jeu >BacMan the baccalaureates Adventure!< """
 
@@ -23,12 +24,18 @@ import constantes
 # Classes pour les cases
 ########################
 
-class Square: pass
+class Square:
+	def __init__(self, x, y):
+		self.x = x
+		self.y = y
 
 class StandardSquare(Square):
-	def __init__(self, level, pill=None,):
+	def __init__(self, x, y, level):
 		Square.__init__(self)
 		self.is_empty = True # Le fantôme peut passer sur la case
+		self.pill = None
+
+	def add_pill(self, pill):
 		self.pill = pill
 
 	def eat(self):
@@ -43,7 +50,7 @@ class StandardSquare(Square):
 			###
 
 class Wall(Square):
-	def __init__(self, level):
+	def __init__(self, x, y):
 		Square.__init__(self)
 		self.is_empty = False # Le fantôme ne peut pas passer sur la case
 
@@ -55,9 +62,8 @@ class Pill: pass
 
 class StandardPill(Pill):
 	def __init__(self, level):
-		Pill.__init__(self)
-		self.points = 10
-		self.picture = ""
+		self.points = 10 # Nombre de points gagnés avec le pellet
+		self.picture = load_terrain("pellet") # Chargement de l'image
 
 	def effect(self):
 		pass
@@ -65,18 +71,26 @@ class StandardPill(Pill):
 
 class PowerPill(Pill):
 	def __init__(self, level):
-		Pill.__init__(self)
-		self.picture = ""
+		self.picture = load_terrain("pellet-power")
 
-	def effect():
+	def effect(self):
 		pass
 		## Les fantômes s'arrêtent
 
 class BonusPill(StandardPill):
+	# Index de l'image et nombre de points correspondant aux niveaux jusqu'à 7
+	TYPES = [(0, 100), (1, 300), (2, 500), (2, 500), (3, 700), (3, 700), (4, 1000)]
+
 	def __init__(self, level):
-		Pill.__init__(self)
+		# Si le niveau dépasse 7, ses caractéristiques sont les mêmes que le 7
+		if level > len(BonusPill.TYPES):
+			level = 7
 
+		# Sélection du tuple image - points par rapport au niveau
+		bonus_type = BonusPill.TYPES[level-1]
 
+		self.picture = load_terrain("fruit {}".format(bons_type[0]))
+		self.points = bonus_type[1]
 
 ######################
 #                    #
@@ -85,70 +99,17 @@ class BonusPill(StandardPill):
 class Level:
 	"""Classe permettant de créer un niveau"""
 
-	# Définit les classes à utiliser pour les différents types de cases
-	WALL = "#"
-
-	PILLS = {
-		"*" : StandardPill,
-		"%" : PowerPill,
-		"+" : BonusPill,
-	}
-
-	# CHARS = {
-	# 	"p" : PacMan,
-	# 	"B" : Blinky,
-	# 	"P" : Pinky,
-	# 	"I" : Inky,
-	# 	"C" : Clyde,
-	# }
-
-
-
-
 	def __init__(self, n_level):
 
-		self.level_filename = constantes.FILENAME_PATTERN.format(n_level)
+		self.n_level = n_level
 		self.structure = []
 
-		self.score = 0
-		self.n_level = n_level
+		
 
-	def parse(self):
-		""" Méthode permettant de générer le niveau en fonction du fichier.
-		On crée une liste générale, contenant une liste par ligne à afficher."""
+		self.pacman = None
 
-		### Penser à gérer les erreurs en cas d'anomalité dans le fichier de level
+		self.monsters = []
 
-		# Ouverture du fichier
-		level_file = open(self.level_filename, 'r')
-		content = level_file.read()
-
-		l_lines = content.split("\n")
-
-		for line in l_lines:
-			level_line = []
-			square = None
-
-			for char in line:
-				if char == Level.WALL:
-					square = Wall()
-
-				elif char in Level.PILLS:
-					square = StandardSquare()
-					pill = Level.PILLS[char]
-					
-					
-				elif char in Level.CHARS:
-					### Instanciation du perso ici
-
-					square = StandardSquare()
-
-				else:
-					pass ### Penser à lever une exception ici
-
-				line_level.append(square) # La case es ajoutée à la ligne
-
-			self.structure.append()
 
 	def render(self):
 		"""Réalise le rendu graphique de tous les éléments du jeu"""
@@ -157,9 +118,6 @@ class Level:
 				square.render()
 
 		### Rendu des personnages ici
-
-	def prepare_pictures(self):
-		self.wall = pygame.image.load("")
 
 
 # class GameLoop:

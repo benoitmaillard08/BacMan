@@ -56,3 +56,19 @@ TERRAIN_DIR = PIC_DIR + "terrain/"
 TEXT_DIR = PIC_DIR + "text/"
 
 FILENAME_PATTERN = "n{}.level"
+
+#-----------------------------------
+
+# Différents types de cases
+
+WALL = "#"
+
+PILL = "*"
+POWER_PILL = "%"
+BONUS_PILL = "+"
+
+PACMAN = "p"
+BLINKY = "B"
+PINKY = "P"
+INKY = "I"
+CLYDE = "C"

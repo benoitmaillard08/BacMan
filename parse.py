@@ -4,7 +4,53 @@
 
 import pygame
 from pygame.locals import *
-import constantes
+from constantes import *
+import process
+
+class ParseLevel:
+	def __init__(self, level):
+		self.level_filename = constantes.FILENAME_PATTERN.format(n_level)
+
+		self.n_level = level.n_level
 
 
+		# self.chars = {
+		# 	PACMAN : process.
+		# }
+
+		self.squares = {
+			PILL : process.StandardPill(),
+			POWER_PILL : process.PowerPill(),
+			BONUS_PILL : process.BonusPill(),
+		}
+
+		level_file = open(self.level_filename, 'r')
+		content = level_file.read()
+
+		# Liste des lignes du fichier
+		self.l_lines = content.split("\n")
+
+	def get_structure(self):
+		structure = []
+
+		for y in range(self.l_lines):
+			level_line = [] # Ligne du niveau
+
+			for x in range(structure[y]):
+				if char == WALL:
+					square = process.Wall()
+
+				else:
+					square = process.StandardSquare()
+
+					if char in self.squares:
+						square.add_pill(self.squares[char])
+					#elif char in self.chars:
+					#
+					#
+
+				level_line.append(square)
+			structure.append(level_line)
+
+		return structure
 
