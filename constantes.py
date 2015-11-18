@@ -20,7 +20,7 @@ PATH_PIC_BUTTON = "ressources/button.png2"
 PATH_PIC_PAGES = "ressources/pages_bg.png"
 
 #Règles
-RULES_TITLE = 'Règlement'
+RULES_TITLE = 'Reglement'
 RULES_TEXT = 'ressources/rules.txt'
 #############
 
@@ -36,7 +36,7 @@ POS_BUT = (100, 400)
 MENUFONT_DIR = "ressources/8bit_font.ttf"
 TEXTFONT_DIR = "ressources/monofonto.ttf"
 
-MENUFONT_SIZE = 20 #pixels
+MENUFONT_SIZE = 40 #pixels
 TEXTFONT_SIZE = 25
 
 # Couleurs (Tuples)

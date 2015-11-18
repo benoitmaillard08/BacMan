@@ -68,19 +68,20 @@ class RulesPage:
         """
         pygame.init()
 
-        window = pygame.display.set_mode((constantes.COTE_FOND, constantes.COTE_FOND), RESIZABLE)
+        self.window = pygame.display.set_mode((constantes.COTE_FOND, constantes.COTE_FOND), RESIZABLE)
 
         #Chargement du fond
         background = pygame.image.load(constantes.PATH_PIC_PAGES)
-        window.blit(background, (0,0))
+        self.window.blit(background, (0,0))
 
         #Chargement du titre
-        font = pygame.font.Font((constantes.MENUFONT_DIR, constantes.MENUFONT_SIZE))
+        font = pygame.font.Font(constantes.MENUFONT_DIR, constantes.MENUFONT_SIZE)
+        size = font.size(constantes.RULES_TITLE)[0]
         title = font.render(constantes.RULES_TITLE, 0, constantes.RGB_WHITE)
-        window.blit(title, (10,10)) # Chargement dans la fenêtre aux positions p.e. (10,10)
+        self.window.blit(title, ((constantes.COTE_FOND//2 - size//2), 225)) # Chargement dans la fenêtre aux positions p.e. (10,10)
 
         #Mise à jour de la page
-        window.display.flip()
+        pygame.display.flip()
 
 
         ##### MANQUE LE GESTIONNAIRE D'EVENEMENTS   ###########
@@ -89,17 +90,24 @@ class RulesPage:
         """
         Affichage du texte sur le fond
         """
-        text_to_display = readlines(open(RULES_TEXT, 'r'))
-        line = 100  #Ligne de départ en pixel
+        text_to_display = open(constantes.RULES_TEXT, 'r').read().split('\n')
+        line = 300  #Ligne de départ en pixel
+        
 
-        """for elt in text_to_display: # Pour chaque ligne de texte, on crée un nouvel objet text.
+        # Chargement de la police et de sa taille
+        font = pygame.font.Font(constantes.TEXTFONT_DIR, constantes.TEXTFONT_SIZE)
 
-            font = pygame.font.Font((constantes.TEXTFONT_DIR, constantes.TEXTFONT_SIZE)
+        for elt in text_to_display: # Pour chaque ligne de texte, on crée un nouvel objet text.
+
+            font = pygame.font.Font(constantes.TEXTFONT_DIR, constantes.TEXTFONT_SIZE)
+            print(elt)
+            size = font.size(elt)[0] # Pour centrer le texte
             text = font.render(elt, 0, constantes.RGB_WHITE)
-            window.blit(text, (line, 25)) # 'Collage' de la ligne, avec 25 pixels de marge à gauche
-            line += TEXTFONT_SIZE + 10  #La position de la prochaine ligne est placée à 25 + 10 pixels plus bas
-        """
-        window.display.flip()
+            
+            self.window.blit(text, ((constantes.COTE_FOND//2 - size//2), line)) # 'Collage' de la ligne, avec 25 pixels de marge à gauche
+            line += constantes.TEXTFONT_SIZE + 10  #La position de la prochaine ligne est placée à 25 + 10 pixels plus bas
+        
+        pygame.display.flip()
 
 
 
