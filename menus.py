@@ -2,6 +2,7 @@
 
 # Importation de pygame et des constantes
 import pygame
+from tkinter import *
 from pygame.locals import *
 import constantes
 
@@ -60,23 +61,18 @@ class RulesPage:
     """
     Classe permettant la création de la page informant le joueur sur les règles du jeu.
     """
-    def __init__(self):
+    def __init__(self, caption='Rules Page'):
         """
         Méthode créant la page.
         """
         pygame.init()
 
         self.window = pygame.display.set_mode((constantes.COTE_FOND, constantes.COTE_FOND), RESIZABLE)
+        pygame.display.set_caption(caption)
 
         #Chargement du fond
         background = pygame.image.load(constantes.PATH_PIC_PAGES)
         self.window.blit(background, (0,0))
-
-        #Chargement du titre
-        font = pygame.font.Font(constantes.MENUFONT_DIR, constantes.MENUFONT_SIZE)
-        size = font.size(constantes.RULES_TITLE)[0]
-        title = font.render(constantes.RULES_TITLE, 0, constantes.RGB_WHITE)
-        self.window.blit(title, ((constantes.COTE_FOND//2 - size//2), 225))
 
         #Mise à jour de la page
         pygame.display.flip()
@@ -90,6 +86,12 @@ class RulesPage:
         """
         text_to_display = open(constantes.RULES_TEXT, 'r').read().split('\n')
         line = 300  #Ligne de départ en pixel
+
+        #Chargement du titre
+        font = pygame.font.Font(constantes.MENUFONT_DIR, constantes.MENUFONT_SIZE)
+        size = font.size(constantes.RULES_TITLE)[0]
+        title = font.render(constantes.RULES_TITLE, 0, constantes.RGB_WHITE)
+        self.window.blit(title, ((constantes.COTE_FOND//2 - size//2), 225))
         
 
         # Chargement de la police et de sa taille
@@ -111,19 +113,12 @@ class RulesPage:
 
 
 
-class CtrlsPage:
+class CtrlsPage(RulesPage):
     """
     Classe créant la page d'explication des contrôles du jeu
     """
     def __init__(self):
-        pygame.init()
-
-        self.window = pygame.display.set_mode((constantes.COTE_FOND, constantes.COTE_FOND), RESIZABLE)
-
-        #Fond
-        background = pygame.image.load(constantes.PATH_PIC_PAGES)
-        self.window.blit(background, (0,0))
-        pygame.display.flip()
+        RulesPage.__init__(self, 'Controles Page')
 
     def display(self):
         """
@@ -141,33 +136,68 @@ class CtrlsPage:
         line = 325 #Coordonnée Y de la première ligne
         i = 0
         for elt in constantes.CTRLS_TEXT: 
+
             size.append(font.size(elt)[0]) # Enregistrement des tailles des zones de texte dans la liste <size>
             render = font.render(elt, 0, constantes.RGB_WHITE) # Rendu du texte à ses coordonnées
             self.window.blit(render, (constantes.COTE_FOND//2 - size[i], line))
+
             # Chargement et placement des images
             pic = pygame.image.load(constantes.CTRLS_PIC_DIR[i]).convert_alpha()
-            self.window.blit(pic,(constantes.COTE_FOND//2, line-(pic.get_rect()[3]//3))) # Placé de façon à être à la même hauteur que le texte
-            line += 100
+            self.window.blit(pic,(constantes.COTE_FOND//2+84-pic.get_rect()[2]//2, line-(pic.get_rect()[3]//3))) # Placé de façon à être à la même hauteur que le texte
+            line += 100                             #/\ se place par rapport à la largeur de la plus grosse image
             i += 1
+
         pygame.display.flip()
 
 
 
     
 
-class SignUpPage: #Nécessite l'utilisation de Tkinter
+class SignUpPage(Tk): #Nécessite l'utilisation de Tkinter
     """
     Classe créant la page permettant à un nouveau joueur de créer un nouveau profil.
     """
-    pygame.init()
-    pass
+    def __init__(self, title='Sign-Up Page'):
+        """
+        __init__(str title) --> None. On peut modifier le nom de la page.
+        Initialisation d'une fenêtre Tkinter pour la gestion de l'enregistrement de nouveaux joueurs.
+        """
+        self.window = Tk()   # Création de la fenêtre
 
-class LoginPage: #Nécessite l'utilisation de Tkinter
+        self.window.title(title) #Titre de la page
+
+        # Chargement du fond
+        background = Canvas(self.window, width=constantes.COTE_FOND, height=constantes.COTE_FOND, background='black')
+
+        pic = PhotoImage(file=constantes.PATH_PIC_PAGES)
+        background.create_image(0,0,anchor=NW,image=pic)
+
+        background.pack()
+
+        self.window.mainloop()
+
+
+
+
+class LoginPage(SignUpPage): #Nécessite l'utilisation de Tkinter
     """
     Classe créant la page permettant à un joueur existant de se logger.
     """
-    pygame.init()
-    pass
+    def __init__(self):
+        SignUpPage.__init__(self, 'Login Page')
+
+    def login_display(self):
+        """
+        nick = StringVar()
+        entry = Entry(self.window, width=30)
+        entry.pack()
+        label = Label(self.window, text= 'test', bg='yellow')
+        label.pack()
+        """
+        
+
+
+        
 
 class HighscoresPage:
     """
@@ -178,7 +208,7 @@ class HighscoresPage:
 
 
 
-class Button:
+class Button(MainMenu):
     """
     Classe d'instenciation des boutons
     """
