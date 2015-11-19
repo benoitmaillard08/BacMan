@@ -13,19 +13,17 @@ class MainMenu:
     def __init__(self):
         pygame.init()
 
+        # Création de la fenêtre
+        self.window = pygame.display.set_mode((constantes.COTE_FOND, constantes.COTE_FOND), RESIZABLE)
+
     def mainmenu(self):
         """
         Méthode créant le menu principal
         """
-        # Création de la fenêtre
-        window = pygame.display.set_mode((constantes.COTE_FOND, constantes.COTE_FOND), RESIZABLE)
-
         # Importation des images
         # Menu
         background = pygame.image.load(constantes.PATH_PIC_MAIN_MENU).convert()
-        window.blit(background,(0,0))
-
-        #---------------
+        self.window.blit(background,(0,0))
 
         # Rafrachissement de l'écran
         pygame.display.flip()
@@ -78,7 +76,7 @@ class RulesPage:
         font = pygame.font.Font(constantes.MENUFONT_DIR, constantes.MENUFONT_SIZE)
         size = font.size(constantes.RULES_TITLE)[0]
         title = font.render(constantes.RULES_TITLE, 0, constantes.RGB_WHITE)
-        self.window.blit(title, ((constantes.COTE_FOND//2 - size//2), 225)) # Chargement dans la fenêtre aux positions p.e. (10,10)
+        self.window.blit(title, ((constantes.COTE_FOND//2 - size//2), 225))
 
         #Mise à jour de la page
         pygame.display.flip()
@@ -113,22 +111,49 @@ class RulesPage:
 
 
 
-class ControlesPage:
+class CtrlsPage:
     """
     Classe créant la page d'explication des contrôles du jeu
     """
-def __init__(self):
-    pygame.init()
+    def __init__(self):
+        pygame.init()
 
-    window = pygame.display.set_mode((constantes.COTE_FOND, constantes.COTE_FOND), RESIZABLE)
+        self.window = pygame.display.set_mode((constantes.COTE_FOND, constantes.COTE_FOND), RESIZABLE)
 
-    #Fond
-    background = pygame.image.load(constantes,PATH_PIC_PAGES)
-    window.blit(background, (0,0))
+        #Fond
+        background = pygame.image.load(constantes.PATH_PIC_PAGES)
+        self.window.blit(background, (0,0))
+        pygame.display.flip()
 
-    # Images
+    def display(self):
+        """
+        Affichage du texte et des images expliquant les contrôles du jeu.
+        """
+        #Chargement et placement du titre
+        font = pygame.font.Font(constantes.MENUFONT_DIR, constantes.MENUFONT_SIZE)
+        size = font.size(constantes.RULES_TITLE)[0]
+        title = font.render(constantes.RULES_TITLE, 0, constantes.RGB_WHITE)
+        self.window.blit(title, ((constantes.COTE_FOND//2 - size//2), 225))
+
+        #Chargement et placement des zones de textes
+        font = pygame.font.Font(constantes.TEXTFONT_DIR, constantes.TEXTFONT_SIZE)
+        size = []
+        line = 325 #Coordonnée Y de la première ligne
+        i = 0
+        for elt in constantes.CTRLS_TEXT: 
+            size.append(font.size(elt)[0]) # Enregistrement des tailles des zones de texte dans la liste <size>
+            render = font.render(elt, 0, constantes.RGB_WHITE) # Rendu du texte à ses coordonnées
+            self.window.blit(render, (constantes.COTE_FOND//2 - size[i], line))
+            # Chargement et placement des images
+            pic = pygame.image.load(constantes.CTRLS_PIC_DIR[i]).convert_alpha()
+            self.window.blit(pic,(constantes.COTE_FOND//2, line-(pic.get_rect()[3]//3))) # Placé de façon à être à la même hauteur que le texte
+            line += 100
+            i += 1
+        pygame.display.flip()
+
+
+
     
-    pass
 
 class SignUpPage: #Nécessite l'utilisation de Tkinter
     """

@@ -22,6 +22,10 @@ PATH_PIC_PAGES = "ressources/pages_bg.png"
 #Règles
 RULES_TITLE = 'Reglement'
 RULES_TEXT = 'ressources/rules.txt'
+
+#Contrôles
+CTRLS_TEXT = ['Contrôles =','Pause =', 'Quitter =']
+CTRLS_PIC_DIR = ['ressources/arrow_keys.png','ressources/p_key.png','ressources/esc_key.png']
 #############
 
 
