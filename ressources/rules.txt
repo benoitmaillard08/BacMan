@@ -1,4 +1,7 @@
-"""Les règles du jeu sont très simples: il faut manger toutes les pastilles sans se faire toucher
-par les fantômes. Si un fantôme touche le Bac-Man, celui-ci perd une vie.
-Le jeu s'arrête quand le Bac-Man aura mangé toutes les pastilles, ou dès qu'il aura perdu
-toutes ses vies. Bon jeu!"""
+Les règles du jeu sont très simples: 
+il faut manger toutes les pastilles sans 
+se faire toucherpar les fantômes.
+Si un fantôme touche le Bac-Man, celui-ci perd une vie.
+Le jeu s'arrête quand le Bac-Man aura mangé
+toutes les pastilles, ou dès qu'il aura perdu
+toutes ses vies. Bon jeu!
