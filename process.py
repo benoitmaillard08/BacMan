@@ -83,11 +83,14 @@ class BonusPill(StandardPill):
 
 	def __init__(self, level):
 		# Si le niveau dépasse 7, ses caractéristiques sont les mêmes que le 7
-		if level > len(BonusPill.TYPES):
-			level = 7
+
+		n_level = level.n_level
+
+		if n_level > len(BonusPill.TYPES):
+			n_level = 7
 
 		# Sélection du tuple image - points par rapport au niveau
-		bonus_type = BonusPill.TYPES[level-1]
+		bonus_type = BonusPill.TYPES[n_level-1]
 
 		self.picture = load_terrain("fruit {}".format(bons_type[0]))
 		self.points = bonus_type[1]

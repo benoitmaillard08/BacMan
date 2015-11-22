@@ -13,25 +13,32 @@ class ParseLevel:
 
 		self.n_level = level.n_level
 
+		# Initiation des entités du niveau
+		self.structure = []
+		self.pacman = None
+		self.monsters = []
+
 
 		# self.chars = {
 		# 	PACMAN : process.
 		# }
 
-		self.squares = {
+		self.pills = {
 			PILL : process.StandardPill(),
 			POWER_PILL : process.PowerPill(),
-			BONUS_PILL : process.BonusPill(),
+			BONUS_PILL : process.BonusPill(self.n_level),
 		}
 
+		# Ouverture du fichier et lecture du contenu
 		level_file = open(self.level_filename, 'r')
 		content = level_file.read()
 
 		# Liste des lignes du fichier
 		self.l_lines = content.split("\n")
 
-	def get_structure(self):
-		structure = []
+		self.parse()
+
+	def parse(self):
 
 		for y in range(self.l_lines):
 			level_line = [] # Ligne du niveau
@@ -44,13 +51,11 @@ class ParseLevel:
 					square = process.StandardSquare()
 
 					if char in self.squares:
-						square.add_pill(self.squares[char])
+						square.add_pill(self.pills[char])
 					#elif char in self.chars:
 					#
 					#
 
 				level_line.append(square)
 			structure.append(level_line)
-
-		return structure
 
