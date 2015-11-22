@@ -64,7 +64,6 @@ class ParseLevel:
 					#
 					#
 
-				print(square)
 				x += 1
 				level_line.append(square)
 

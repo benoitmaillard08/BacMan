@@ -51,7 +51,7 @@ RGB_BLACK = (0,0,0)
 #------------------------------------------------------------
 
 N_SQUARES_X = 28
-N_SQUARES_Y = 28
+N_SQUARES_Y = 20
 
 PIC_DIR = "ressources/pictures/"
 
@@ -61,6 +61,7 @@ TEXT_DIR = PIC_DIR + "text/"
 
 LEVELS_DIR = "levels/"
 FILENAME_PATTERN = "n{}.level"
+WALLS_PATTERN = "wall-{}"
 
 #-----------------------------------
 
