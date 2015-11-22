@@ -5,13 +5,12 @@
 import pygame
 from pygame.locals import *
 from constantes import *
-import process
+import entities
 
 class ParseLevel:
 	def __init__(self, level):
-		self.level_filename = constantes.FILENAME_PATTERN.format(n_level)
-
-		self.n_level = level.n_level
+		self.level_ref = level
+		self.level_filename = LEVELS_DIR + FILENAME_PATTERN.format(level.n_level)
 
 		# Initiation des entités du niveau
 		self.structure = []
@@ -20,13 +19,18 @@ class ParseLevel:
 
 
 		# self.chars = {
-		# 	PACMAN : process.
+		# 	PACMAN : entities.
 		# }
 
+
 		self.pills = {
-			PILL : process.StandardPill(),
-			POWER_PILL : process.PowerPill(),
-			BONUS_PILL : process.BonusPill(self.n_level),
+			# L'argument level correspond à la référence
+			# de l'instance de la classe Level
+			# Les clés du dictionnaire sont les symboles utilisés
+			# dans les .level et définis dans constantes.py
+			PILL : entities.StandardPill(level),
+			POWER_PILL : entities.PowerPill(level),
+			BONUS_PILL : entities.BonusPill(level),
 		}
 
 		# Ouverture du fichier et lecture du contenu
@@ -34,28 +38,40 @@ class ParseLevel:
 		content = level_file.read()
 
 		# Liste des lignes du fichier
-		self.l_lines = content.split("\n")
+		self.file_lines = content.split("\n")
 
 		self.parse()
 
 	def parse(self):
 
-		for y in range(self.l_lines):
-			level_line = [] # Ligne du niveau
+		y = 0
 
-			for x in range(structure[y]):
+		for line in self.file_lines:
+			level_line = [] # Ligne du niveau
+			x = 0
+
+			for char in line:
 				if char == WALL:
-					square = process.Wall()
+					square = entities.Wall(self.level_ref, x, y)
 
 				else:
-					square = process.StandardSquare()
+					square = entities.StandardSquare(self.level_ref, x, y)
 
-					if char in self.squares:
+					if char in self.pills:
 						square.add_pill(self.pills[char])
+
 					#elif char in self.chars:
 					#
 					#
 
+				print(square)
+				x += 1
 				level_line.append(square)
-			structure.append(level_line)
+
+			y += 1
+			self.structure.append(level_line)
+
+	def get_structure(self):
+		return self.structure
+
 
