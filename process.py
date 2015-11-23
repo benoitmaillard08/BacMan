@@ -17,7 +17,7 @@ class Level:
 		# Récupération de la structure du niveau sous forme de liste à deux dimensions
 		self.structure = parse_level.get_structure()
 
-		self.prepare_walls() # Préparaion de l'affichage des différentes textures de murs
+		self.prepare_walls() # Préparation de l'affichage des différentes textures de murs
 		
 
 		self.pacman = None

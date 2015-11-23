@@ -18,9 +18,13 @@ class ParseLevel:
 		self.monsters = []
 
 
-		# self.chars = {
-		# 	PACMAN : entities.
-		# }
+		self.chars = {
+		 	PACMAN : entities.PacMan(),
+		 	BLINKY : entities.Blinky(),
+		 	PINKY : entities.Pinky(),
+		 	CLYDE : entities.Clyde(),
+		 	INKY : entities.Inky(),
+		}
 
 
 		self.pills = {
@@ -60,9 +64,11 @@ class ParseLevel:
 					if char in self.pills:
 						square.add_pill(self.pills[char])
 
-					#elif char in self.chars:
-					#
-					#
+					elif char in self.chars:
+						self.chars[char].set_coords(x, y)
+					else:
+						### Caractère inconnu : erreur
+						pass
 
 				x += 1
 				level_line.append(square)

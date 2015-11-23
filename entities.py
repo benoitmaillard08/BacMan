@@ -111,10 +111,51 @@ class BonusPill(StandardPill):
 # Classes pour les personnages #
 ################################
 
-class Char:
+class Char
 	def __init__(self):
 		pass
 
-class PacMan(Char): pass
+	def set_coords(self, x, y):
+		self.x = x
+		self.y = y
+
+class PacMan(Char):
+	PICTURE_DIRECTIONS = ("u", "r", "d", "l")
+
+	def __init__(self):
+		self.direction = 0 # 0 = haut, 1 = droite, 2 = bas, 3 = gauche
+
+
+		# Liste à deux dimensions qui contiendra les images des différents "stades"
+		# d'ouverture de la bouche de pacman
+		self.pictures = []
+
+		for d in PacMan.PICTURE_DIRECTIONS:
+			# L'image de pacman avec la bouche fermée est placée en index 0 de chaque direction
+			picture_closed = load_terrain(PACMAN_PATTERN.format("",""))
+			direction_pictures = [picture_closed]
+
+			# Pour chaque direction, on charge les images de 1 à 8
+			for n in range(1, 9):
+				direction_pictures.append(load_terrain(PACMAN_PATTERN.format(d, n)))
+
+			self.pictures.append(direction_pictures)
+
+		self.n_frame = 0 # Index de l'image à utiliser 
+
+	def get_picture(self):
+		if self.n_frame > 8:
+			self.n_frame = 0
+
+		picture = self.pictures[self.direction][self.n_frame]
+
+		self.n_frame += 1
+
+		return picture
+
+	def render(self):
+
+
+
 
 class Monster(Char): pass

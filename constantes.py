@@ -62,6 +62,7 @@ TEXT_DIR = PIC_DIR + "text/"
 LEVELS_DIR = "levels/"
 FILENAME_PATTERN = "n{}.level"
 WALLS_PATTERN = "wall-{}"
+PACMAN_PATTERN = "pacman-{} {}"
 
 #-----------------------------------
 
