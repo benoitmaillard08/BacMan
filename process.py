@@ -16,12 +16,10 @@ class Level:
 		parse_level = parse.ParseLevel(self) # Parsing du fichier de niveau
 		# Récupération de la structure du niveau sous forme de liste à deux dimensions
 		self.structure = parse_level.get_structure()
+		self.pacman = parse_level.get_pacman()
+		self.ghosts = parse_level.get_ghosts()
 
 		self.prepare_walls() # Préparation de l'affichage des différentes textures de murs
-		
-
-		self.pacman = None
-		self.monsters = []
 
 		self.render()
 
@@ -31,6 +29,11 @@ class Level:
 		for line in self.structure :
 			for square in line:
 				square.render()
+
+		self.pacman.render()
+
+		for m in self.ghosts:
+			m.render()
 
 		### Rendu des personnages ici
 

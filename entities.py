@@ -14,7 +14,7 @@ class Square:
 		self.y = y
 
 		# Coordonés en pixel du coin supérieur gauche
-		self.render_coords = (self.x*16, self.y*16)
+		self.render_coords = (self.x*SQUARE_SIZE, self.y*SQUARE_SIZE)
 
 	def render(self):
 		pass
@@ -104,26 +104,31 @@ class BonusPill(StandardPill):
 		# Sélection du tuple image - points par rapport au niveau
 		bonus_type = BonusPill.TYPES[n_level-1]
 
-		self.picture = load_terrain("fruit {}".format(bonus_type[0]))
+		self.picture = load_terrain(FRUIT_PATTERN.format(bonus_type[0]))
 		self.points = bonus_type[1]
 
 ################################
 # Classes pour les personnages #
 ################################
 
-class Char
-	def __init__(self):
-		pass
+class Char:
+	def __init__(self, level):
+		self.level = level
 
 	def set_coords(self, x, y):
 		self.x = x
 		self.y = y
 
+	def render(self):
+		pass
+
 class PacMan(Char):
 	PICTURE_DIRECTIONS = ("u", "r", "d", "l")
 
-	def __init__(self):
-		self.direction = 0 # 0 = haut, 1 = droite, 2 = bas, 3 = gauche
+	def __init__(self, level):
+		Char.__init__(self, level)
+
+		self.direction = 1 # 0 = haut, 1 = droite, 2 = bas, 3 = gauche
 
 
 		# Liste à deux dimensions qui contiendra les images des différents "stades"
@@ -132,7 +137,7 @@ class PacMan(Char):
 
 		for d in PacMan.PICTURE_DIRECTIONS:
 			# L'image de pacman avec la bouche fermée est placée en index 0 de chaque direction
-			picture_closed = load_terrain(PACMAN_PATTERN.format("",""))
+			picture_closed = load_terrain("pacman")
 			direction_pictures = [picture_closed]
 
 			# Pour chaque direction, on charge les images de 1 à 8
@@ -141,9 +146,10 @@ class PacMan(Char):
 
 			self.pictures.append(direction_pictures)
 
-		self.n_frame = 0 # Index de l'image à utiliser 
+		self.n_frame = 6 # Index de l'image à utiliser 
 
 	def get_picture(self):
+		# Lorsque le stade 8 est atteint, l'index est remis à 0
 		if self.n_frame > 8:
 			self.n_frame = 0
 
@@ -154,8 +160,16 @@ class PacMan(Char):
 		return picture
 
 	def render(self):
+		self.level.window.blit(self.get_picture(), (self.x*SQUARE_SIZE, self.y*SQUARE_SIZE))
 
 
 
+class Ghost(Char): pass
 
-class Monster(Char): pass
+class Blinky(Ghost): pass
+
+class Pinky(Ghost): pass
+
+class Clyde(Ghost): pass
+
+class Inky(Ghost): pass

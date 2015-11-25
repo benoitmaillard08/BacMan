@@ -14,16 +14,13 @@ class ParseLevel:
 
 		# Initiation des entités du niveau
 		self.structure = []
-		self.pacman = None
-		self.monsters = []
-
 
 		self.chars = {
-		 	PACMAN : entities.PacMan(),
-		 	BLINKY : entities.Blinky(),
-		 	PINKY : entities.Pinky(),
-		 	CLYDE : entities.Clyde(),
-		 	INKY : entities.Inky(),
+		 	PACMAN : entities.PacMan(level),
+		 	BLINKY : entities.Blinky(level),
+		 	PINKY : entities.Pinky(level),
+		 	CLYDE : entities.Clyde(level),
+		 	INKY : entities.Inky(level),
 		}
 
 
@@ -79,4 +76,16 @@ class ParseLevel:
 	def get_structure(self):
 		return self.structure
 
+	def get_pacman(self):
+		return self.chars[PACMAN]
 
+	def get_ghosts(self):
+		### Code à revoir
+		ghosts = [
+			self.chars[BLINKY],
+			self.chars[PINKY],
+			self.chars[CLYDE],
+			self.chars[INKY],
+		]
+
+		return ghosts
