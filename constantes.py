@@ -63,6 +63,7 @@ LEVELS_DIR = "levels/"
 FILENAME_PATTERN = "n{}.level"
 WALLS_PATTERN = "wall-{}"
 PACMAN_PATTERN = "pacman-{} {}"
+FRUIT_PATTERN = "fruit {}"
 
 #-----------------------------------
 
@@ -79,3 +80,5 @@ BLINKY = "B"
 PINKY = "P"
 INKY = "I"
 CLYDE = "C"
+
+SQUARE_SIZE = 32

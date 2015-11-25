@@ -2,5 +2,6 @@ import pygame
 import constantes
 
 def load_terrain(filename):
-	return pygame.image.load(constantes.TERRAIN_DIR + filename + ".gif").convert_alpha()
+	surface = pygame.image.load(constantes.TERRAIN_DIR + filename + ".gif").convert_alpha()
+	return pygame.transform.scale(surface, (constantes.SQUARE_SIZE, constantes.SQUARE_SIZE))
 
