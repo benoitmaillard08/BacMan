@@ -120,7 +120,7 @@ class Char:
 		self.y = y
 
 	def render(self):
-		pass
+		self.level.window.blit(self.get_picture(), (self.x*SQUARE_SIZE, self.y*SQUARE_SIZE))
 
 class PacMan(Char):
 	PICTURE_DIRECTIONS = ("u", "r", "d", "l")
@@ -159,12 +159,29 @@ class PacMan(Char):
 
 		return picture
 
-	def render(self):
-		self.level.window.blit(self.get_picture(), (self.x*SQUARE_SIZE, self.y*SQUARE_SIZE))
 
 
+class Ghost(Char):
+	def __init__(self, level):
+		Char.__init__(self, level)
 
-class Ghost(Char): pass
+		self.pictures = []
+
+		for n in range(1, 7):
+			self.pictures.append(load_terrain(GHOST_PATTERN.format(n)))
+
+		self.n_frame = 0
+
+	def get_picture(self):
+		if self.n_frame > 5:
+			self.n_frame = 0
+
+		picture = self.pictures[self.n_frame]
+
+		self.n_frame += 1
+
+		return picture
+	
 
 class Blinky(Ghost): pass
 

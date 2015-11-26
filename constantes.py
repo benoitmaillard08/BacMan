@@ -60,10 +60,12 @@ TERRAIN_DIR = PIC_DIR + "terrain/"
 TEXT_DIR = PIC_DIR + "text/"
 
 LEVELS_DIR = "levels/"
+
 FILENAME_PATTERN = "n{}.level"
 WALLS_PATTERN = "wall-{}"
 PACMAN_PATTERN = "pacman-{} {}"
 FRUIT_PATTERN = "fruit {}"
+GHOST_PATTERN = "ghost {}"
 
 #-----------------------------------
 
