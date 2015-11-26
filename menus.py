@@ -208,7 +208,7 @@ class HighscoresPage:
 
 
 
-class Button(MainMenu):
+class Button:
     """
     Classe d'instenciation des boutons
     """
@@ -220,27 +220,27 @@ class Button(MainMenu):
         self.text_str = text_str
         self.master = master    # variable 'background' de la classe 'MainMenu'
 
-    def button_display(self, coords):
+    def button_display(self):
         """
-        button_display(str text_str, tup coords) --> None.
+        button_display(str text_str) --> None.
         """
 
         # Chargement de l'image
         button = pygame.image.load(constantes.PATH_PIC_BUTTON).convert_alpha()
         self.button_size = button.get_rect()
         # Positionnement du bouton dans la fenêtre
-        master.blit(button, self.coords)
+        self.master.blit(button, self.coords)
 
-    def text_display(self, text_str):
+    def text_display(self):
         """
         text_display(tup coords, str text_str) --> None.
         """
 
         # Chargement de la police + taille de la police
-        font = pygame.font.Font(constantes.FONT_PATH, constantes.FONT_SIZE)
-        text = font.render(text_str, 0, constantes.RGB_WHITE)
+        font = pygame.font.Font(constantes.MENUFONT_DIR, constantes.MENUFONT_SIZE)
+        text = font.render(self.text_str, 0, constantes.RGB_WHITE)
 
         text_size = text.get_rect() # Enregistrement de la zone de texte dans un tuple (x,y)
 
         #Affichage du texte en fonction de sa taille et celle du bouton, afin qu'il soit centré quelque soit sa taille
-        master.blit(text,((button_size[0] - text_size[0])/2,(button_size[1] - text_size[1])/2))
+        self.master.blit(text,((self.button_size[0] - text_size[0])/2,     self.coords[1]))

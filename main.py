@@ -19,6 +19,7 @@ Fichiers annexes : animation.py, constantes.py, data.py, graphics.py,
 
 import pygame
 import process
+import menus
 
 class BacMan: # Classe principale du jeu
 	def __init__(self):
@@ -33,6 +34,10 @@ class Game: # Classe servant à gérer une partie
 		pygame.init()
 
 		self.window = pygame.display.set_mode((800, 800))
+
+		b = menus.Button(self.window, "Test", (10, 10), None, None)
+		b.button_display()
+		b.text_display()
 
 		self.next_level()
 
