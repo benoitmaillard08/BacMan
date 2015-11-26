@@ -153,7 +153,7 @@ class CtrlsPage(RulesPage):
 
     
 
-class SignUpPage(Tk): #Nécessite l'utilisation de Tkinter
+class SignUpPage(Tk, RulesPage): #Nécessite l'utilisation de Tkinter
     """
     Classe créant la page permettant à un nouveau joueur de créer un nouveau profil.
     """
@@ -162,19 +162,23 @@ class SignUpPage(Tk): #Nécessite l'utilisation de Tkinter
         __init__(str title) --> None. On peut modifier le nom de la page.
         Initialisation d'une fenêtre Tkinter pour la gestion de l'enregistrement de nouveaux joueurs.
         """
-        self.window = Tk()   # Création de la fenêtre
+##        self.window = Tk()   # Création de la fenêtre
+##
+##        self.window.title(title) #Titre de la page
+##
+##        # Chargement du fond
+##        background = Canvas(self.window, width=constantes.COTE_FOND, height=constantes.COTE_FOND, background='black')
+##
+##        pic = PhotoImage(file=constantes.PATH_PIC_PAGES)
+##        background.create_image(0,0,anchor=NW,image=pic)
+##
+##        background.pack()
+##
+##        self.window.mainloop()
 
-        self.window.title(title) #Titre de la page
-
-        # Chargement du fond
-        background = Canvas(self.window, width=constantes.COTE_FOND, height=constantes.COTE_FOND, background='black')
-
-        pic = PhotoImage(file=constantes.PATH_PIC_PAGES)
-        background.create_image(0,0,anchor=NW,image=pic)
-
-        background.pack()
-
-        self.window.mainloop()
+        
+        
+        
 
 
 
