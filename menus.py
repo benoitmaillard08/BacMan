@@ -207,40 +207,85 @@ class HighscoresPage:
     pass
 
 
+class Container:
+    MARGIN = 10
+    """
+    Classe créant un conteneur de boutons pour que ceux-ci soient centrés horizontalement et verticalement
+    """
+
+    def __init__(self, master, event_handler):
+        self.master = master
+        self.event_handler = event_handler
+
+        self.l_buttons = []
+
+        self.button_picture = pygame.image.load(constantes.PATH_PIC_BUTTON)
+
+    def add_button(self, text, callback):
+        button = Button(self.master, text, callback)
+
+        self.l_buttons.append(button)
+
+    def calculate_coords(self):
+        # Hauteur nécessaire pour un bouton et les marges autour du bouton
+        button_height = self.button_picture.get_height() + 2 * Container.MARGIN
+
+        # Hauteur de la pile de boutons avec les marges
+        total_height = button_height * len(self.l_buttons)
+
+        # Coordonné y du coin supérieur gauche du premier bouton
+        coord_y = (self.master.get_height() - total_height) / 2
+
+        # Coordonné x du coin supérieur gauche de tous les boutons
+        coord_x = (self.master.get_width() - self.button_picture.get_width()) / 2
+
+        for button in self.l_buttons:
+            button.set_coords(coord_x, coord_y + Container.MARGIN)
+            coord_y += button_height
+
+            button.render()
+
 
 class Button:
     """
     Classe d'instenciation des boutons
     """
-    def __init__(self, master, text_str, coords, event_handler, callback):
+    def __init__(self, master, text, callback):
         """
         __init__(event_handler, str text_str, tup coords, callback) --> None.
         """
-        self.coords = coords
-        self.text_str = text_str
+
+        self.coords = (0, 0)
+
+        self.text = text
         self.master = master    # variable 'background' de la classe 'MainMenu'
 
-    def button_display(self):
-        """
-        button_display(str text_str) --> None.
-        """
+        self.button_surface = pygame.image.load(constantes.PATH_PIC_BUTTON).convert_alpha()
 
-        # Chargement de l'image
-        button = pygame.image.load(constantes.PATH_PIC_BUTTON).convert_alpha()
-        self.button_size = button.get_rect()
+    def render(self):
+
         # Positionnement du bouton dans la fenêtre
-        self.master.blit(button, self.coords)
-
-    def text_display(self):
-        """
-        text_display(tup coords, str text_str) --> None.
-        """
+        self.master.blit(self.button_surface, self.coords)
 
         # Chargement de la police + taille de la police
         font = pygame.font.Font(constantes.MENUFONT_DIR, constantes.MENUFONT_SIZE)
-        text = font.render(self.text_str, 0, constantes.RGB_WHITE)
+        self.text_surface = font.render(self.text, 0, constantes.RGB_WHITE)
 
-        text_size = text.get_rect() # Enregistrement de la zone de texte dans un tuple (x,y)
+        b = self.button_surface
+        t = self.text_surface
 
         #Affichage du texte en fonction de sa taille et celle du bouton, afin qu'il soit centré quelque soit sa taille
-        self.master.blit(text,((self.button_size[0] - text_size[0])/2,     self.coords[1]))
+        self.master.blit(self.text_surface, (
+            (self.coords[0] + b.get_width() / 2) - t.get_width() / 2,
+            (self.coords[1] + b.get_height() / 2) - t.get_height() / 2
+        ))
+
+    def set_coords(self, x, y):
+        self.coords = (x, y)
+
+    def check_coords(self, x, y):
+        if self.coords[0] < x < self.coords[0] + self.button_surface.get_width():
+            if self.coords[1] < y < self.coords[1] + self.button_surface.get_height():
+                return True
+
+        return False

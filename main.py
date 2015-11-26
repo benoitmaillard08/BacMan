@@ -35,11 +35,18 @@ class Game: # Classe servant à gérer une partie
 
 		self.window = pygame.display.set_mode((800, 800))
 
-		b = menus.Button(self.window, "Test", (10, 10), None, None)
-		b.button_display()
-		b.text_display()
 
-		self.next_level()
+		c = menus.Container(self.window, None)
+		c.add_button("Test 1", None)
+		c.add_button("Test 2", None)
+		c.add_button("Test 3", None)
+		c.add_button("HAHAHAHAHA", None)
+
+		c.calculate_coords()
+
+		# self.next_level()
+
+		pygame.display.flip()
 
 		continuer = True
 
