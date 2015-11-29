@@ -217,16 +217,16 @@ class Container:
     Classe créant un conteneur de boutons pour que ceux-ci soient centrés horizontalement et verticalement
     """
 
-    def __init__(self, master, event_handler):
+    def __init__(self, master, loop):
         self.master = master
-        self.event_handler = event_handler
+        self.loop = loop
 
         self.l_buttons = []
 
         self.button_picture = pygame.image.load(constantes.PATH_PIC_BUTTON)
 
     def add_button(self, text, callback):
-        button = Button(self.master, text, callback)
+        button = Button(self.master, text, callback, self.loop)
 
         self.l_buttons.append(button)
 
@@ -254,17 +254,22 @@ class Button:
     """
     Classe d'instenciation des boutons
     """
-    def __init__(self, master, text, callback):
+    def __init__(self, master, text, callback, loop):
         """
-        __init__(event_handler, str text_str, tup coords, callback) --> None.
+        __init__() --> None.
         """
 
         self.coords = (0, 0)
 
         self.text = text
         self.master = master    # variable 'background' de la classe 'MainMenu'
+        self.action = callback # fonction à exécuter lors du clic sur le bouton
+        self.loop = loop
 
         self.button_surface = pygame.image.load(constantes.PATH_PIC_BUTTON).convert_alpha()
+
+        # Ajout du bouton dans la boucle pour que celle-ci détecte les clics sur le bouton
+        self.loop.add_button(self)
 
     def render(self):
 
@@ -275,6 +280,7 @@ class Button:
         font = pygame.font.Font(constantes.MENUFONT_DIR, constantes.MENUFONT_SIZE)
         self.text_surface = font.render(self.text, 0, constantes.RGB_WHITE)
 
+        # Raccourcis
         b = self.button_surface
         t = self.text_surface
 
@@ -287,9 +293,15 @@ class Button:
     def set_coords(self, x, y):
         self.coords = (x, y)
 
-    def check_coords(self, x, y):
-        if self.coords[0] < x < self.coords[0] + self.button_surface.get_width():
-            if self.coords[1] < y < self.coords[1] + self.button_surface.get_height():
+    def check_coords(self, coords):
+        if self.coords[0] < coords[0] < self.coords[0] + self.button_surface.get_width():
+            if self.coords[1] < coords[1] < self.coords[1] + self.button_surface.get_height():
                 return True
 
         return False
+
+    def disable(self):
+        pass
+
+    def enable(self):
+        pass

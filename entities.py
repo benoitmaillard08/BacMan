@@ -1,4 +1,5 @@
 import pygame
+import random
 from constantes import *
 from shortcuts import *
 
@@ -7,7 +8,6 @@ from shortcuts import *
 ##########################
 
 class Square:
-	INDEXES = [(0, -1), (1, 0), (0, 1), (-1, 0)]
 	def __init__(self, level, x, y):
 		self.level = level
 		self.x = x
@@ -20,8 +20,8 @@ class Square:
 		pass
 
 	def adjacent_square(self, index): # L'index est un entier entre 0 et 3 --> 0 = haut, 1 = droite, 2 = bas, 3 = gauche
-		square_x = self.x + Square.INDEXES[index][0]
-		square_y = self.y + Square.INDEXES[index][1]
+		square_x = self.x + DIRECTIONS[index][0]
+		square_y = self.y + DIRECTIONS[index][1]
 
 		return self.level.get_square(square_x, square_y)
 
@@ -36,8 +36,9 @@ class StandardSquare(Square):
 		self.pill = pill
 
 	def eat(self):
-		self.pill.effect()
-		self.pill = None # La pillule est supprimée
+		if self.pill:
+			self.pill.effect()
+			self.pill = None # La pillule est supprimée
 
 	def render(self):
 		self.level.window.blit(self.picture, self.render_coords)
@@ -128,7 +129,11 @@ class PacMan(Char):
 	def __init__(self, level):
 		Char.__init__(self, level)
 
+		self.speed = 8
+
 		self.direction = 1 # 0 = haut, 1 = droite, 2 = bas, 3 = gauche
+		self.next_direction = 1 # Direction que prendra pacman dès qu'un carrefour le permet
+		self.moving = True # Vaut True si Pacman est en mouvement
 
 
 		# Liste à deux dimensions qui contiendra les images des différents "stades"
@@ -155,15 +160,56 @@ class PacMan(Char):
 
 		picture = self.pictures[self.direction][self.n_frame]
 
-		self.n_frame += 1
+		if self.moving:
+			self.n_frame += 1
+		else:
+			self.n_frame = 6
 
 		return picture
+
+	def stop(self):
+		self.moving = False
+
+	def change_direction(self, direction):
+		self.next_direction = direction
+
+	def move(self):
+		# Si pacman se trouve exactement sur une case
+		if self.x % 1 == 0 and self.y % 1 == 0:
+			# Récupération de la case actuelle
+			square = self.level.get_square(self.x, self.y)
+			square.eat() # Pacman mange la pastille s'il y en a une
+
+			# Si la case dans la direction souhaitée est vide
+			if square.adjacent_square(self.next_direction).is_empty:
+				self.direction = self.next_direction
+				self.moving = True # Au cas où Pacman était arrêté, il repart
+
+			# Si la case dans la direction actuelle est un mur, pacman s'arrête
+			elif not square.adjacent_square(self.direction).is_empty:
+				self.stop()
+
+		# Si Pacman n'est pas exactement sur une case, il
+		# peut quand même rebrousser chemin
+		elif abs(self.direction - self.next_direction) == 2:
+			self.direction = self.next_direction
+
+		# Modification des coordonnées selon la direction
+		if self.moving:
+			# DIRECTIONS[self.directions] correspond au 
+			# vecteur directeur de la trajectoire de Pacman
+			self.x += self.speed * DIRECTIONS[self.direction][0] / SQUARE_SIZE
+			self.y += self.speed * DIRECTIONS[self.direction][1] / SQUARE_SIZE
+
 
 
 
 class Ghost(Char):
 	def __init__(self, level):
 		Char.__init__(self, level)
+
+		self.direction = 0
+		self.speed = 8
 
 		self.pictures = []
 
@@ -181,7 +227,28 @@ class Ghost(Char):
 		self.n_frame += 1
 
 		return picture
-	
+
+	def move(self):
+		# Si le fantôme se trouve exactement sur une case
+		if self.x % 1 == 0 and self.y % 1 == 0:
+			# Récupération de la case actuelle
+			square = self.level.get_square(self.x, self.y)
+
+			empty_adj_squares = []
+
+			for n in range(-1, 2):
+				direction = (self.direction + n) % 4
+				if square.adjacent_square(direction).is_empty:
+					empty_adj_squares.append(direction)
+
+			if len(empty_adj_squares) == 0:
+				self.direction = (self.direction + 2) % 4
+
+			else:
+				self.direction = empty_adj_squares[random.randint(0, len(empty_adj_squares) - 1)]
+
+		self.x += self.speed * DIRECTIONS[self.direction][0] / SQUARE_SIZE
+		self.y += self.speed * DIRECTIONS[self.direction][1] / SQUARE_SIZE
 
 class Blinky(Ghost): pass
 
