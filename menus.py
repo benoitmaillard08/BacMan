@@ -6,7 +6,7 @@ from pygame.locals import *
 import constantes
 import loop
 
-class MainMenu:
+class Menu:
     """
         Classe créant les différents menus du jeu
     """
@@ -15,71 +15,50 @@ class MainMenu:
         self.loop = loop
         self.window = window
 
+        self.background = pygame.image.load(constantes.PATH_PIC_MAIN_MENU).convert()
 
-    def mainmenu(self):
-        """
-        Méthode créant le menu principal
-        """
-        # Importation des images
-        # Menu
-        background = pygame.image.load(constantes.PATH_PIC_MAIN_MENU).convert()
-        self.window.blit(background,(0,0))
+        self.container = Container(self.window, self.loop)
 
-        # Rafrachissement de l'écran
-        pygame.display.flip()
+        self.window.blit(self.background,(0,0))
 
-        #Gestionnaire d'événements
-        flag = 1
+        self.content() # Ajout du contenu
 
-        while flag:
-            for event in pygame.event.get():    # Parcours la liste des éléments reçus
-                if event.type == QUIT:
-                    flag = 0
-                elif event.type == MOUSEBUTTONDOWN and event.button == 1:
-                    x = event.pos[0]    #Les positions du clic de la souris sont enregistrés pour être analyser
-                    y = event.pos[1]
+        self.render() # Rendu du fonds
+        self.container.calculate_coords() # Calcul et rendu des éléments
 
+class MainMenu(Menu):
+    def __init__(self, window, loop):
+        Menu.__init__(self, window, loop)
 
+        self.loop.run_loop()
 
+    def content(self):
 
-        # Sortie de la boucle et fermeture de la fenêtre
-        pygame.display.quit()
+        # Widgets de la page
+        self.container.add_button("Connexion", self.next_page(LoginPage))
+        self.container.add_button("Inscription", self.next_page(RegisterPage))
+        self.container.add_button("Top Scores", self.next_page(HighscoresPage))
+        self.container.add_button("Quitter", self.loop.close_window)
 
-    def mouse_position(self, pos_x, pos_y):
-        """
-        mouse_position(int pos_x, int pos_y) --> None.
+    def next_page(self, page):
+        self.loop.clear() # Suppression des boutons etc de la boucle
 
-        On entre les positions de la souris dans la méthode, et celle-ci analysera sa position, pour éventuellement
-        lancer la méthode du bouton activé.
-        """
-        x = pos_x
-        y = pos_y
+        page(self.loop, self.window) # Instanciation de la page
 
 
-class RulesPage:
+class RulesPage(MainMenu):
     """
     Classe permettant la création de la page informant le joueur sur les règles du jeu.
     """
-    def __init__(self, caption='Rules Page', window, loop):
-        """
-        Méthode créant la page.
-        """
-        pygame.init()
 
-        self.window = window
-        self.loop = loop
+    def __init__(self, window, loop):
+        Menu.__init__(self, window, loop)
 
+        self.background = pygame.image.load(constantes.PATH_PIC_PAGES)
         pygame.display.set_caption(caption)
 
-        #Chargement du fond
-        background = pygame.image.load(constantes.PATH_PIC_PAGES)
-        self.window.blit(background, (0,0))
+        ### Définir le contenu
 
-        #Mise à jour de la page
-        pygame.display.flip()
-
-
-        ##### MANQUE LE GESTIONNAIRE D'EVENEMENTS   ###########
 
     def display(self):
         """
@@ -123,8 +102,8 @@ class CtrlsPage(RulesPage):
     """
     Classe créant la page d'explication des contrôles du jeu
     """
-    def __init__(self):
-        RulesPage.__init__(self, 'Controles Page')
+    def __init__(self, window, loop):
+        Menu.__init__(self, window, loop)
 
     def display(self):
         """
@@ -159,28 +138,12 @@ class CtrlsPage(RulesPage):
 
     
 
-class SignUpPage(RulesPage): #Nécessite l'utilisation de Tkinter
+class RegisterPage(RulesPage): #Nécessite l'utilisation de Tkinter
     """
     Classe créant la page permettant à un nouveau joueur de créer un nouveau profil.
     """
-    def __init__(self, title='Sign-Up Page'):
-        """
-        __init__(str title) --> None. On peut modifier le nom de la page.
-        Initialisation d'une fenêtre Tkinter pour la gestion de l'enregistrement de nouveaux joueurs.
-        """
-##        self.window = Tk()   # Création de la fenêtre
-##
-##        self.window.title(title) #Titre de la page
-##
-##        # Chargement du fond
-##        background = Canvas(self.window, width=constantes.COTE_FOND, height=constantes.COTE_FOND, background='black')
-##
-##        pic = PhotoImage(file=constantes.PATH_PIC_PAGES)
-##        background.create_image(0,0,anchor=NW,image=pic)
-##
-##        background.pack()
-##
-##        self.window.mainloop()
+    def __init__(self, window, loop):
+        Menu.__init__(self, window, loop)
 
         
         
@@ -193,17 +156,8 @@ class LoginPage(SignUpPage): #Nécessite l'utilisation de Tkinter
     """
     Classe créant la page permettant à un joueur existant de se logger.
     """
-    def __init__(self):
-        SignUpPage.__init__(self, 'Login Page')
-
-    def login_display(self):
-        """
-        nick = StringVar()
-        entry = Entry(self.window, width=30)
-        entry.pack()
-        label = Label(self.window, text= 'test', bg='yellow')
-        label.pack()
-        """
+    def __init__(self, window, loop):
+        Menu.__init__(self, window, loop)
         
 
 
@@ -213,8 +167,10 @@ class HighscoresPage:
     """
     Classe créant la page affichant les highscores du jeu ET du joueur s'il est loggé.
     """
-    pygame.init()
-    pass
+    def __init__(self, window, loop):
+        Menu.__init__(self, window, loop)
+
+        ### Elements ici
 
 
 class Container:
@@ -244,7 +200,7 @@ class Container:
         total_height = button_height * len(self.l_buttons)
 
         # Coordonné y du coin supérieur gauche du premier bouton
-        coord_y = (self.window.get_height() - total_height) / 2
+        coord_y = (self.window.get_height() - total_height) / 2 + 80
 
         # Coordonné x du coin supérieur gauche de tous les boutons
         coord_x = (self.window.get_width() - self.button_picture.get_width()) / 2
