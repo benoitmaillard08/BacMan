@@ -1,21 +1,22 @@
 """ Gestion des menus du jeu >BacMan the baccalaureates Adventure!< """
 
-# Importation de pygame et des constantes
+# Importation des différents fichiers
 import pygame
-from tkinter import *
 from pygame.locals import *
 import constantes
+import loop
 
 class MainMenu:
     """
         Classe créant les différents menus du jeu
     """
 
-    def __init__(self):
+    def __init__(self, window, loop):
         pygame.init()
 
-        # Création de la fenêtre
-        self.window = pygame.display.set_mode((constantes.COTE_FOND, constantes.COTE_FOND), RESIZABLE)
+        self.loop = loop
+        self.window = window
+
 
     def mainmenu(self):
         """
@@ -61,13 +62,15 @@ class RulesPage:
     """
     Classe permettant la création de la page informant le joueur sur les règles du jeu.
     """
-    def __init__(self, caption='Rules Page'):
+    def __init__(self, caption='Rules Page', window, loop):
         """
         Méthode créant la page.
         """
         pygame.init()
 
-        self.window = pygame.display.set_mode((constantes.COTE_FOND, constantes.COTE_FOND), RESIZABLE)
+        self.window = window
+        self.loop = loop
+
         pygame.display.set_caption(caption)
 
         #Chargement du fond
@@ -80,7 +83,7 @@ class RulesPage:
 
         ##### MANQUE LE GESTIONNAIRE D'EVENEMENTS   ###########
 
-    def text_display(self):
+    def display(self):
         """
         Affichage du texte sur le fond
         """
@@ -106,6 +109,11 @@ class RulesPage:
             
             self.window.blit(text, ((constantes.COTE_FOND//2 - size//2), line)) # 'Collage' de la ligne, avec 25 pixels de marge à gauche
             line += constantes.TEXTFONT_SIZE + 10  #La position de la prochaine ligne est placée à 25 + 10 pixels plus bas
+
+        # Instanciation du bouton
+
+        container = Container(self.window, self.loop)
+        container.add_button('Retour', MainMenu.mainmenu())
         
         pygame.display.flip()
 
@@ -153,7 +161,7 @@ class CtrlsPage(RulesPage):
 
     
 
-class SignUpPage(Tk, RulesPage): #Nécessite l'utilisation de Tkinter
+class SignUpPage(RulesPage): #Nécessite l'utilisation de Tkinter
     """
     Classe créant la page permettant à un nouveau joueur de créer un nouveau profil.
     """
@@ -217,8 +225,8 @@ class Container:
     Classe créant un conteneur de boutons pour que ceux-ci soient centrés horizontalement et verticalement
     """
 
-    def __init__(self, master, loop):
-        self.master = master
+    def __init__(self, window, loop):
+        self.window = window
         self.loop = loop
 
         self.l_buttons = []
@@ -226,7 +234,7 @@ class Container:
         self.button_picture = pygame.image.load(constantes.PATH_PIC_BUTTON)
 
     def add_button(self, text, callback):
-        button = Button(self.master, text, callback, self.loop)
+        button = Button(self.window, text, callback, self.loop)
 
         self.l_buttons.append(button)
 
@@ -238,10 +246,10 @@ class Container:
         total_height = button_height * len(self.l_buttons)
 
         # Coordonné y du coin supérieur gauche du premier bouton
-        coord_y = (self.master.get_height() - total_height) / 2
+        coord_y = (self.window.get_height() - total_height) / 2
 
         # Coordonné x du coin supérieur gauche de tous les boutons
-        coord_x = (self.master.get_width() - self.button_picture.get_width()) / 2
+        coord_x = (self.window.get_width() - self.button_picture.get_width()) / 2
 
         for button in self.l_buttons:
             button.set_coords(coord_x, coord_y + Container.MARGIN)
@@ -254,7 +262,7 @@ class Button:
     """
     Classe d'instenciation des boutons
     """
-    def __init__(self, master, text, callback, loop):
+    def __init__(self, window, text, callback, loop):
         """
         __init__() --> None.
         """
@@ -262,7 +270,7 @@ class Button:
         self.coords = (0, 0)
 
         self.text = text
-        self.master = master    # variable 'background' de la classe 'MainMenu'
+        self.window = window    # variable 'background' de la classe 'MainMenu'
         self.action = callback # fonction à exécuter lors du clic sur le bouton
         self.loop = loop
 
@@ -274,7 +282,7 @@ class Button:
     def render(self):
 
         # Positionnement du bouton dans la fenêtre
-        self.master.blit(self.button_surface, self.coords)
+        self.window.blit(self.button_surface, self.coords)
 
         # Chargement de la police + taille de la police
         font = pygame.font.Font(constantes.MENUFONT_DIR, constantes.MENUFONT_SIZE)
@@ -285,7 +293,7 @@ class Button:
         t = self.text_surface
 
         #Affichage du texte en fonction de sa taille et celle du bouton, afin qu'il soit centré quelque soit sa taille
-        self.master.blit(self.text_surface, (
+        self.window.blit(self.text_surface, (
             (self.coords[0] + b.get_width() / 2) - t.get_width() / 2,
             (self.coords[1] + b.get_height() / 2) - t.get_height() / 2
         ))
