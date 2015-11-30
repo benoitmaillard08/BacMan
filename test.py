@@ -17,6 +17,7 @@ class Test:
 
         #Mise à jour de la page
         pygame.display.flip()
+        
     def compiler(self, liste):
         """
         compile( list liste) --> str
@@ -28,6 +29,22 @@ class Test:
 
         return string
 
+    
+    def display_box(self, text):
+
+        button = pygame.image.load(constantes.PATH_PIC_BUTTON).convert_alpha()
+        self.window.blit(button, (200,400))
+
+        font = pygame.font.Font(constantes.MENUFONT_DIR, constantes.MENUFONT_SIZE )
+        text = font.render(text, 0, (255,255,255))
+
+        self.window.blit(text, (300,400))
+
+        pygame.display.flip()
+
+
+        
+
     def events(self):
             
         #Gestionnaire d'événements
@@ -36,37 +53,43 @@ class Test:
         while 1:
             for event in pygame.event.get():    # Parcours la liste des éléments reçus
                 if event.type == QUIT:
-                    flag = 0
+                    break
                     
                 elif event.type == KEYDOWN:
                     if chr(event.key) in constantes.KEYS:
+                        Test.__init__(self)
                         liste += chr(event.key)
-                        print(Test().compiler(liste))
+                        Test.display_box(self, Test.compiler(self,liste))
                         
                     elif event.key == 8:    # 8 --> code du backspace (pour effacer)
                         if liste:   # On vérifie si la liste est vide, si oui, on ne fait rien
                             del liste[-1]
-                            print(Test().compiler(liste))
+                            Test.__init__(self)
+                            Test.display_box(self, Test.compiler(self,liste))
                             
-                        
                     elif event.key == 13:       # 13 --> code du retour à la ligne (Enter)
                         pseudo = ''
+                        Test.__init__(self)
                         for elt in liste:
                             pseudo += elt
-                        print(Test().compiler(liste))
+                        Test.display_box(self, Test.compiler(self,liste))
                         
                     else:
                         print('Seuls les caractères normaux et sans accent sont acceptés!')
                     
                     
-                elif event.type == MOUSEBUTTONDOWN and event.button == 1:
-                    x = event.pos[0]    #Les positions du clic de la souris sont enregistrés pour être analyser
-                    y = event.pos[1]
-                
+    
         pygame.display.quit()
+
+
+
+                
+        
 
 Test().compiler([])
 Test().events()
+    
+
 
 
 

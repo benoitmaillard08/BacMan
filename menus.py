@@ -103,7 +103,6 @@ class RulesPage:
         for elt in text_to_display: # Pour chaque ligne de texte, on crée un nouvel objet text.
 
             font = pygame.font.Font(constantes.TEXTFONT_DIR, constantes.TEXTFONT_SIZE)
-            print(elt)
             size = font.size(elt)[0] # Pour centrer le texte
             text = font.render(elt, 0, constantes.RGB_WHITE)
             

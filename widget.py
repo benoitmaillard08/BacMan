@@ -3,6 +3,7 @@ import constantes
 from pygame.locals import *
 
 
+
 class InputBox:
 	"""
 	Classe instanciant la zone d'entrée permettant au joueur de par exemple s'enregistrer.
@@ -25,31 +26,37 @@ class InputBox:
 
 		return
 
-	def inputBox(self):
+	def entry(self):
 		"""
 		inputBox() --> str pseudo
 		Méthode recevant les entrées de l'utilisateur.
 		"""
-		entry = []
+		entry_list = []
 		ready = False
 
 		while not ready:
 			for event in pygame.event.get():
-				if event.type == KEYDOWN:
+				if event.type == KEYDOWN and len(entry_list)<16:
 					if chr(event.key) in constantes.KEYS:
 						entry += chr(event.key)
 
 					elif event.key == 8: 	 # 8 --> code du backspace (pour effacer)
-						if entry: 		# On vérifie si la liste n'est pas vide
+						if entry_list: 		# On vérifie si la liste n'est pas vide
 							del entry[-1]
 
 					elif event.key == 13:	 # 13 --> code du retour à la ligne (Enter)
-						self.pseudo = compiler(entry)
+						self.pseudo = compiler(entry_list)
 						ready = True
 
 					else:
 						# Indique à l'utilisateur que le caractère entré n'est pas autorisé.
 						pass
+
+	def display(self):
+		"""
+		Méthode permettant d'afficher la zone d'entré dans la fenêtre <window>.
+		"""
+
 
 
 
