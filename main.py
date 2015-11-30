@@ -20,15 +20,22 @@ Fichiers annexes : animation.py, constantes.py, data.py, graphics.py,
 import pygame
 import process
 import menus
+from constantes import *
+import loop
 
 class BacMan: # Classe principale du jeu
 	def __init__(self):
-		pass
+		pygame.init()
+
+		self.window = pygame.display.set_mode((WINDOW_X, WINDOW_Y))
+		pygame.display.set_caption("Bacman : the baccalaureates Adventure")
+		self.loop = loop.Loop()
+
+		self.main_menu = menus.MainMenu(self.window, self.loop)
 	
 class Game: # Classe servant à gérer une partie
 	def __init__(self):
 		self.n_level = 0
-
 
 		#### Code provisoire
 		pygame.init()
@@ -60,5 +67,4 @@ class Game: # Classe servant à gérer une partie
 		self.n_level += 1
 		self.level = process.Level(self.n_level, self.window, self.loop)
 
-
-Game()
+BacMan()
