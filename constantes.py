@@ -14,7 +14,8 @@ BONUS_PILL = "B"
 
 #------------------------------------------------------------
 # Menu
-COTE_FOND = 800 #pixels
+WINDOW_X = 800 #pixels
+WINDOW_Y = 800
 PATH_PIC_MAIN_MENU = "ressources/main_menu.png"
 PATH_PIC_BUTTON = "ressources/button.png"
 
