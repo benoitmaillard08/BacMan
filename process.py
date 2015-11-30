@@ -49,8 +49,6 @@ class Level:
 
 		### Rendu des personnages ici
 
-		pygame.display.flip() # Rafraichissement du rendu
-
 		
 
 	def get_square(self, x, y):

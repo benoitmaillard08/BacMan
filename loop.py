@@ -1,3 +1,6 @@
+import time
+import pygame
+
 class Loop:
 	def __init__(self, level=None):
 		self.window_opened = True
@@ -33,11 +36,23 @@ class Loop:
 
 			t2 = time.clock()
 
-			print(t2-t1)
+			tic_duration = t2 - t1 # Temps restant avant le rafraichissement de la fenêtre
+			time_remaining = 0.06 - tic_duration
 
-			time.sleep(0.06 - (t2 - t1))
+			if time_remaining > 0:
+				time.sleep(time_remaining)
 
+			pygame.display.flip() # Rafraichissement du rendu
 
+		pygame.display.quit()
+
+	def clear(self):
+		self.buttons = []
+		self.text_areas = []
+		self.level = None
+
+	def close_window(self):
+		self.window_opened = False
 
 	def pause_game(self):
 		self.game_running = False
