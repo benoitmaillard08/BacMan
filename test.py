@@ -20,7 +20,7 @@ class Test:
     def compiler(self, liste):
         """
         compile( list liste) --> str
-    Méthode permettant de compiler la liste de charactères entrés en string."""
+        Méthode permettant de compiler la liste de charactères entrés en string."""
         string = ''
 
         for elt in liste:
