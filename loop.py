@@ -21,7 +21,7 @@ class Loop:
 					self.window_opened = False
 
 				elif event.type == pygame.MOUSEBUTTONDOWN:
-					if event.button == 1: # Cliq gauche
+					if event.button == 1: # Clic gauche
 						for button in self.buttons:
 							if button.check_coords(event.pos): # On regarde si le cliq est dans le bouton
 								button.action() # Exécution de l'action associée au bouton
