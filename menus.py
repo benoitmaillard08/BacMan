@@ -12,8 +12,6 @@ class MainMenu:
     """
 
     def __init__(self, window, loop):
-        pygame.init()
-
         self.loop = loop
         self.window = window
 
