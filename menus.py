@@ -5,6 +5,7 @@ import pygame
 from pygame.locals import *
 import constantes
 import loop
+import widget
 
 class Menu:
     """
@@ -17,7 +18,7 @@ class Menu:
 
         self.background = pygame.image.load(constantes.PATH_PIC_MAIN_MENU).convert()
 
-        self.container = Container(self.window, self.loop)
+        self.container = widget.Container(self.window, self.loop)
 
         self.window.blit(self.background,(0,0))
 
@@ -71,7 +72,7 @@ class RulesPage(MainMenu):
         font = pygame.font.Font(constantes.MENUFONT_DIR, constantes.MENUFONT_SIZE)
         size = font.size(constantes.RULES_TITLE)[0]
         title = font.render(constantes.RULES_TITLE, 0, constantes.RGB_WHITE)
-        self.window.blit(title, ((constantes.COTE_FOND//2 - size//2), 225))
+        self.window.pygame.blit(title, ((constantes.COTE_FOND//2 - size//2), 225))
         
 
         # Chargement de la police et de sa taille
@@ -83,12 +84,12 @@ class RulesPage(MainMenu):
             size = font.size(elt)[0] # Pour centrer le texte
             text = font.render(elt, 0, constantes.RGB_WHITE)
             
-            self.window.blit(text, ((constantes.COTE_FOND//2 - size//2), line)) # 'Collage' de la ligne, avec 25 pixels de marge à gauche
+            self.window.pygame.blit(text, ((constantes.COTE_FOND//2 - size//2), line)) # 'Collage' de la ligne, avec 25 pixels de marge à gauche
             line += constantes.TEXTFONT_SIZE + 10  #La position de la prochaine ligne est placée à 25 + 10 pixels plus bas
 
         # Instanciation du bouton
 
-        container = Container(self.window, self.loop)
+        container = widget.Container(self.window, self.loop)
         container.add_button('Retour', MainMenu.mainmenu())
         
         pygame.display.flip()
@@ -112,7 +113,7 @@ class CtrlsPage(RulesPage):
         font = pygame.font.Font(constantes.MENUFONT_DIR, constantes.MENUFONT_SIZE)
         size = font.size(constantes.RULES_TITLE)[0]
         title = font.render(constantes.RULES_TITLE, 0, constantes.RGB_WHITE)
-        self.window.blit(title, ((constantes.COTE_FOND//2 - size//2), 225))
+        self.window.pygame.blit(title, ((constantes.COTE_FOND//2 - size//2), 225))
 
         #Chargement et placement des zones de textes
         font = pygame.font.Font(constantes.TEXTFONT_DIR, constantes.TEXTFONT_SIZE)
@@ -151,7 +152,7 @@ class RegisterPage(RulesPage): #Nécessite l'utilisation de Tkinter
 
 
 
-class LoginPage(SignUpPage): #Nécessite l'utilisation de Tkinter
+class LoginPage(RulesPage): #Nécessite l'utilisation de Tkinter
     """
     Classe créant la page permettant à un joueur existant de se logger.
     """
