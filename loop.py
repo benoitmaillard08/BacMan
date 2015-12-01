@@ -6,11 +6,14 @@ class Loop:
 		self.window_opened = True
 		self.game_running = False
 		self.level = level
+		self.loop_running = False
 
 		self.buttons = [] # Boutons présents sur la page
 		self.text_areas = [] # Zones de texte sur la page
 
 	def run_loop(self):
+		self.loop_running = True
+
 		while self.window_opened:
 			t1 = time.clock()
 
