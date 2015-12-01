@@ -16,38 +16,69 @@ class Menu:
         self.loop = loop
         self.window = window
 
-        self.background = pygame.image.load(constantes.PATH_PIC_MAIN_MENU).convert()
+        self.background = pygame.image.load(constantes.PATH_PIC_PAGES).convert()
 
         self.container = widget.Container(self.window, self.loop)
 
-        self.window.blit(self.background,(0,0))
+        # Marges du conteneur
+        self.margin_top = 200
+        self.margin_bottom = 100
 
-        self.content() # Ajout du contenu
+        self.content() # Définition du contenu
 
-        self.render() # Rendu du fonds
-        self.container.calculate_coords() # Calcul et rendu des éléments
+        self.window.blit(self.background,(0,0)) # Rendu du fonds
 
-class MainMenu(Menu):
-    def __init__(self, window, loop):
-        Menu.__init__(self, window, loop)
+        # Affichage du contenu du conteneur
+        self.container.set_margin(self.margin_top, self.margin_bottom)
+        self.container.calculate_coords()
 
-        self.loop.run_loop()
-
-    def content(self):
-
-        # Widgets de la page
-        self.container.add_button("Connexion", self.next_page(LoginPage))
-        self.container.add_button("Inscription", self.next_page(RegisterPage))
-        self.container.add_button("Top Scores", self.next_page(HighscoresPage))
-        self.container.add_button("Quitter", self.loop.close_window)
+        # Lancement de la boucle d'évènement si celle-ci est arrêtée
+        if not self.loop.loop_running:
+            self.loop.run_loop()
 
     def next_page(self, page):
         self.loop.clear() # Suppression des boutons etc de la boucle
 
-        page(self.loop, self.window) # Instanciation de la page
+        page(self.window, self.loop) # Instanciation de la page
+
+class MainMenu(Menu):
+    def content(self):
+        # Changement du fond
+        self.background = pygame.image.load(constantes.PATH_PIC_MAIN_MENU).convert()
+        
+        # Marges du haut et du bas pour le conteneur (espace occupé par des éléments du fonds)
+        self.margin_top = 260
+        self.margin_bottom = 100
+
+        # Widgets de la page
+        self.container.add_button("Connexion", lambda: self.next_page(LoginPage))
+        self.container.add_button("Inscription", lambda: self.next_page(RegisterPage))
+        self.container.add_button("Top Scores", lambda: self.next_page(HighscoresPage))
+        self.container.add_button("Quitter", self.loop.close_window)
+
+class LoginPage(Menu):
+    """
+    Classe créant la page permettant à un joueur existant de se logger.
+    """
+    def __init__(self, window, loop):
+        Menu.__init__(self, window, loop)
+
+        ### Code provisoire
+        # Redirige directement vers le menu de jeu
+        self.next_page(GameMenu)
+
+    def content(self):
+        pass
+
+class GameMenu(Menu):
+    def content(self):
+        self.container.add_button("Jouer", None)
+        self.container.add_button("Controles", lambda: self.next_page(CtrlsPage))
+        self.container.add_button("Regles", lambda: self.next_page(RulesPage))
+        self.container.add_button("Retour", lambda: self.next_page(MainMenu))
 
 
-class RulesPage(MainMenu):
+class RulesPage(Menu):
     """
     Classe permettant la création de la page informant le joueur sur les règles du jeu.
     """
@@ -55,10 +86,10 @@ class RulesPage(MainMenu):
     def __init__(self, window, loop):
         Menu.__init__(self, window, loop)
 
-        self.background = pygame.image.load(constantes.PATH_PIC_PAGES)
-        pygame.display.set_caption(caption)
+        self.display()
 
-        ### Définir le contenu
+    def content(self):
+        self.container.add_button("Retour", lambda: self.next_page(GameMenu))
 
 
     def display(self):
@@ -72,7 +103,7 @@ class RulesPage(MainMenu):
         font = pygame.font.Font(constantes.MENUFONT_DIR, constantes.MENUFONT_SIZE)
         size = font.size(constantes.RULES_TITLE)[0]
         title = font.render(constantes.RULES_TITLE, 0, constantes.RGB_WHITE)
-        self.window.pygame.blit(title, ((constantes.COTE_FOND//2 - size//2), 225))
+        self.window.blit(title, ((self.window.get_width()//2 - size//2), 225))
         
 
         # Chargement de la police et de sa taille
@@ -84,26 +115,20 @@ class RulesPage(MainMenu):
             size = font.size(elt)[0] # Pour centrer le texte
             text = font.render(elt, 0, constantes.RGB_WHITE)
             
-            self.window.pygame.blit(text, ((constantes.COTE_FOND//2 - size//2), line)) # 'Collage' de la ligne, avec 25 pixels de marge à gauche
+            self.window.blit(text, ((self.window.get_width()//2 - size//2), line)) # 'Collage' de la ligne, avec 25 pixels de marge à gauche
             line += constantes.TEXTFONT_SIZE + 10  #La position de la prochaine ligne est placée à 25 + 10 pixels plus bas
 
-        # Instanciation du bouton
-
-        container = widget.Container(self.window, self.loop)
-        container.add_button('Retour', MainMenu.mainmenu())
-        
-        pygame.display.flip()
-
-
-
-
-
-class CtrlsPage(RulesPage):
+class CtrlsPage(Menu):
     """
     Classe créant la page d'explication des contrôles du jeu
     """
     def __init__(self, window, loop):
         Menu.__init__(self, window, loop)
+
+        self.display()
+
+    def content(self):
+        self.container.add_button("Retour", lambda: self.next_page(GameMenu))
 
     def display(self):
         """
@@ -113,7 +138,7 @@ class CtrlsPage(RulesPage):
         font = pygame.font.Font(constantes.MENUFONT_DIR, constantes.MENUFONT_SIZE)
         size = font.size(constantes.RULES_TITLE)[0]
         title = font.render(constantes.RULES_TITLE, 0, constantes.RGB_WHITE)
-        self.window.pygame.blit(title, ((constantes.COTE_FOND//2 - size//2), 225))
+        self.window.blit(title, ((self.window.get_width()//2 - size//2), 225))
 
         #Chargement et placement des zones de textes
         font = pygame.font.Font(constantes.TEXTFONT_DIR, constantes.TEXTFONT_SIZE)
@@ -124,44 +149,20 @@ class CtrlsPage(RulesPage):
 
             size.append(font.size(elt)[0]) # Enregistrement des tailles des zones de texte dans la liste <size>
             render = font.render(elt, 0, constantes.RGB_WHITE) # Rendu du texte à ses coordonnées
-            self.window.blit(render, (constantes.COTE_FOND//2 - size[i], line))
+            self.window.blit(render, (self.window.get_width()//2 - size[i], line))
 
             # Chargement et placement des images
             pic = pygame.image.load(constantes.CTRLS_PIC_DIR[i]).convert_alpha()
-            self.window.blit(pic,(constantes.COTE_FOND//2+84-pic.get_rect()[2]//2, line-(pic.get_rect()[3]//3))) # Placé de façon à être à la même hauteur que le texte
+            self.window.blit(pic,(self.window.get_width()//2+84-pic.get_rect()[2]//2, line-(pic.get_rect()[3]//3))) # Placé de façon à être à la même hauteur que le texte
             line += 100                             #/\ se place par rapport à la largeur de la plus grosse image
             i += 1
 
-        pygame.display.flip()
-
-
-
-    
-
-class RegisterPage(RulesPage): #Nécessite l'utilisation de Tkinter
+class RegisterPage(RulesPage):
     """
     Classe créant la page permettant à un nouveau joueur de créer un nouveau profil.
     """
     def __init__(self, window, loop):
         Menu.__init__(self, window, loop)
-
-        
-        
-        
-
-
-
-
-class LoginPage(RulesPage): #Nécessite l'utilisation de Tkinter
-    """
-    Classe créant la page permettant à un joueur existant de se logger.
-    """
-    def __init__(self, window, loop):
-        Menu.__init__(self, window, loop)
-        
-
-
-        
 
 class HighscoresPage:
     """
