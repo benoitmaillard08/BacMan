@@ -63,37 +63,43 @@ class Container:
     Classe créant un conteneur de boutons pour que ceux-ci soient centrés horizontalement et verticalement
     """
 
-    def __init__(self, window, loop):
+    def __init__(self, window, loop, margin_top=0, margin_bottom=0):
         self.window = window
         self.loop = loop
 
-        self.l_buttons = []
+        self.margin_top = margin_top
+        self.margin_bottom = margin_bottom
 
-        self.button_picture = pygame.image.load(constantes.PATH_PIC_BUTTON)
+        self.l_widgets = []
 
     def add_button(self, text, callback):
         button = Button(self.window, text, callback, self.loop)
 
-        self.l_buttons.append(button)
+        self.l_widgets.append(button)
+
+        return button
+
+    def set_margin(self, top, bottom):
+        self.margin_top = top
+        self.margin_bottom = bottom
 
     def calculate_coords(self):
-        # Hauteur nécessaire pour un bouton et les marges autour du bouton
-        button_height = self.button_picture.get_height() + 2 * Container.MARGIN
+        # Hauteur de la pile d'éléments
 
-        # Hauteur de la pile de boutons avec les marges
-        total_height = button_height * len(self.l_buttons)
+        total_height = 0
+        for widget in self.l_widgets:
+            total_height += widget.surface.get_height() + 2 * Container.MARGIN
 
-        # Coordonné y du coin supérieur gauche du premier bouton
-        coord_y = (self.window.get_height() - total_height) / 2 + 80
+        # Coordonné y du coin supérieur gauche du premier widget
+        coord_y = (self.window.get_height() - self.margin_top - self.margin_bottom - total_height) / 2 + self.margin_top
 
-        # Coordonné x du coin supérieur gauche de tous les boutons
-        coord_x = (self.window.get_width() - self.button_picture.get_width()) / 2
+        for widget in self.l_widgets:
+            # Coordonné x du coin supérieur gauche du widget
+            coord_x = (self.window.get_width() - widget.surface.get_width()) / 2
+            widget.set_coords(coord_x, coord_y + Container.MARGIN)
+            coord_y += widget.surface.get_height() + 2 * Container.MARGIN
 
-        for button in self.l_buttons:
-            button.set_coords(coord_x, coord_y + Container.MARGIN)
-            coord_y += button_height
-
-            button.render()
+            widget.render()
 
 
 class Button:
@@ -112,7 +118,7 @@ class Button:
         self.action = callback # fonction à exécuter lors du clic sur le bouton
         self.loop = loop
 
-        self.button_surface = pygame.image.load(constantes.PATH_PIC_BUTTON).convert_alpha()
+        self.surface = pygame.image.load(constantes.PATH_PIC_BUTTON).convert_alpha()
 
         # Ajout du bouton dans la boucle pour que celle-ci détecte les clics sur le bouton
         self.loop.add_button(self)
@@ -120,14 +126,14 @@ class Button:
     def render(self):
 
         # Positionnement du bouton dans la fenêtre
-        self.window.blit(self.button_surface, self.coords)
+        self.window.blit(self.surface, self.coords)
 
         # Chargement de la police + taille de la police
         font = pygame.font.Font(constantes.MENUFONT_DIR, constantes.MENUFONT_SIZE)
         self.text_surface = font.render(self.text, 0, constantes.RGB_WHITE)
 
         # Raccourcis
-        b = self.button_surface
+        b = self.surface
         t = self.text_surface
 
         #Affichage du texte en fonction de sa taille et celle du bouton, afin qu'il soit centré quelque soit sa taille
@@ -140,8 +146,8 @@ class Button:
         self.coords = (x, y)
 
     def check_coords(self, coords):
-        if self.coords[0] < coords[0] < self.coords[0] + self.button_surface.get_width():
-            if self.coords[1] < coords[1] < self.coords[1] + self.button_surface.get_height():
+        if self.coords[0] < coords[0] < self.coords[0] + self.surface.get_width():
+            if self.coords[1] < coords[1] < self.coords[1] + self.surface.get_height():
                 return True
 
         return False
