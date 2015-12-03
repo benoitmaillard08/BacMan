@@ -101,6 +101,7 @@ class RulesPage(Menu):
 
         TextDisplay(self.window, constantes.RULES_TEXT ).display()
 
+
 class CtrlsPage(Menu):
     """
     Classe créant la page d'explication des contrôles du jeu
