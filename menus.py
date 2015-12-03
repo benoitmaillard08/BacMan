@@ -5,7 +5,7 @@ import pygame
 from pygame.locals import *
 import constantes
 import loop
-import widget
+from widget import *
 
 class Menu:
     """
@@ -18,7 +18,7 @@ class Menu:
 
         self.background = pygame.image.load(constantes.PATH_PIC_PAGES).convert()
 
-        self.container = widget.Container(self.window, self.loop)
+        self.container = Container(self.window, self.loop)
 
         # Marges du conteneur
         self.margin_top = 200
@@ -51,10 +51,10 @@ class MainMenu(Menu):
         self.margin_bottom = 100
 
         # Widgets de la page
-        self.container.add_button("Connexion", lambda: self.next_page(LoginPage))
-        self.container.add_button("Inscription", lambda: self.next_page(RegisterPage))
-        self.container.add_button("Top Scores", lambda: self.next_page(HighscoresPage))
-        self.container.add_button("Quitter", self.loop.close_window)
+        self.container.add_widget(Button(self.window, self.loop, "Connexion", lambda: self.next_page(LoginPage)))
+        self.container.add_widget(Button(self.window, self.loop, "Inscription", lambda: self.next_page(RegisterPage)))
+        self.container.add_widget(Button(self.window, self.loop, "Top Scores", lambda: self.next_page(HighscoresPage)))
+        self.container.add_widget(Button(self.window, self.loop, "Quitter", self.loop.close_window))
 
 class LoginPage(Menu):
     """
@@ -72,10 +72,10 @@ class LoginPage(Menu):
 
 class GameMenu(Menu):
     def content(self):
-        self.container.add_button("Jouer", None)
-        self.container.add_button("Controles", lambda: self.next_page(CtrlsPage))
-        self.container.add_button("Regles", lambda: self.next_page(RulesPage))
-        self.container.add_button("Retour", lambda: self.next_page(MainMenu))
+        self.container.add_widget(Button(self.window, self.loop, "Jouer", None))
+        self.container.add_widget(Button(self.window, self.loop, "Controles", lambda: self.next_page(CtrlsPage)))
+        self.container.add_widget(Button(self.window, self.loop, "Regles", lambda: self.next_page(RulesPage)))
+        self.container.add_widget(Button(self.window, self.loop, "Retour", lambda: self.next_page(MainMenu)))
 
 
 class RulesPage(Menu):
@@ -89,7 +89,7 @@ class RulesPage(Menu):
         self.display()
 
     def content(self):
-        self.container.add_button("Retour", lambda: self.next_page(GameMenu))
+        self.container.add_widget(Button(self.window, self.loop, "Retour", lambda: self.next_page(GameMenu)))
 
 
     def display(self):
@@ -99,7 +99,7 @@ class RulesPage(Menu):
         #text_to_display = open(constantes.RULES_TEXT, 'r').read().split('\n')
 
 
-        widget.TextDisplay(self.window, constantes.RULES_TEXT ).display()
+        TextDisplay(self.window, constantes.RULES_TEXT ).display()
 
 class CtrlsPage(Menu):
     """
@@ -111,7 +111,7 @@ class CtrlsPage(Menu):
         self.display()
 
     def content(self):
-        self.container.add_button("Retour", lambda: self.next_page(GameMenu))
+        self.container.add_widget(Button(self.window, self.loop, "Retour", lambda: self.next_page(GameMenu)))
 
     def display(self):
         """

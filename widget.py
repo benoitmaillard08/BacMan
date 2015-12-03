@@ -2,8 +2,6 @@ import pygame
 import constantes
 from pygame.locals import *
 
-
-
 class InputBox:
 	"""
 	Classe instanciant la zone d'entrée permettant au joueur de par exemple s'enregistrer.
@@ -72,12 +70,10 @@ class Container:
 
         self.l_widgets = []
 
-    def add_button(self, text, callback):
-        button = Button(self.window, text, callback, self.loop)
+    def add_widget(self, widget):
+        self.l_widgets.append(widget)
 
-        self.l_widgets.append(button)
-
-        return button
+        return widget
 
     def set_margin(self, top, bottom):
         self.margin_top = top
@@ -106,7 +102,7 @@ class Button:
     """
     Classe d'instenciation des boutons
     """
-    def __init__(self, window, text, callback, loop):
+    def __init__(self, window, loop, text, callback):
         """
         __init__() --> None.
         """
