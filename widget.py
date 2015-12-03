@@ -129,7 +129,7 @@ class Button:
         self.window.blit(self.surface, self.coords)
 
         # Chargement de la police + taille de la police
-        font = pygame.font.Font(constantes.MENUFONT_DIR, constantes.MENUFONT_SIZE)
+        font = pygame.font.Font(constantes.MENUFONT_DIR, constantes.TEXTFONT_SIZE)
         self.text_surface = font.render(self.text, 0, constantes.RGB_WHITE)
 
         # Raccourcis
@@ -157,3 +157,33 @@ class Button:
 
     def enable(self):
         pass
+
+
+class TextDisplay:
+    """
+    Widget permettant d'afficher du texte sur plusieurs lignes et de manière centrée.
+    """
+    def __init__(self, window, text, line=300):
+        """
+        __init__(window, str text, int line) --> None. On entre le chemin du fichier texte à lire pour la var 'text'.
+        """
+
+        self.window = window
+        self.line = line
+
+        # Chargement du texte à afficher dans une liste, ligne par ligne.
+        self.text_to_display = open(text, 'r').read().split('\n')
+
+        # Chargement de la police
+        self.font = pygame.font.Font(constantes.TEXTFONT_DIR, constantes.TEXTFONT_SIZE)
+
+
+    def display(self):
+
+        for elt in self.text_to_display: # Pour chaque ligne de texte, on crée un nouvel objet text.
+
+            size = self.font.size(elt)[0] # Pour centrer le texte
+            text_line = self.font.render(elt, 0, constantes.RGB_WHITE)
+            
+            self.window.blit(text_line, ((self.window.get_width()//2 - size//2), self.line)) # 'Collage' de la ligne, avec 25 pixels de marge à gauche
+            self.line += constantes.TEXTFONT_SIZE + 10  #La position de la prochaine ligne est placée à 25 + 10 pixels plus bas

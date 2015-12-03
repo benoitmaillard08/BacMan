@@ -96,27 +96,10 @@ class RulesPage(Menu):
         """
         Affichage du texte sur le fond
         """
-        text_to_display = open(constantes.RULES_TEXT, 'r').read().split('\n')
-        line = 300  #Ligne de départ en pixel
+        #text_to_display = open(constantes.RULES_TEXT, 'r').read().split('\n')
 
-        #Chargement du titre
-        font = pygame.font.Font(constantes.MENUFONT_DIR, constantes.MENUFONT_SIZE)
-        size = font.size(constantes.RULES_TITLE)[0]
-        title = font.render(constantes.RULES_TITLE, 0, constantes.RGB_WHITE)
-        self.window.blit(title, ((self.window.get_width()//2 - size//2), 225))
-        
 
-        # Chargement de la police et de sa taille
-        font = pygame.font.Font(constantes.TEXTFONT_DIR, constantes.TEXTFONT_SIZE)
-
-        for elt in text_to_display: # Pour chaque ligne de texte, on crée un nouvel objet text.
-
-            font = pygame.font.Font(constantes.TEXTFONT_DIR, constantes.TEXTFONT_SIZE)
-            size = font.size(elt)[0] # Pour centrer le texte
-            text = font.render(elt, 0, constantes.RGB_WHITE)
-            
-            self.window.blit(text, ((self.window.get_width()//2 - size//2), line)) # 'Collage' de la ligne, avec 25 pixels de marge à gauche
-            line += constantes.TEXTFONT_SIZE + 10  #La position de la prochaine ligne est placée à 25 + 10 pixels plus bas
+        widget.TextDisplay(self.window, constantes.RULES_TEXT ).display()
 
 class CtrlsPage(Menu):
     """
