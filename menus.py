@@ -93,13 +93,8 @@ class RulesPage(Menu):
 
 
     def display(self):
-        """
-        Affichage du texte sur le fond
-        """
-        #text_to_display = open(constantes.RULES_TEXT, 'r').read().split('\n')
-
-
         widget.TextDisplay(self.window, constantes.RULES_TEXT ).display()
+
 
 class CtrlsPage(Menu):
     """

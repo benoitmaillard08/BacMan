@@ -9,7 +9,7 @@ class Test:
     def __init__(self):
         pygame.init()
 
-        self.window = pygame.display.set_mode((constantes.COTE_FOND, constantes.COTE_FOND), RESIZABLE)
+        self.window = pygame.display.set_mode((constantes.WINDOW_X, constantes.WINDOW_Y), RESIZABLE)
 
         #Chargement du fond
         background = pygame.image.load(constantes.PATH_PIC_PAGES)
@@ -30,53 +30,61 @@ class Test:
         return string
 
     
-    def display_box(self, text):
+    def display_box(self):
 
         button = pygame.image.load(constantes.PATH_PIC_BUTTON).convert_alpha()
         self.window.blit(button, (200,400))
 
-        font = pygame.font.Font(constantes.MENUFONT_DIR, constantes.MENUFONT_SIZE )
-        text = font.render(text, 0, (255,255,255))
+        pygame.display.flip()
+        
+    def display_text(self, text):
+        
+        font = pygame.font.Font(constantes.MENUFONT_DIR, constantes.TEXTFONT_SIZE )
+        size = font.size(text)[0]
+        text_to_display = font.render(text, 0, (255,255,255))
 
-        self.window.blit(text, (300,400))
+        self.window.blit(text_to_display, (self.window.get_width()//2 - size//2,410))
 
         pygame.display.flip()
 
 
         
 
-    def events(self):
+    def events(self, maxCar=15):
             
         #Gestionnaire d'événements
-        liste = []
-
-        while 1:
+        self.liste = []
+        Test.display_box(self)
+        pageRunning=True
+        while pageRunning:
+            
             for event in pygame.event.get():    # Parcours la liste des éléments reçus
+                
                 if event.type == QUIT:
-                    break
+                    pageRunning = False
                     
                 elif event.type == KEYDOWN:
-                    if chr(event.key) in constantes.KEYS:
-                        Test.__init__(self)
-                        liste += chr(event.key)
-                        Test.display_box(self, Test.compiler(self,liste))
-                        
+                    Test.__init__(self)
+                    Test.display_box(self)
+                    if chr(event.key) in constantes.KEYS and len(self.liste)<=maxCar:
+                        self.liste += chr(event.key)
+       
                     elif event.key == 8:    # 8 --> code du backspace (pour effacer)
-                        if liste:   # On vérifie si la liste est vide, si oui, on ne fait rien
-                            del liste[-1]
-                            Test.__init__(self)
-                            Test.display_box(self, Test.compiler(self,liste))
-                            
+                        if self.liste:   # On vérifie si la liste est vide, si oui, on ne fait rien
+                            del self.liste[-1]
+  
                     elif event.key == 13:       # 13 --> code du retour à la ligne (Enter)
                         pseudo = ''
-                        Test.__init__(self)
-                        for elt in liste:
+                        for elt in self.liste:
                             pseudo += elt
-                        Test.display_box(self, Test.compiler(self,liste))
-                        
+
+                    elif not len(self.liste) <= maxCar:
+                        print('Le nombre maximum de caractères est de',maxCar)
+
                     else:
                         print('Seuls les caractères normaux et sans accent sont acceptés!')
-                    
+
+                    Test.display_text(self, Test.compiler(self,self.liste))
                     
     
         pygame.display.quit()
