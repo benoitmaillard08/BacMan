@@ -1,5 +1,6 @@
 import time
 import pygame
+from constantes import *
 
 class Loop:
 	def __init__(self, level=None):
@@ -8,8 +9,10 @@ class Loop:
 		self.level = level
 		self.loop_running = False
 
-		self.buttons = [] # Boutons présents sur la page
-		self.text_areas = [] # Zones de texte sur la page
+		self.widgets = []
+
+		self.focus = None
+		self.page = None
 
 	def run_loop(self):
 		self.loop_running = True
@@ -20,6 +23,9 @@ class Loop:
 			if self.level:
 				self.level.game_tic()
 
+			if self.page:
+				self.page.render()
+
 			# Check pour la fermeture
 			for event in pygame.event.get():
 				# Fermeture de la fenêtre
@@ -28,14 +34,21 @@ class Loop:
 
 				elif event.type == pygame.MOUSEBUTTONDOWN:
 					if event.button == 1: # Clic gauche
-						for button in self.buttons:
-							if button.check_coords(event.pos): # On regarde si le cliq est dans le bouton
-								button.action() # Exécution de l'action associée au bouton
+						if self.focus:
+							self.focus.remove_focus()
+							self.focus = None
+						for widget in self.widgets:
+							if widget.check_coords(event.pos): # On regarde si le cliq est dans le bouton
+								widget.action() # Exécution de l'action associée au bouton
 								break
 
 				elif event.type == pygame.KEYDOWN:
 					if event.key in ARROW_KEYS:
 						self.level.pacman.change_direction(ARROW_KEYS[event.key])
+
+					else:
+						if self.focus:
+							self.focus.keydown(event)
 
 			t2 = time.clock()
 
@@ -50,9 +63,13 @@ class Loop:
 		pygame.display.quit()
 
 	def clear(self):
-		self.buttons = []
-		self.text_areas = []
+		self.widgets = []
 		self.level = None
+		self.focus = None
+		self.container = None
+
+	def focus_on(self, widget):
+		self.focus = widget
 
 	def close_window(self):
 		self.window_opened = False
@@ -63,8 +80,5 @@ class Loop:
 	def start_game(self):
 		self.game_running = True
 
-	def add_button(self, button):
-		self.buttons.append(button)
-
-	def add_text_area(self, area):
-		self.text_areas.append(area)
+	def add_widget(self, widget):
+		self.widgets.append(widget)

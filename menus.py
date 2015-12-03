@@ -20,13 +20,13 @@ class Menu:
 
         self.container = Container(self.window, self.loop)
 
+        self.loop.page = self
+
         # Marges du conteneur
         self.margin_top = 200
         self.margin_bottom = 100
 
         self.content() # Définition du contenu
-
-        self.window.blit(self.background,(0,0)) # Rendu du fonds
 
         # Affichage du contenu du conteneur
         self.container.set_margin(self.margin_top, self.margin_bottom)
@@ -41,6 +41,11 @@ class Menu:
 
         page(self.window, self.loop) # Instanciation de la page
 
+    def render(self):
+        self.window.blit(self.background,(0,0)) # Rendu du fonds
+
+        self.container.render()
+
 class MainMenu(Menu):
     def content(self):
         # Changement du fond
@@ -52,7 +57,7 @@ class MainMenu(Menu):
 
         # Widgets de la page
         self.container.add_widget(Button(self.window, self.loop, "Connexion", lambda: self.next_page(LoginPage)))
-        self.container.add_widget(Button(self.window, self.loop, "Inscription", lambda: self.next_page(RegisterPage)))
+        self.container.add_widget(TextInput(self.window, self.loop, "Inscription", lambda: self.next_page(RegisterPage)))
         self.container.add_widget(Button(self.window, self.loop, "Top Scores", lambda: self.next_page(HighscoresPage)))
         self.container.add_widget(Button(self.window, self.loop, "Quitter", self.loop.close_window))
 
