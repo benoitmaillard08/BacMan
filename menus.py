@@ -57,7 +57,7 @@ class MainMenu(Menu):
 
         # Widgets de la page
         self.container.add_widget(Button(self.window, self.loop, "Connexion", lambda: self.next_page(LoginPage)))
-        self.container.add_widget(TextInput(self.window, self.loop, "Inscription", lambda: self.next_page(RegisterPage)))
+        self.container.add_widget(Button(self.window, self.loop, "Inscription", lambda: self.next_page(RegisterPage)))
         self.container.add_widget(Button(self.window, self.loop, "Top Scores", lambda: self.next_page(HighscoresPage)))
         self.container.add_widget(Button(self.window, self.loop, "Quitter", self.loop.close_window))
 
@@ -65,26 +65,14 @@ class LoginPage(Menu):
     """
     Classe créant la page permettant à un joueur existant de se logger.
     """
-    def __init__(self, window, loop):
-        Menu.__init__(self, window, loop)
 
-        self.display()
-
-    def display(self):
-
-        self.margin_top = 260
-        self.margin_bottom = 100
+    def content(self):
 
         self.container.add_widget(TextInput(self.window, self.loop, "Pseudo", None))
         self.container.add_widget(TextInput(self.window, self.loop, "Password", None))
         self.container.add_widget(Button(self.window, self.loop, "Retour", lambda: self.next_page(GameMenu)))
 
-        ### Code provisoire
-        # Redirige directement vers le menu de jeu
-        #self.next_page(GameMenu)
 
-    def content(self):
-        pass
 
 class GameMenu(Menu):
     def content(self):
