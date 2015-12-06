@@ -192,6 +192,7 @@ class TextInput(Button):
                 self.content = self.content[:-1]
 
         elif event.key == 13:
+            
             pass ### Donne le focus au widget suivant
 
         self.content_surface = self.font.render(self.content, 0, constantes.RGB_WHITE)
