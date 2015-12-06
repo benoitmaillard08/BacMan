@@ -70,7 +70,7 @@ class LoginPage(Menu):
 
         self.container.add_widget(TextInput(self.window, self.loop, "Pseudo", None))
         self.container.add_widget(TextInput(self.window, self.loop, "Password", None))
-        self.container.add_widget(Button(self.window, self.loop, "Retour", lambda: self.next_page(GameMenu)))
+        self.container.add_widget(Button(self.window, self.loop, "Retour", lambda: self.next_page(MainMenu)))
 
 
 
@@ -93,7 +93,7 @@ class RulesPage(Menu):
         self.display()
 
     def content(self):
-        self.container.add_widget(Button(self.window, self.loop, "Retour", lambda: self.next_page(GameMenu)))
+        self.container.add_widget(Button(self.window, self.loop, "Retour", lambda: self.next_page(MainMenu)))
 
 
     def display(self):
@@ -110,7 +110,7 @@ class CtrlsPage(Menu):
         self.display()
 
     def content(self):
-        self.container.add_widget(Button(self.window, self.loop, "Retour", lambda: self.next_page(GameMenu)))
+        self.container.add_widget(Button(self.window, self.loop, "Retour", lambda: self.next_page(MainMenu)))
 
     def display(self):
         """
