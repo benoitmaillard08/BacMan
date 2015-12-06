@@ -60,6 +60,7 @@ class MainMenu(Menu):
         self.container.add_widget(Button(self.window, self.loop, "Inscription", lambda: self.next_page(RegisterPage)))
         self.container.add_widget(Button(self.window, self.loop, "Top Scores", lambda: self.next_page(HighscoresPage)))
         self.container.add_widget(Button(self.window, self.loop, "Quitter", self.loop.close_window))
+        self.container.add_widget(Button(self.window, self.loop, "Jeu", lambda: self.next_page(GameMenu))) #Bouton momentané
 
 class LoginPage(Menu):
     """
@@ -68,8 +69,9 @@ class LoginPage(Menu):
 
     def content(self):
 
-        self.container.add_widget(TextInput(self.window, self.loop, "Pseudo", None))
-        self.container.add_widget(TextInput(self.window, self.loop, "Password", None))
+        self.pseudo = self.container.add_widget(TextInput(self.window, self.loop, "Pseudo", None))
+        self.password = self.container.add_widget(TextInput(self.window, self.loop, "Password", None))
+        self.container.add_widget(Button(self.window, self.loop, "Entrer", lambda : print(self.pseudo, self.password)))
         self.container.add_widget(Button(self.window, self.loop, "Retour", lambda: self.next_page(MainMenu)))
 
 
@@ -83,17 +85,13 @@ class GameMenu(Menu):
 
 
 class RulesPage(Menu):
-    """
-    Classe permettant la création de la page informant le joueur sur les règles du jeu.
-    """
-
-    def __init__(self, window, loop):
-        Menu.__init__(self, window, loop)
-
-        self.display()
-
     def content(self):
-        self.container.add_widget(Button(self.window, self.loop, "Retour", lambda: self.next_page(MainMenu)))
+        self.text_to_display = open(constantes.RULES_TEXT, 'r').read().split('\n')
+
+##        for line in self.text_to_display:
+##            self.container.add_widget(TextDisplay(self.window, self.loop, line))
+
+        self.container.add_widget(Button(self.window, self.loop, "Retour", lambda: self.next_page(GameMenu)))
 
 
     def display(self):
@@ -110,7 +108,7 @@ class CtrlsPage(Menu):
         self.display()
 
     def content(self):
-        self.container.add_widget(Button(self.window, self.loop, "Retour", lambda: self.next_page(MainMenu)))
+        self.container.add_widget(Button(self.window, self.loop, "Retour", lambda: self.next_page(GameMenu)))
 
     def display(self):
         """
