@@ -68,9 +68,20 @@ class LoginPage(Menu):
     def __init__(self, window, loop):
         Menu.__init__(self, window, loop)
 
+        self.display()
+
+    def display(self):
+
+        self.margin_top = 260
+        self.margin_bottom = 100
+
+        self.container.add_widget(TextInput(self.window, self.loop, "Pseudo", None))
+        self.container.add_widget(TextInput(self.window, self.loop, "Password", None))
+        self.container.add_widget(Button(self.window, self.loop, "Retour", lambda: self.next_page(GameMenu)))
+
         ### Code provisoire
         # Redirige directement vers le menu de jeu
-        self.next_page(GameMenu)
+        #self.next_page(GameMenu)
 
     def content(self):
         pass
@@ -98,12 +109,6 @@ class RulesPage(Menu):
 
 
     def display(self):
-        """
-        Affichage du texte sur le fond
-        """
-        #text_to_display = open(constantes.RULES_TEXT, 'r').read().split('\n')
-
-
         TextDisplay(self.window, constantes.RULES_TEXT ).display()
 
 
