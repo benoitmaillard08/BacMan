@@ -6,6 +6,8 @@ from pygame.locals import *
 import constantes
 import loop
 from widget import *
+import data
+
 
 class Menu:
     """
@@ -71,8 +73,9 @@ class LoginPage(Menu):
 
         self.pseudo = self.container.add_widget(TextInput(self.window, self.loop, "Pseudo", None))
         self.password = self.container.add_widget(TextInput(self.window, self.loop, "Password", None))
-        self.container.add_widget(Button(self.window, self.loop, "Entrer", lambda : print(self.pseudo, self.password)))
+        self.container.add_widget(Button(self.window, self.loop, "Entrer", lambda : data.Register(self.pseudo, self.password)))
         self.container.add_widget(Button(self.window, self.loop, "Retour", lambda: self.next_page(MainMenu)))
+
 
 
 

@@ -42,7 +42,7 @@ class Game: # Classe servant à gérer une partie
 
         self.window = pygame.display.set_mode((800, 800))
 
-        self.loop = process.Loop()
+        self.loop = loop.Loop()
 
 
         # c = menus.Container(self.window, loop)
