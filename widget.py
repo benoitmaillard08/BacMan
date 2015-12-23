@@ -2,15 +2,18 @@ import pygame
 import constantes
 from pygame.locals import *
 
+<<<<<<< HEAD
+=======
 
+>>>>>>> 0977a32e01ee652e79ab20a044bf1f484fa2416c
 class Container:
     MARGIN = 10
     """
     Classe créant un conteneur de boutons pour que ceux-ci soient centrés horizontalement et verticalement
     """
 
-    def __init__(self, window, loop, margin_top=0, margin_bottom=0):
-        self.window = window
+    def __init__(self, page, loop, margin_top=0, margin_bottom=0):
+        self.page = page
         self.loop = loop
 
         self.margin_top = margin_top
@@ -35,11 +38,11 @@ class Container:
             total_height += widget.surface.get_height() + 2 * Container.MARGIN
 
         # Coordonné y du coin supérieur gauche du premier widget
-        coord_y = (self.window.get_height() - self.margin_top - self.margin_bottom - total_height) / 2 + self.margin_top
+        coord_y = (self.page.window.get_height() - self.margin_top - self.margin_bottom - total_height) / 2 + self.margin_top
 
         for widget in self.l_widgets:
             # Coordonné x du coin supérieur gauche du widget
-            coord_x = (self.window.get_width() - widget.surface.get_width()) / 2
+            coord_x = (self.page.window.get_width() - widget.surface.get_width()) / 2
             widget.set_coords(coord_x, coord_y + Container.MARGIN)
             coord_y += widget.surface.get_height() + 2 * Container.MARGIN
 
@@ -52,7 +55,11 @@ class Button:
     """
     Classe d'instenciation des boutons
     """
+<<<<<<< HEAD
     def __init__(self, window, loop, label, callback, directory=constantes.PATH_PIC_BUTTON):
+=======
+    def __init__(self, page, loop, label, callback):
+>>>>>>> d3d1a2c5eb74360b526d4de1653242119afb7826
         """
         __init__() --> None.
         """
@@ -60,7 +67,7 @@ class Button:
         self.coords = (0, 0)
 
         self.label = label
-        self.window = window    # variable 'background' de la classe 'MainMenu'
+        self.page = page    # variable 'background' de la classe 'MainMenu'
         self.action = callback # fonction à exécuter lors du clic sur le bouton
         self.loop = loop
 
@@ -79,14 +86,14 @@ class Button:
     def render(self):
 
         # Positionnement du bouton dans la fenêtre
-        self.window.blit(self.surface, self.coords)
+        self.page.window.blit(self.surface, self.coords)
 
         # Raccourcis
         b = self.surface
         t = self.text_surface
 
         #Affichage du texte en fonction de sa taille et celle du bouton, afin qu'il soit centré quelque soit sa taille
-        self.window.blit(self.text_surface, (
+        self.page.window.blit(self.text_surface, (
             (self.coords[0] + b.get_width() / 2) - t.get_width() / 2,
             (self.coords[1] + b.get_height() / 2) - t.get_height() / 2
         ))
@@ -108,8 +115,8 @@ class Button:
         pass
 
 class TextInput(Button):
-    def __init__(self, window, loop, label, callback, max_length=20):
-        Button.__init__(self, window, loop, label, callback)
+    def __init__(self, page, loop, label, callback, max_length=20):
+        Button.__init__(self, page, loop, label, callback)
 
         # Lors d'un cliq sur le champ, ce dernier obtient le focus
         self.action = self.set_focus
@@ -140,25 +147,41 @@ class TextInput(Button):
                 self.content = self.content[:-1]
 
         elif event.key == 13:
+<<<<<<< HEAD
+            self.page.submit()
+=======
             pass
 
 
+>>>>>>> 0977a32e01ee652e79ab20a044bf1f484fa2416c
 
         self.content_surface = self.font.render(self.content, 0, constantes.RGB_WHITE)
 
         self.text_surface = self.content_surface
+
+class PasswordInput(TextInput):
+    pass
 
 
 class TextDisplay:
     """
     Classe d'instenciation d'une zone de texte. 
     """
+<<<<<<< HEAD
+    def __init__(self, page, text, line=300):
+=======
     def __init__(self, window, loop, text):
+>>>>>>> 0977a32e01ee652e79ab20a044bf1f484fa2416c
         """
         __init__() --> None.
         """
 
+<<<<<<< HEAD
+        self.page = page
+        self.line = line
+=======
         self.coords = (0, 0)
+>>>>>>> 0977a32e01ee652e79ab20a044bf1f484fa2416c
 
         self.window = window    # variable 'background' de la classe 'MainMenu'
         self.loop = loop
@@ -174,6 +197,13 @@ class TextDisplay:
 
     def render(self):
 
+<<<<<<< HEAD
+            size = self.font.size(elt)[0] # Pour centrer le texte
+            text_line = self.font.render(elt, 0, constantes.RGB_WHITE)
+            
+            self.page.window.blit(text_line, ((self.page.window.get_width()//2 - size//2), self.line)) # 'Collage' de la ligne, avec 25 pixels de marge à gauche
+            self.line += constantes.TEXTFONT_SIZE + 10  #La position de la prochaine ligne est placée à 25 + 10 pixels plus bas
+=======
         # Positionnement du texte dans la fenêtre
         self.window.blit(self.text_surface, self.coords)
 
@@ -190,3 +220,4 @@ class TextDisplay:
         """
         Retourne la hauteur de la zone de texte
         """
+>>>>>>> 0977a32e01ee652e79ab20a044bf1f484fa2416c

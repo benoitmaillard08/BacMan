@@ -22,6 +22,7 @@ class Loop:
 
 			if self.level:
 				self.level.game_tic()
+				print(self.level.game.score)
 
 			if self.page:
 				self.page.render()

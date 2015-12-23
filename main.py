@@ -31,6 +31,9 @@ class BacMan: # Classe principale du jeu
         pygame.display.set_caption("Bacman : the baccalaureates Adventure")
         self.loop = loop.Loop()
 
+<<<<<<< HEAD
+		self.main_menu = menus.MainMenu(self.window, self.loop)
+=======
         self.main_menu = menus.MainMenu(self.window, self.loop)
     
 class Game: # Classe servant à gérer une partie
@@ -66,5 +69,6 @@ class Game: # Classe servant à gérer une partie
     def next_level(self):
         self.n_level += 1
         self.level = process.Level(self.n_level, self.window, self.loop)
+>>>>>>> 0977a32e01ee652e79ab20a044bf1f484fa2416c
 
 BacMan()

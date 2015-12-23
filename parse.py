@@ -60,6 +60,7 @@ class ParseLevel:
 
 					if char in self.pills:
 						square.add_pill(self.pills[char])
+						self.level_ref.n_pills += 1
 
 					elif char in self.chars:
 						self.chars[char].set_coords(x, y)
@@ -80,7 +81,6 @@ class ParseLevel:
 		return self.chars[PACMAN]
 
 	def get_ghosts(self):
-		### Code à revoir
 		ghosts = [
 			self.chars[BLINKY],
 			self.chars[PINKY],

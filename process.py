@@ -6,14 +6,34 @@ import time
 
 """ Gestion du processus 'In Game' du jeu >BacMan the baccalaureates Adventure!< """
 
+class Game: # Classe servant à gérer une partie
+	def __init__(self, window, loop):
+		self.n_level = 0
+
+		self.lives = 3
+		self.score = 0
+		self.window = window
+		self.loop = loop
+
+		self.loop.page = None
+
+		self.next_level()
+
+	def next_level(self):
+		self.n_level += 1
+		self.level = Level(self, self.n_level, self.window, self.loop)
+
 class Level:
 	"""Classe permettant de créer un niveau"""
 
-	def __init__(self, n_level, window, loop):
+	def __init__(self, game, n_level, window, loop):
 
+		self.game = game
 		self.n_level = n_level # Numéro du level
 		self.window = window
 		self.background = pygame.image.load(GAME_BACKGROUND)
+
+		self.n_pills = 0 # Nombre de pillules
 
 		parse_level = parse.ParseLevel(self) # Parsing du fichier de niveau
 
