@@ -73,8 +73,19 @@ class LoginPage(Menu):
 
         self.pseudo = self.container.add_widget(TextInput(self.window, self.loop, "Pseudo", None))
         self.password = self.container.add_widget(TextInput(self.window, self.loop, "Password", None))
-        self.container.add_widget(Button(self.window, self.loop, "Entrer", lambda : data.Register(self.pseudo, self.password).test_infos()))
+        self.container.add_widget(Button(self.window, self.loop, "Entrer", lambda : LoginPage.test(self)))
         self.container.add_widget(Button(self.window, self.loop, "Retour", lambda: self.next_page(MainMenu)))
+
+    def test(self):
+
+        tested_infos = data.Register(self.pseudo.content, self.password.content).test_infos()
+
+        if  tested_infos == 'Logged' or tested_infos == 'Registered':
+            self.next_page(GameMenu)
+
+        else:
+            self.container.add_widget(Button(self.window, self.loop, "Error", None))
+
 
 
 

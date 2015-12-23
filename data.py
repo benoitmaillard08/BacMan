@@ -36,8 +36,7 @@ class Register:
         if self.pseudo not in self.database:
             self.file_read.close()
             Register.newPlayer(self)
-            print(self.pseudo, self.password)
-            return True
+            return 'Registered'
 
         elif self.pseudo in self.database and self.database[self.pseudo] !=  self.password:
             # Retourne une erreur "le mot de passe ne correspond pas au pseudo, réessayez ou choisissez un autre pseudo"
