@@ -73,7 +73,7 @@ class LoginPage(Menu):
 
         self.pseudo = self.container.add_widget(TextInput(self.window, self.loop, "Pseudo", None))
         self.password = self.container.add_widget(TextInput(self.window, self.loop, "Password", None))
-        self.container.add_widget(Button(self.window, self.loop, "Entrer", lambda : data.Register(self.pseudo, self.password)))
+        self.container.add_widget(Button(self.window, self.loop, "Entrer", lambda : data.Register(self.pseudo, self.password).test_infos()))
         self.container.add_widget(Button(self.window, self.loop, "Retour", lambda: self.next_page(MainMenu)))
 
 

@@ -35,7 +35,7 @@ class Register:
         """
         if self.pseudo not in self.database:
             self.file_read.close()
-            newPlayer()
+            Register.newPlayer(self)
             print(self.pseudo, self.password)
             return True
 
@@ -54,5 +54,3 @@ class Register:
         file_write = open(self.data_dir, 'w')
         file_write.write('{}%{}\n'.format(self.pseudo, self.password))
         file_write.close()
-        
-        
