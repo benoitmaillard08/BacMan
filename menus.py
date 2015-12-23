@@ -76,16 +76,41 @@ class LoginPage(Menu):
         self.container.add_widget(Button(self.window, self.loop, "Entrer", lambda : LoginPage.test(self)))
         self.container.add_widget(Button(self.window, self.loop, "Retour", lambda: self.next_page(MainMenu)))
 
-    def test(self):
+    def test(self, onRegisterPage=False):
 
-        tested_infos = data.Register(self.pseudo.content, self.password.content).test_infos()
+        tested_infos = data.Register(self.pseudo.content, self.password.content).test_infos(onRegisterPage)
 
-        if  tested_infos == 'Logged' or tested_infos == 'Registered':
+        if  tested_infos == 'Logged':
+            # + message <Pseudo! Nous attendions ton retour ...>
             self.next_page(GameMenu)
 
-        else:
-            self.container.add_widget(Button(self.window, self.loop, "Error", None))
+        elif tested_infos == 'NotRegistered' and onRegisterPage == False:   # Test si l'utilisateur est déjà sur la page pour s'enregistrer
+            self.next_page(RegisterPage)
+            # + message <Veuillez vous enregistrer d'abord!>
 
+        elif tested_infos == 'NewRegistered':
+            self.next_page(GameMenu)
+            # + message <Bienvenue Pseudo!>
+        elif tested_infos == 'TakenPassword':
+            # message d'alerte <Pseudo déjà utilisé>
+            pass
+
+        else:
+            # Message d'erreur
+            self.container.add_widget(Button(self.window, self.loop, "Wrong Password", None, directory=constantes.PATH_PIC_EMPTY_BUTTON))
+            ##### TOUJOURS à CORRIGER ######
+
+
+class RegisterPage(Menu):
+    """
+    Classe créant la page permettant à un nouveau joueur de créer un nouveau profil.
+    """
+    def content(self):
+
+        self.pseudo = self.container.add_widget(TextInput(self.window, self.loop, "Pseudo", None))
+        self.password = self.container.add_widget(TextInput(self.window, self.loop, "Password", None))
+        self.container.add_widget(Button(self.window, self.loop, "Entrer", lambda : LoginPage.test(self, onRegisterPage=True)))
+        self.container.add_widget(Button(self.window, self.loop, "Retour", lambda: self.next_page(MainMenu)))
 
 
 
@@ -151,12 +176,6 @@ class CtrlsPage(Menu):
             line += 100                             #/\ se place par rapport à la largeur de la plus grosse image
             i += 1
 
-class RegisterPage(RulesPage):
-    """
-    Classe créant la page permettant à un nouveau joueur de créer un nouveau profil.
-    """
-    def __init__(self, window, loop):
-        Menu.__init__(self, window, loop)
 
 class HighscoresPage:
     """

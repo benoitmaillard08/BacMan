@@ -52,7 +52,7 @@ class Button:
     """
     Classe d'instenciation des boutons
     """
-    def __init__(self, window, loop, label, callback):
+    def __init__(self, window, loop, label, callback, directory=constantes.PATH_PIC_BUTTON):
         """
         __init__() --> None.
         """
@@ -65,7 +65,7 @@ class Button:
         self.loop = loop
 
         # Chargement de la texture du bouton
-        self.surface = pygame.image.load(constantes.PATH_PIC_BUTTON).convert_alpha()
+        self.surface = pygame.image.load(directory).convert_alpha()
 
         # Chargement de la police + taille de la police
         self.font = pygame.font.Font(constantes.MENUFONT_DIR, constantes.TEXTFONT_SIZE)

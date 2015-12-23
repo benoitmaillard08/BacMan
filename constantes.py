@@ -18,6 +18,7 @@ WINDOW_X = 800 #pixels
 WINDOW_Y = 800
 PATH_PIC_MAIN_MENU = "ressources/main_menu.png"
 PATH_PIC_BUTTON = "ressources/button_2.png"
+PATH_PIC_EMPTY_BUTTON = "ressources/empty_button.png"
 
 ####Pages####
 PATH_PIC_PAGES = "ressources/pages_bg.png"
