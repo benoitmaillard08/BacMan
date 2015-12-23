@@ -31,7 +31,13 @@ CTRLS_TEXT = ['Contrôles =','Pause =', 'Quitter =']
 CTRLS_PIC_DIR = ['ressources/arrow_keys.png','ressources/p_key.png','ressources/esc_key.png']
 #############
 
+# Base(s) de données
 
+PLAYERS_DATAS = 'players.txt'
+
+
+
+#############
 
 
 

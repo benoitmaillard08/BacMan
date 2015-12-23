@@ -2,6 +2,10 @@ import pygame
 import constantes
 from pygame.locals import *
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 0977a32e01ee652e79ab20a044bf1f484fa2416c
 class Container:
     MARGIN = 10
     """
@@ -139,7 +143,13 @@ class TextInput(Button):
                 self.content = self.content[:-1]
 
         elif event.key == 13:
+<<<<<<< HEAD
             self.page.submit()
+=======
+            pass
+
+
+>>>>>>> 0977a32e01ee652e79ab20a044bf1f484fa2416c
 
         self.content_surface = self.font.render(self.content, 0, constantes.RGB_WHITE)
 
@@ -151,29 +161,59 @@ class PasswordInput(TextInput):
 
 class TextDisplay:
     """
-    Widget permettant d'afficher du texte sur plusieurs lignes et de manière centrée.
+    Classe d'instenciation d'une zone de texte. 
     """
+<<<<<<< HEAD
     def __init__(self, page, text, line=300):
+=======
+    def __init__(self, window, loop, text):
+>>>>>>> 0977a32e01ee652e79ab20a044bf1f484fa2416c
         """
-        __init__(window, str text, int line) --> None. On entre le chemin du fichier texte à lire pour la var 'text'.
+        __init__() --> None.
         """
 
+<<<<<<< HEAD
         self.page = page
         self.line = line
+=======
+        self.coords = (0, 0)
+>>>>>>> 0977a32e01ee652e79ab20a044bf1f484fa2416c
 
-        # Chargement du texte à afficher dans une liste, ligne par ligne.
-        self.text_to_display = open(text, 'r').read().split('\n')
+        self.window = window    # variable 'background' de la classe 'MainMenu'
+        self.loop = loop
+        self.text = text
 
-        # Chargement de la police
+        # Chargement de la police + taille de la police
         self.font = pygame.font.Font(constantes.TEXTFONT_DIR, constantes.TEXTFONT_SIZE)
+        self.text_surface = self.font.render(self.text, 0, constantes.RGB_WHITE)
+
+        # Ajout du texte dans la boucle
+        self.loop.add_widget(self)
 
 
-    def display(self):
+    def render(self):
 
-        for elt in self.text_to_display: # Pour chaque ligne de texte, on crée un nouvel objet text.
-
+<<<<<<< HEAD
             size = self.font.size(elt)[0] # Pour centrer le texte
             text_line = self.font.render(elt, 0, constantes.RGB_WHITE)
             
             self.page.window.blit(text_line, ((self.page.window.get_width()//2 - size//2), self.line)) # 'Collage' de la ligne, avec 25 pixels de marge à gauche
             self.line += constantes.TEXTFONT_SIZE + 10  #La position de la prochaine ligne est placée à 25 + 10 pixels plus bas
+=======
+        # Positionnement du texte dans la fenêtre
+        self.window.blit(self.text_surface, self.coords)
+
+        # Raccourcis
+        t = self.text_surface
+
+        #Affichage du texte en fonction de sa taille et celle du bouton, afin qu'il soit centré quelque soit sa taille
+        self.window.blit(self.text_surface, (
+            (self.coords[0] + t.get_width() / 2,
+            (self.coords[1] + t.get_height() / 2
+        ))))
+
+    def get_height(self):
+        """
+        Retourne la hauteur de la zone de texte
+        """
+>>>>>>> 0977a32e01ee652e79ab20a044bf1f484fa2416c

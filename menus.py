@@ -7,6 +7,8 @@ from pygame.locals import *
 import constantes
 import loop
 from widget import *
+import data
+
 
 class Menu:
     """
@@ -57,10 +59,18 @@ class MainMenu(Menu):
         self.margin_bottom = 100
 
         # Widgets de la page
+<<<<<<< HEAD
         self.container.add_widget(Button(self, self.loop, "Connexion", lambda: self.next_page(LoginPage)))
         self.container.add_widget(Button(self, self.loop, "Inscription", lambda: self.next_page(RegisterPage)))
         self.container.add_widget(Button(self, self.loop, "Top Scores", lambda: self.next_page(HighscoresPage)))
         self.container.add_widget(Button(self, self.loop, "Quitter", self.loop.close_window))
+=======
+        self.container.add_widget(Button(self.window, self.loop, "Connexion", lambda: self.next_page(LoginPage)))
+        self.container.add_widget(Button(self.window, self.loop, "Inscription", lambda: self.next_page(RegisterPage)))
+        self.container.add_widget(Button(self.window, self.loop, "Top Scores", lambda: self.next_page(HighscoresPage)))
+        self.container.add_widget(Button(self.window, self.loop, "Quitter", self.loop.close_window))
+        self.container.add_widget(Button(self.window, self.loop, "Jeu", lambda: self.next_page(GameMenu))) #Bouton momentané
+>>>>>>> 0977a32e01ee652e79ab20a044bf1f484fa2416c
 
 class LoginPage(Menu):
     """
@@ -69,12 +79,31 @@ class LoginPage(Menu):
 
     def content(self):
 
+<<<<<<< HEAD
         self.container.add_widget(TextInput(self, self.loop, "Pseudo", None))
         self.container.add_widget(TextInput(self, self.loop, "Password", None))
         self.container.add_widget(Button(self, self.loop, "Retour", lambda: self.next_page(GameMenu)))
 
     def submit(self):
         pass
+=======
+        self.pseudo = self.container.add_widget(TextInput(self.window, self.loop, "Pseudo", None))
+        self.password = self.container.add_widget(TextInput(self.window, self.loop, "Password", None))
+        self.container.add_widget(Button(self.window, self.loop, "Entrer", lambda : LoginPage.test(self)))
+        self.container.add_widget(Button(self.window, self.loop, "Retour", lambda: self.next_page(MainMenu)))
+
+    def test(self):
+
+        tested_infos = data.Register(self.pseudo.content, self.password.content).test_infos()
+
+        if  tested_infos == 'Logged' or tested_infos == 'Registered':
+            self.next_page(GameMenu)
+
+        else:
+            self.container.add_widget(Button(self.window, self.loop, "Error", None))
+
+
+>>>>>>> 0977a32e01ee652e79ab20a044bf1f484fa2416c
 
 
 
@@ -87,17 +116,18 @@ class GameMenu(Menu):
 
 
 class RulesPage(Menu):
-    """
-    Classe permettant la création de la page informant le joueur sur les règles du jeu.
-    """
+    def content(self):
+        self.text_to_display = open(constantes.RULES_TEXT, 'r').read().split('\n')
 
-    def __init__(self, window, loop):
-        Menu.__init__(self, window, loop)
+##        for line in self.text_to_display:
+##            self.container.add_widget(TextDisplay(self.window, self.loop, line))
 
-        self.display()
-
+<<<<<<< HEAD
     def content(self):
         self.container.add_widget(Button(self, self.loop, "Retour", lambda: self.next_page(GameMenu)))
+=======
+        self.container.add_widget(Button(self.window, self.loop, "Retour", lambda: self.next_page(GameMenu)))
+>>>>>>> 0977a32e01ee652e79ab20a044bf1f484fa2416c
 
 
     def display(self):
