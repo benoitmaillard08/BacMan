@@ -40,6 +40,11 @@ class StandardSquare(Square):
 			self.pill.effect()
 			self.pill = None # La pillule est supprimée
 
+			self.level.n_pills -= 1
+
+			if self.level.n_pills == 0:
+				self.level.game.next_level()
+
 	def render(self):
 		self.level.window.blit(self.picture, self.render_coords)
 
@@ -75,12 +80,12 @@ class Pill: pass
 
 class StandardPill(Pill):
 	def __init__(self, level):
+		self.level = level
 		self.points = 10 # Nombre de points gagnés avec le pellet
 		self.picture = load_terrain("pellet") # Chargement de l'image
 
 	def effect(self):
-		pass
-		## Augmentation des points
+		self.level.game.score += self.points
 
 class PowerPill(Pill):
 	def __init__(self, level):
@@ -95,6 +100,7 @@ class BonusPill(StandardPill):
 	TYPES = [(0, 100), (1, 300), (2, 500), (2, 500), (3, 700), (3, 700), (4, 1000)]
 
 	def __init__(self, level):
+		self.level = level
 		# Si le niveau dépasse 7, ses caractéristiques sont les mêmes que le 7
 
 		n_level = level.n_level

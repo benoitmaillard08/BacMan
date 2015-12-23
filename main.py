@@ -32,39 +32,5 @@ class BacMan: # Classe principale du jeu
 		self.loop = loop.Loop()
 
 		self.main_menu = menus.MainMenu(self.window, self.loop)
-	
-class Game: # Classe servant à gérer une partie
-	def __init__(self):
-		self.n_level = 0
-
-		#### Code provisoire
-		pygame.init()
-
-		self.window = pygame.display.set_mode((800, 800))
-
-		self.loop = process.Loop()
-
-
-		# c = menus.Container(self.window, loop)
-		# c.add_button("Test 1", lambda: print("Bouton 1"))
-		# c.add_button("Test 2", lambda: print("Bouton 2"))
-		# c.add_button("Test 3", lambda: print("Bouton 3"))
-		# c.add_button("HAHAHAHAHA", None)
-
-		# c.calculate_coords()
-
-		self.next_level()
-
-		# pygame.display.flip()
-
-		self.loop.run_loop()
-
-
-		#### Fin du code provisoire
-
-
-	def next_level(self):
-		self.n_level += 1
-		self.level = process.Level(self.n_level, self.window, self.loop)
 
 BacMan()
