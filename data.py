@@ -8,16 +8,15 @@ class Register:
     """
     Classe gérant l'enregistrement du joueur dans la base de données
     """
-    def __init__(self, pseudo='test', password='test', data_dir=constantes.PLAYERS_DATAS):
+    def __init__(self, pseudo='test', password='test'):
         """
         __init__(str pseudo, str password, str data_dir) --> None.
         <data_dir> est le chemin vers la base de données (fichier txt).
         """
         self.pseudo = pseudo
         self.password = password
-        self.data_dir = data_dir
 
-        self.file_read = open(self.data_dir, 'r')
+        self.file_read = open(constantes.PLAYERS_DATAS, 'r')
         datas = self.file_read.read().split()
 
         l = []
@@ -54,6 +53,53 @@ class Register:
         """
         Méthode enregistrant le nouveau joueur dans la base de données.
         """
-        file_write = open(self.data_dir, 'w')
+        file_write = open(constantes.PLAYERS_DATAS, 'w')
         file_write.write('{}%{}\n'.format(self.pseudo, self.password))
         file_write.close()
+
+class Scores:
+    """
+    Classe gérant l'enregistrement et la lecture des scores.
+    """
+
+    def __init__(self, pseudo, score, date):
+        """
+        __init__(str pseudo, int score) --> None.
+        """
+        self.pseudo = pseudo
+        self.score = score
+        self.date = date
+
+        action = 'r' # 'r' pour la lecture et 'w' pour l'écriture.
+        self.file = open(constantes.SCORES, action)
+
+    def save(self):
+        """
+        Sauvegarde de nouveaux scores.
+        """
+        self.file.close() #Le fichier est fermé, pour être ensuite réouvert avec l'<action> désirée.
+
+        action = 'w'
+        self.file.write('{}%{}%{}\n'.format(self.pseudo, self.score, self.date))
+
+    def get_scores(self):
+        """
+        Obtention des 3 meilleurs scores globaux ET du joueur.
+        """
+        self.file.close()
+
+        action = 'r'
+        datas = self.file.read().split()
+
+        scores = []
+        for elt in datas:
+            scores.append(tuple(elt.split('%')))
+
+        #On a une liste <scores>, composée de tuples, composés du pseudo, score et date d'une partie
+
+        # Selection du meilleur score
+
+        bestScore = ('',0,'')
+        for elt in scores:
+            if elt[1] > bestScore[1]:
+                bestScore = elt

@@ -35,6 +35,7 @@ CTRLS_PIC_DIR = ['ressources/arrow_keys.png','ressources/p_key.png','ressources/
 # Base(s) de données
 
 PLAYERS_DATAS = 'players.txt'
+SCORES = 'scores.txt'
 
 
 

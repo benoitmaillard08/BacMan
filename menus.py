@@ -74,13 +74,6 @@ class LoginPage(Menu):
     def content(self):
         self.pseudo = self.container.add_widget(TextInput(self, self.loop, "Pseudo", None))
         self.password = self.container.add_widget(TextInput(self, self.loop, "Password", None))
-        self.container.add_widget(Button(self, self.loop, "Entrer", lambda : self.submit()))
-        self.container.add_widget(Button(self, self.loop, "Retour", lambda: self.next_page(MainMenu)))
-
-    def submit(self):
-
-        self.pseudo = self.container.add_widget(TextInput(self.window, self.loop, "Pseudo", None))
-        self.password = self.container.add_widget(TextInput(self.window, self.loop, "Password", None))
         self.container.add_widget(Button(self, self.loop, "Entrer", lambda : LoginPage.test(self)))
         self.container.add_widget(Button(self, self.loop, "Retour", lambda: self.next_page(MainMenu)))
 
@@ -104,9 +97,9 @@ class LoginPage(Menu):
             pass
 
         else:
-            # Message d'erreur
-            self.container.add_widget(Button(self.window, self.loop, "Wrong Password", None, directory=constantes.PATH_PIC_EMPTY_BUTTON))
-            ##### TOUJOURS à CORRIGER ######
+            # Message d'erreur <Mauvais MdP!>
+            pass
+            
 
 class RegisterPage(Menu):
     """
