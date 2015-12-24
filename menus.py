@@ -59,18 +59,12 @@ class MainMenu(Menu):
         self.margin_bottom = 100
 
         # Widgets de la page
-<<<<<<< HEAD
+
         self.container.add_widget(Button(self, self.loop, "Connexion", lambda: self.next_page(LoginPage)))
         self.container.add_widget(Button(self, self.loop, "Inscription", lambda: self.next_page(RegisterPage)))
         self.container.add_widget(Button(self, self.loop, "Top Scores", lambda: self.next_page(HighscoresPage)))
         self.container.add_widget(Button(self, self.loop, "Quitter", self.loop.close_window))
-=======
-        self.container.add_widget(Button(self.window, self.loop, "Connexion", lambda: self.next_page(LoginPage)))
-        self.container.add_widget(Button(self.window, self.loop, "Inscription", lambda: self.next_page(RegisterPage)))
-        self.container.add_widget(Button(self.window, self.loop, "Top Scores", lambda: self.next_page(HighscoresPage)))
-        self.container.add_widget(Button(self.window, self.loop, "Quitter", self.loop.close_window))
-        self.container.add_widget(Button(self.window, self.loop, "Jeu", lambda: self.next_page(GameMenu))) #Bouton momentané
->>>>>>> 0977a32e01ee652e79ab20a044bf1f484fa2416c
+        self.container.add_widget(Button(self, self.loop, "Jeu", lambda: self.next_page(GameMenu))) #Bouton momentané
 
 class LoginPage(Menu):
     """
@@ -78,21 +72,12 @@ class LoginPage(Menu):
     """
 
     def content(self):
-
-<<<<<<< HEAD
-        self.container.add_widget(TextInput(self, self.loop, "Pseudo", None))
-        self.container.add_widget(TextInput(self, self.loop, "Password", None))
-        self.container.add_widget(Button(self, self.loop, "Retour", lambda: self.next_page(GameMenu)))
+        self.pseudo = self.container.add_widget(TextInput(self, self.loop, "Pseudo", None))
+        self.password = self.container.add_widget(TextInput(self, self.loop, "Password", None))
+        self.container.add_widget(Button(self, self.loop, "Entrer", lambda : self.submit()))
+        self.container.add_widget(Button(self, self.loop, "Retour", lambda: self.next_page(MainMenu)))
 
     def submit(self):
-        pass
-=======
-        self.pseudo = self.container.add_widget(TextInput(self.window, self.loop, "Pseudo", None))
-        self.password = self.container.add_widget(TextInput(self.window, self.loop, "Password", None))
-        self.container.add_widget(Button(self.window, self.loop, "Entrer", lambda : LoginPage.test(self)))
-        self.container.add_widget(Button(self.window, self.loop, "Retour", lambda: self.next_page(MainMenu)))
-
-    def test(self):
 
         tested_infos = data.Register(self.pseudo.content, self.password.content).test_infos()
 
@@ -101,9 +86,6 @@ class LoginPage(Menu):
 
         else:
             self.container.add_widget(Button(self.window, self.loop, "Error", None))
-
-
->>>>>>> 0977a32e01ee652e79ab20a044bf1f484fa2416c
 
 
 
@@ -122,13 +104,8 @@ class RulesPage(Menu):
 ##        for line in self.text_to_display:
 ##            self.container.add_widget(TextDisplay(self.window, self.loop, line))
 
-<<<<<<< HEAD
     def content(self):
         self.container.add_widget(Button(self, self.loop, "Retour", lambda: self.next_page(GameMenu)))
-=======
-        self.container.add_widget(Button(self.window, self.loop, "Retour", lambda: self.next_page(GameMenu)))
->>>>>>> 0977a32e01ee652e79ab20a044bf1f484fa2416c
-
 
     def display(self):
         TextDisplay(self, constantes.RULES_TEXT ).display()
