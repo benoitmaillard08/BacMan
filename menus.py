@@ -81,8 +81,8 @@ class LoginPage(Menu):
 
         self.pseudo = self.container.add_widget(TextInput(self.window, self.loop, "Pseudo", None))
         self.password = self.container.add_widget(TextInput(self.window, self.loop, "Password", None))
-        self.container.add_widget(Button(self.window, self.loop, "Entrer", lambda : LoginPage.test(self)))
-        self.container.add_widget(Button(self.window, self.loop, "Retour", lambda: self.next_page(MainMenu)))
+        self.container.add_widget(Button(self, self.loop, "Entrer", lambda : LoginPage.test(self)))
+        self.container.add_widget(Button(self, self.loop, "Retour", lambda: self.next_page(MainMenu)))
 
     def test(self, onRegisterPage=False):
 
@@ -114,10 +114,10 @@ class RegisterPage(Menu):
     """
     def content(self):
 
-        self.pseudo = self.container.add_widget(TextInput(self.window, self.loop, "Pseudo", None))
-        self.password = self.container.add_widget(TextInput(self.window, self.loop, "Password", None))
-        self.container.add_widget(Button(self.window, self.loop, "Entrer", lambda : LoginPage.test(self, onRegisterPage=True)))
-        self.container.add_widget(Button(self.window, self.loop, "Retour", lambda: self.next_page(MainMenu)))
+        self.pseudo = self.container.add_widget(TextInput(self, self.loop, "Pseudo", None))
+        self.password = self.container.add_widget(TextInput(self, self.loop, "Password", None))
+        self.container.add_widget(Button(self, self.loop, "Entrer", lambda : LoginPage.test(self, onRegisterPage=True)))
+        self.container.add_widget(Button(self, self.loop, "Retour", lambda: self.next_page(MainMenu)))
 
 class GameMenu(Menu):
     def content(self):
@@ -181,7 +181,7 @@ class CtrlsPage(Menu):
             i += 1
 
 
-class HighscoresPage:
+class HighscoresPage(Menu):
     """
     Classe créant la page affichant les highscores du jeu ET du joueur s'il est loggé.
     """
