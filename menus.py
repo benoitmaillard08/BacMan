@@ -129,12 +129,9 @@ class GameMenu(Menu):
 
 class RulesPage(Menu):
     def content(self):
-        self.text_to_display = open(constantes.RULES_TEXT, 'r').read().split('\n')
+        rules_text = open(constantes.RULES_TEXT, 'r').read()
 
-##        for line in self.text_to_display:
-##            self.container.add_widget(TextDisplay(self.window, self.loop, line))
-
-    def content(self):
+        self.container.add_widget(TextDisplay(self, self.loop, rules_text))
         self.container.add_widget(Button(self, self.loop, "Retour", lambda: self.next_page(GameMenu)))
 
     def display(self):

@@ -31,16 +31,16 @@ class Container:
 
         total_height = 0
         for widget in self.l_widgets:
-            total_height += widget.surface.get_height() + 2 * Container.MARGIN
+            total_height += widget.get_height() + 2 * Container.MARGIN
 
         # Coordonné y du coin supérieur gauche du premier widget
         coord_y = (self.page.window.get_height() - self.margin_top - self.margin_bottom - total_height) / 2 + self.margin_top
 
         for widget in self.l_widgets:
             # Coordonné x du coin supérieur gauche du widget
-            coord_x = (self.page.window.get_width() - widget.surface.get_width()) / 2
+            coord_x = (self.page.window.get_width() - widget.get_width()) / 2
             widget.set_coords(coord_x, coord_y + Container.MARGIN)
-            coord_y += widget.surface.get_height() + 2 * Container.MARGIN
+            coord_y += widget.get_height() + 2 * Container.MARGIN
 
     def render(self):
         for widget in self.l_widgets:
@@ -89,6 +89,12 @@ class Button:
             (self.coords[0] + b.get_width() / 2) - t.get_width() / 2,
             (self.coords[1] + b.get_height() / 2) - t.get_height() / 2
         ))
+
+    def get_height(self):
+        return self.surface.get_height()
+
+    def get_width(self):
+        return self.surface.get_width()
 
     def set_coords(self, x, y):
         self.coords = (x, y)
@@ -153,29 +159,27 @@ class TextDisplay:
     """
     Classe d'instenciation d'une zone de texte. 
     """
-# <<<<<<< HEAD
-#     def __init__(self, page, text, line=300):
-# =======
-    def __init__(self, window, loop, text):
-# >>>>>>> 0977a32e01ee652e79ab20a044bf1f484fa2416c
+
+    def __init__(self, page, loop, text):
+
         """
         __init__() --> None.
         """
-
-# <<<<<<< HEAD
-#         self.page = page
-#         self.line = line
-# =======
         self.coords = (0, 0)
-# >>>>>>> 0977a32e01ee652e79ab20a044bf1f484fa2416c
 
-        self.window = window    # variable 'background' de la classe 'MainMenu'
+        self.page = page
         self.loop = loop
         self.text = text
 
         # Chargement de la police + taille de la police
         self.font = pygame.font.Font(constantes.TEXTFONT_DIR, constantes.TEXTFONT_SIZE)
-        self.text_surface = self.font.render(self.text, 0, constantes.RGB_WHITE)
+
+        self.lines_surfaces = []
+
+        # Construction des surfaces pygame pour chaque ligne
+        for line in text.split("\n"):
+            line_surface = self.font.render(line, 0, constantes.RGB_WHITE)
+            self.lines_surfaces.append(line_surface)
 
         # Ajout du texte dans la boucle
         self.loop.add_widget(self)
@@ -183,26 +187,41 @@ class TextDisplay:
 
     def render(self):
 
-# <<<<<<< HEAD
-#             size = self.font.size(elt)[0] # Pour centrer le texte
-#             text_line = self.font.render(elt, 0, constantes.RGB_WHITE)
-            
-#             self.page.window.blit(text_line, ((self.page.window.get_width()//2 - size//2), self.line)) # 'Collage' de la ligne, avec 25 pixels de marge à gauche
-#             self.line += constantes.TEXTFONT_SIZE + 10  #La position de la prochaine ligne est placée à 25 + 10 pixels plus bas
-# =======
-        # Positionnement du texte dans la fenêtre
-        self.window.blit(self.text_surface, self.coords)
+        line_y = self.coords[1]
 
-        # Raccourcis
-        t = self.text_surface
+        for line in self.lines_surfaces:
+            line_x = self.coords[0] + (self.get_width() - line.get_width()) / 2
 
-        #Affichage du texte en fonction de sa taille et celle du bouton, afin qu'il soit centré quelque soit sa taille
-        self.window.blit(self.text_surface, (
-            (self.coords[0] + t.get_width() / 2,
-            (self.coords[1] + t.get_height() / 2
-        ))))
+            print(line_x, line_y)
+            self.page.window.blit(line, (line_x, line_y))
+
+            line_y += line.get_height()
+
 
     def get_height(self):
         """
         Retourne la hauteur de la zone de texte
         """
+
+        height = 0
+
+        for surface in self.lines_surfaces:
+            height += surface.get_height()
+
+        return height
+
+    def get_width(self):
+        max_width = 0
+
+        for surface in self.lines_surfaces:
+            if surface.get_width() > max_width:
+                max_width = surface.get_width()
+
+        return max_width
+
+    def set_coords(self, x, y):
+        self.coords = (x, y)
+
+    def check_coords(self, event):
+        return False
+
