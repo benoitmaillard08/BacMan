@@ -29,20 +29,24 @@ class Register:
         for elt in l:
             self.database[elt[0]] = elt[1]
 
-    def test_infos(self):
+    def test_infos(self, onRegisterPage):
         """
         Méthode testant si le joueur est déjà enregistré et si le mot de passe est correct.
         """
-        if self.pseudo not in self.database:
+        if self.pseudo not in self.database and onRegisterPage == True:
             self.file_read.close()
             Register.newPlayer(self)
-            return 'Registered'
+            return 'NewRegistered'
+
+        elif self.pseudo not in self.database and onRegisterPage == False:
+            return 'NotRegistered'
 
         elif self.pseudo in self.database and self.database[self.pseudo] !=  self.password:
-            # Retourne une erreur "le mot de passe ne correspond pas au pseudo, réessayez ou choisissez un autre pseudo"
-            return False
+            if onRegisterPage == False:# Retourne une erreur "le mot de passe ne correspond pas au pseudo, réessayez ou choisissez un autre pseudo"
+                return False
+            else:
+                return 'TakenPseudo'
         else:
-            # Redirection sur la page de login ou redirection directe sur la page de jeu, avec le login (?)
             return 'Logged'
 
 
