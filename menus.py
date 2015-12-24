@@ -186,3 +186,14 @@ class HighscoresPage(Menu):
         Menu.__init__(self, window, loop)
 
         ### Elements ici
+
+
+class NextLevelMenu(Menu):
+    def __init__(self, game, *args, **kwargs):
+        self.game = game
+
+        Menu.__init__(self, *args, **kwargs)
+
+    def content(self):
+        self.container.add_widget(TextDisplay(self, self.loop, "Bravo ! Vous avez réussi le niveau {}".format(self.game.level.n_level)))
+        self.container.add_widget(Button(self, self.loop, "Continuer", self.game.next_level))

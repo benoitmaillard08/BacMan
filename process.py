@@ -3,6 +3,7 @@ from constantes import *
 import parse
 from shortcuts import *
 import time
+import menus
 
 """ Gestion du processus 'In Game' du jeu >BacMan the baccalaureates Adventure!< """
 
@@ -19,9 +20,17 @@ class Game: # Classe servant à gérer une partie
 
 		self.next_level()
 
+	def end_level(self):
+
+		self.loop.page = menus.NextLevelMenu(self, self.window, self.loop)
+
+		self.level = None
+
 	def next_level(self):
+		self.loop.page = None
 		self.n_level += 1
 		self.level = Level(self, self.n_level, self.window, self.loop)
+
 
 class Level:
 	"""Classe permettant de créer un niveau"""
@@ -91,4 +100,4 @@ class Level:
 			self.pacman.move()
 
 
-			self.render()
+		self.render()

@@ -43,7 +43,7 @@ class StandardSquare(Square):
 			self.level.n_pills -= 1
 
 			if self.level.n_pills == 0:
-				self.level.game.next_level()
+				self.level.game.end_level()
 
 	def render(self):
 		self.level.window.blit(self.picture, self.render_coords)

@@ -44,24 +44,9 @@ class Game: # Classe servant à gérer une partie
 
         self.loop = loop.Loop()
 
-
-        # c = menus.Container(self.window, loop)
-        # c.add_button("Test 1", lambda: print("Bouton 1"))
-        # c.add_button("Test 2", lambda: print("Bouton 2"))
-        # c.add_button("Test 3", lambda: print("Bouton 3"))
-        # c.add_button("HAHAHAHAHA", None)
-
-        # c.calculate_coords()
-
         self.next_level()
 
-        # pygame.display.flip()
-
         self.loop.run_loop()
-
-
-        #### Fin du code provisoire
-
 
     def next_level(self):
         self.n_level += 1
