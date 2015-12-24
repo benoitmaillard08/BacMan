@@ -51,7 +51,7 @@ class Button:
     """
     Classe d'instenciation des boutons
     """
-    def __init__(self, window, loop, label, callback, directory=constantes.PATH_PIC_BUTTON):
+    def __init__(self, page, loop, label, callback, directory=constantes.PATH_PIC_BUTTON):
         """
         __init__() --> None.
         """
