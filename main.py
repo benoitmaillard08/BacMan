@@ -1,4 +1,4 @@
-#######################################################
+5#######################################################
 #                                                     #
 #        BacMan : the baccalaureates Adventure        #
 #          ---xxxxxxxxxxxxxxxxxxxxxxxxxxx---          #
@@ -23,7 +23,10 @@ import menus
 from constantes import *
 import loop
 
-class BacMan: # Classe principale du jeu
+class BacMan:
+    """
+    Classe principale de l'application
+    """
     def __init__(self):
         pygame.init()
 
@@ -32,24 +35,5 @@ class BacMan: # Classe principale du jeu
         self.loop = loop.Loop()
 
         self.main_menu = menus.MainMenu(self.window, self.loop)
-    
-class Game: # Classe servant à gérer une partie
-    def __init__(self):
-        self.n_level = 0
-
-        #### Code provisoire
-        pygame.init()
-
-        self.window = pygame.display.set_mode((800, 800))
-
-        self.loop = loop.Loop()
-
-        self.next_level()
-
-        self.loop.run_loop()
-
-    def next_level(self):
-        self.n_level += 1
-        self.level = process.Level(self.n_level, self.window, self.loop)
 
 BacMan()

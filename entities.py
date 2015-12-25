@@ -85,15 +85,16 @@ class StandardPill(Pill):
 		self.picture = load_terrain("pellet") # Chargement de l'image
 
 	def effect(self):
-		self.level.game.score += self.points
+		self.level.game.update_score(self.points)
 
 class PowerPill(Pill):
 	def __init__(self, level):
+		self.level = level
 		self.picture = load_terrain("pellet-power")
 
 	def effect(self):
-		pass
-		## Les fantômes s'arrêtent
+		for ghost in self.level.ghosts:
+			ghost.stop(100)
 
 class BonusPill(StandardPill):
 	# Index de l'image et nombre de points correspondant aux niveaux jusqu'à 7
@@ -122,9 +123,20 @@ class Char:
 	def __init__(self, level):
 		self.level = level
 
+		self.init_x = -1
+		self.init_y = -1
+
 	def set_coords(self, x, y):
 		self.x = x
 		self.y = y
+
+		if self.init_x == -1 and self.init_y == -1:
+			self.init_x = x
+			self.init_y = y
+
+	def reset(self):
+		self.x = self.init_x
+		self.y = self.init_y
 
 	def render(self):
 		self.level.window.blit(self.get_picture(), (self.x*SQUARE_SIZE, self.y*SQUARE_SIZE))
@@ -207,6 +219,24 @@ class PacMan(Char):
 			self.x += self.speed * DIRECTIONS[self.direction][0] / SQUARE_SIZE
 			self.y += self.speed * DIRECTIONS[self.direction][1] / SQUARE_SIZE
 
+		self.check_ghosts()
+
+	def check_ghosts(self):
+		for ghost in self.level.ghosts:
+			if abs(self.x - ghost.x) < 0.5 and abs(self.y - ghost.y) < 0.5:
+				if ghost.pause > 0:
+					ghost.pause = 0
+					ghost.reset()
+				else:
+					self.level.pause_game(50)
+					self.reset()
+					for ghost in self.level.ghosts:
+						ghost.reset()
+
+					self.level.game.update_lives()
+
+				break
+
 
 
 
@@ -216,6 +246,7 @@ class Ghost(Char):
 
 		self.direction = 0
 		self.speed = 8
+		self.pause = 0
 
 		self.pictures = []
 
@@ -235,26 +266,32 @@ class Ghost(Char):
 		return picture
 
 	def move(self):
-		# Si le fantôme se trouve exactement sur une case
-		if self.x % 1 == 0 and self.y % 1 == 0:
-			# Récupération de la case actuelle
-			square = self.level.get_square(self.x, self.y)
+		if self.pause == 0:
+			# Si le fantôme se trouve exactement sur une case
+			if self.x % 1 == 0 and self.y % 1 == 0:
+				# Récupération de la case actuelle
+				square = self.level.get_square(self.x, self.y)
 
-			empty_adj_squares = []
+				empty_adj_squares = []
 
-			for n in range(-1, 2):
-				direction = (self.direction + n) % 4
-				if square.adjacent_square(direction).is_empty:
-					empty_adj_squares.append(direction)
+				for n in range(-1, 2):
+					direction = (self.direction + n) % 4
+					if square.adjacent_square(direction).is_empty:
+						empty_adj_squares.append(direction)
 
-			if len(empty_adj_squares) == 0:
-				self.direction = (self.direction + 2) % 4
+				if len(empty_adj_squares) == 0:
+					self.direction = (self.direction + 2) % 4
 
-			else:
-				self.direction = empty_adj_squares[random.randint(0, len(empty_adj_squares) - 1)]
+				else:
+					self.direction = empty_adj_squares[random.randint(0, len(empty_adj_squares) - 1)]
 
-		self.x += self.speed * DIRECTIONS[self.direction][0] / SQUARE_SIZE
-		self.y += self.speed * DIRECTIONS[self.direction][1] / SQUARE_SIZE
+			self.x += self.speed * DIRECTIONS[self.direction][0] / SQUARE_SIZE
+			self.y += self.speed * DIRECTIONS[self.direction][1] / SQUARE_SIZE
+		else:
+			self.pause -= 1
+
+	def stop(self, time):
+		self.pause = time
 
 class Blinky(Ghost): pass
 

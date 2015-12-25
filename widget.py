@@ -174,12 +174,7 @@ class TextDisplay:
         # Chargement de la police + taille de la police
         self.font = pygame.font.Font(constantes.TEXTFONT_DIR, constantes.TEXTFONT_SIZE)
 
-        self.lines_surfaces = []
-
-        # Construction des surfaces pygame pour chaque ligne
-        for line in text.split("\n"):
-            line_surface = self.font.render(line, 0, constantes.RGB_WHITE)
-            self.lines_surfaces.append(line_surface)
+        self.update_text()
 
         # Ajout du texte dans la boucle
         self.loop.add_widget(self)
@@ -192,7 +187,6 @@ class TextDisplay:
         for line in self.lines_surfaces:
             line_x = self.coords[0] + (self.get_width() - line.get_width()) / 2
 
-            print(line_x, line_y)
             self.page.window.blit(line, (line_x, line_y))
 
             line_y += line.get_height()
@@ -224,4 +218,12 @@ class TextDisplay:
 
     def check_coords(self, event):
         return False
+
+    def update_text(self):
+        self.lines_surfaces = []
+
+        # Construction des surfaces pygame pour chaque ligne
+        for line in self.text.split("\n"):
+            line_surface = self.font.render(line, 0, constantes.RGB_WHITE)
+            self.lines_surfaces.append(line_surface)
 

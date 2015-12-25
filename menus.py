@@ -45,7 +45,8 @@ class Menu:
         page(self.window, self.loop) # Instanciation de la page
 
     def render(self):
-        self.window.blit(self.background,(0,0)) # Rendu du fonds
+        if self.background:
+            self.window.blit(self.background,(0,0)) # Rendu du fonds
 
         self.container.render()
 
@@ -59,12 +60,11 @@ class MainMenu(Menu):
         self.margin_bottom = 100
 
         # Widgets de la page
-
         self.container.add_widget(Button(self, self.loop, "Connexion", lambda: self.next_page(LoginPage)))
         self.container.add_widget(Button(self, self.loop, "Inscription", lambda: self.next_page(RegisterPage)))
         self.container.add_widget(Button(self, self.loop, "Top Scores", lambda: self.next_page(HighscoresPage)))
         self.container.add_widget(Button(self, self.loop, "Quitter", self.loop.close_window))
-        self.container.add_widget(Button(self, self.loop, "Jeu", lambda: self.next_page(GameMenu))) #Bouton momentané
+        self.container.add_widget(Button(self, self.loop, "Jeu direct", lambda: self.next_page(GameMenu))) #Bouton momentané
 
 class LoginPage(Menu):
     """
@@ -114,10 +114,14 @@ class RegisterPage(Menu):
 
 class GameMenu(Menu):
     def content(self):
-        self.container.add_widget(Button(self, self.loop, "Jouer", lambda: self.next_page(process.Game)))
+        self.container.add_widget(Button(self, self.loop, "Jouer", self.launch_game))
         self.container.add_widget(Button(self, self.loop, "Controles", lambda: self.next_page(CtrlsPage)))
         self.container.add_widget(Button(self, self.loop, "Regles", lambda: self.next_page(RulesPage)))
         self.container.add_widget(Button(self, self.loop, "Retour", lambda: self.next_page(MainMenu)))
+
+    def launch_game(self):
+        self.loop.clear() # Suppression des boutons etc de la boucle
+        game = process.Game(self.window, self.loop)
 
 
 class RulesPage(Menu):
@@ -127,48 +131,43 @@ class RulesPage(Menu):
         self.container.add_widget(TextDisplay(self, self.loop, rules_text))
         self.container.add_widget(Button(self, self.loop, "Retour", lambda: self.next_page(GameMenu)))
 
-    def display(self):
-        TextDisplay(self, constantes.RULES_TEXT ).display()
-
 
 class CtrlsPage(Menu):
     """
     Classe créant la page d'explication des contrôles du jeu
     """
-    def __init__(self, window, loop):
-        Menu.__init__(self, window, loop)
-
-        self.display()
-
     def content(self):
+        controls_text = open(constantes.CTRLS_TEXT, 'r').read()
+
+        self.container.add_widget(TextDisplay(self, self.loop, controls_text))
         self.container.add_widget(Button(self, self.loop, "Retour", lambda: self.next_page(GameMenu)))
 
-    def display(self):
-        """
-        Affichage du texte et des images expliquant les contrôles du jeu.
-        """
-        #Chargement et placement du titre
-        font = pygame.font.Font(constantes.MENUFONT_DIR, constantes.MENUFONT_SIZE)
-        size = font.size(constantes.RULES_TITLE)[0]
-        title = font.render(constantes.RULES_TITLE, 0, constantes.RGB_WHITE)
-        self.window.blit(title, ((self.window.get_width()//2 - size//2), 225))
+    # def display(self):
+    #     """
+    #     Affichage du texte et des images expliquant les contrôles du jeu.
+    #     """
+    #     #Chargement et placement du titre
+    #     font = pygame.font.Font(constantes.MENUFONT_DIR, constantes.MENUFONT_SIZE)
+    #     size = font.size(constantes.RULES_TITLE)[0]
+    #     title = font.render(constantes.RULES_TITLE, 0, constantes.RGB_WHITE)
+    #     self.window.blit(title, ((self.window.get_width()//2 - size//2), 225))
 
-        #Chargement et placement des zones de textes
-        font = pygame.font.Font(constantes.TEXTFONT_DIR, constantes.TEXTFONT_SIZE)
-        size = []
-        line = 325 #Coordonnée Y de la première ligne
-        i = 0
-        for elt in constantes.CTRLS_TEXT: 
+    #     #Chargement et placement des zones de textes
+    #     font = pygame.font.Font(constantes.TEXTFONT_DIR, constantes.TEXTFONT_SIZE)
+    #     size = []
+    #     line = 325 #Coordonnée Y de la première ligne
+    #     i = 0
+    #     for elt in constantes.CTRLS_TEXT: 
 
-            size.append(font.size(elt)[0]) # Enregistrement des tailles des zones de texte dans la liste <size>
-            render = font.render(elt, 0, constantes.RGB_WHITE) # Rendu du texte à ses coordonnées
-            self.window.blit(render, (self.window.get_width()//2 - size[i], line))
+    #         size.append(font.size(elt)[0]) # Enregistrement des tailles des zones de texte dans la liste <size>
+    #         render = font.render(elt, 0, constantes.RGB_WHITE) # Rendu du texte à ses coordonnées
+    #         self.window.blit(render, (self.window.get_width()//2 - size[i], line))
 
-            # Chargement et placement des images
-            pic = pygame.image.load(constantes.CTRLS_PIC_DIR[i]).convert_alpha()
-            self.window.blit(pic,(self.window.get_width()//2+84-pic.get_rect()[2]//2, line-(pic.get_rect()[3]//3))) # Placé de façon à être à la même hauteur que le texte
-            line += 100                             #/\ se place par rapport à la largeur de la plus grosse image
-            i += 1
+    #         # Chargement et placement des images
+    #         pic = pygame.image.load(constantes.CTRLS_PIC_DIR[i]).convert_alpha()
+    #         self.window.blit(pic,(self.window.get_width()//2+84-pic.get_rect()[2]//2, line-(pic.get_rect()[3]//3))) # Placé de façon à être à la même hauteur que le texte
+    #         line += 100                             #/\ se place par rapport à la largeur de la plus grosse image
+    #         i += 1
 
 
 class HighscoresPage(Menu):
@@ -180,13 +179,51 @@ class HighscoresPage(Menu):
 
         ### Elements ici
 
+class InGameMenu(Menu):
+    def __init__(self, window, loop, game):
+        self.game = game
+        Menu.__init__(self, window, loop)
+
+    def content(self):
+        self.margin_top = 672
+        self.margin_bottom = 0
+
+        self.score = self.container.add_widget(TextDisplay(self, self.loop, "Score : {}".format(self.game.score)))
+        self.lives = self.container.add_widget(TextDisplay(self, self.loop, "Vies restantes : {}".format(self.game.lives)))
+
+        self.background = None
+
+    def update_score(self):
+        self.score.text = "Score : {}".format(self.game.score)
+        self.score.update_text()
+
+    def update_lives(self):
+        self.lives.text = "Vies restantes : {}".format(self.game.lives)
+        self.lives.update_text()
+
 
 class NextLevelMenu(Menu):
-    def __init__(self, game, *args, **kwargs):
+    def __init__(self, window, loop, game):
         self.game = game
 
-        Menu.__init__(self, *args, **kwargs)
+        Menu.__init__(self, window, loop)
 
     def content(self):
         self.container.add_widget(TextDisplay(self, self.loop, "Bravo ! Vous avez réussi le niveau {}".format(self.game.level.n_level)))
         self.container.add_widget(Button(self, self.loop, "Continuer", self.game.next_level))
+
+class EndGameMenu(Menu):
+    def __init__(self, window, loop, game):
+        self.game = game
+
+        Menu.__init__(self, window, loop)
+
+    def content(self):
+        text = """
+        Jeu terminé !
+        Vous avez obtenu le score de {} points
+        et atteint le niveau {}
+        """.format(self.game.score, self.game.level.n_level)
+
+        self.container.add_widget(TextDisplay(self, self.loop, text))
+        self.container.add_widget(Button(self, self.loop, "Retour", self.next_page(GameMenu)))

@@ -27,9 +27,11 @@ PATH_PIC_PAGES = "ressources/pages_bg.png"
 RULES_TITLE = 'Reglement'
 RULES_TEXT = 'ressources/rules.txt'
 
+CTRLS_TEXT = 'ressources/controls.txt'
+
 #Contrôles
-CTRLS_TEXT = ['Contrôles =','Pause =', 'Quitter =']
-CTRLS_PIC_DIR = ['ressources/arrow_keys.png','ressources/p_key.png','ressources/esc_key.png']
+# CTRLS_TEXT = ['Contrôles =','Pause =', 'Quitter =']
+# CTRLS_PIC_DIR = ['ressources/arrow_keys.png','ressources/p_key.png','ressources/esc_key.png']
 #############
 
 # Base(s) de données
@@ -62,7 +64,7 @@ RGB_BLACK = (0,0,0)
 #------------------------------------------------------------
 
 N_SQUARES_X = 28
-N_SQUARES_Y = 20
+N_SQUARES_Y = 21
 
 PIC_DIR = "ressources/pictures/"
 

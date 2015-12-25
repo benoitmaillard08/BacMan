@@ -9,7 +9,6 @@ class Loop:
 	"""
 	def __init__(self, level=None):
 		self.window_opened = True
-		self.game_running = False
 		self.level = level
 		self.loop_running = False
 
@@ -104,18 +103,6 @@ class Loop:
 		Indique que la fenêtre doit être fermée
 		"""
 		self.window_opened = False
-
-	def pause_game(self):
-		"""
-		Indique que le jeu doit être mis en pause
-		"""
-		self.game_running = False
-
-	def start_game(self):
-		"""
-		Indique que le jeu doit être repris
-		"""
-		self.game_running = True
 
 	def add_widget(self, widget):
 		"""
