@@ -18,18 +18,28 @@ class Container:
         self.l_widgets = []
 
     def add_widget(self, widget):
+        """
+        Ajoute un widget au container
+        """
         self.l_widgets.append(widget)
 
         return widget
 
     def set_margin(self, top, bottom):
+        """
+        Permet de définir une marge en haut et en bas de la fenêtre qui ne
+        doit pas être occupée par des widgets
+        """
         self.margin_top = top
         self.margin_bottom = bottom
 
     def calculate_coords(self):
+        """
+        Calcul des coordonnées des widgets
+        """
         # Hauteur de la pile d'éléments
-
         total_height = 0
+
         for widget in self.l_widgets:
             total_height += widget.get_height() + 2 * Container.MARGIN
 
@@ -39,10 +49,15 @@ class Container:
         for widget in self.l_widgets:
             # Coordonné x du coin supérieur gauche du widget
             coord_x = (self.page.window.get_width() - widget.get_width()) / 2
-            widget.set_coords(coord_x, coord_y + Container.MARGIN)
+            widget.set_coords(coord_x, coord_y + Container.MARGIN) # Définition des coordonnées du widget
+
+            # La coordonnée y est augmentée pour le widget suivant
             coord_y += widget.get_height() + 2 * Container.MARGIN
 
     def render(self):
+        """
+        Rendu de tous les widgets du container
+        """
         for widget in self.l_widgets:
             widget.render()
 
@@ -76,6 +91,9 @@ class Button:
         self.loop.add_widget(self)
 
     def render(self):
+        """
+        Rendu du widget
+        """
 
         # Positionnement du bouton dans la fenêtre
         self.page.window.blit(self.surface, self.coords)
@@ -91,26 +109,33 @@ class Button:
         ))
 
     def get_height(self):
+        """
+        Retourne la hauteur du widget
+        """
         return self.surface.get_height()
 
     def get_width(self):
+        """
+        Retourne la largeur du widget
+        """
         return self.surface.get_width()
 
     def set_coords(self, x, y):
+        """
+        Définit les coordonnées du widget
+        """
         self.coords = (x, y)
 
     def check_coords(self, coords):
+        """
+        Renvoie True si les coordonnées en argument sont à l'intérieur la surface du widget
+        """
         if self.coords[0] < coords[0] < self.coords[0] + self.surface.get_width():
             if self.coords[1] < coords[1] < self.coords[1] + self.surface.get_height():
                 return True
 
-        return False
-
-    def disable(self):
-        pass
-
-    def enable(self):
-        pass
+        else:
+            return False
 
 class TextInput(Button):
     def __init__(self, page, loop, label, callback, max_length=20):
@@ -124,6 +149,9 @@ class TextInput(Button):
         self.content_surface = self.font.render(self.content, 0, constantes.RGB_WHITE)
 
     def set_focus(self):
+        """
+        Place le focus sur le widget
+        """
         self.loop.focus_on(self)
 
         self.focus = True
@@ -131,22 +159,33 @@ class TextInput(Button):
         self.text_surface = self.content_surface
 
     def remove_focus(self):
+        """
+        Retire le focus du widget
+        """
         self.focus = False
 
         if len(self.content) == 0:
             self.text_surface = self.label_surface
 
     def keydown(self, event):
+        """
+        Signale un évènement au widget
+        """
+
+        # Touches alphanumériques
         if chr(event.key) in constantes.KEYS and len(self.content) < self.max_length:
             self.content = self.content + chr(event.key)
 
+        # Touche pour effacer
         elif event.key == 8:
             if self.content:
                 self.content = self.content[:-1]
 
+        # Touche enter
         elif event.key == 13:
             self.page.submit()
 
+        # Mise à jour de la surface pygame pour le texte
         self.content_surface = self.font.render(self.content, 0, constantes.RGB_WHITE)
 
         self.text_surface = self.content_surface
@@ -176,11 +215,14 @@ class TextDisplay:
 
         self.update_text()
 
-        # Ajout du texte dans la boucle
+        # Ajout du widget dans la boucle
         self.loop.add_widget(self)
 
 
     def render(self):
+        """
+        Rendu du widget
+        """
 
         line_y = self.coords[1]
 
@@ -194,7 +236,7 @@ class TextDisplay:
 
     def get_height(self):
         """
-        Retourne la hauteur de la zone de texte
+        Retourne la hauteur du widget
         """
 
         height = 0
@@ -205,8 +247,12 @@ class TextDisplay:
         return height
 
     def get_width(self):
+        """
+        Retourne la largeur du widget
+        """
         max_width = 0
 
+        # La largeur du widget correspond à la largeur de la ligne la plus longue
         for surface in self.lines_surfaces:
             if surface.get_width() > max_width:
                 max_width = surface.get_width()
@@ -214,12 +260,18 @@ class TextDisplay:
         return max_width
 
     def set_coords(self, x, y):
+        """
+        Définit les coordonnées du widget
+        """
         self.coords = (x, y)
 
     def check_coords(self, event):
         return False
 
     def update_text(self):
+        """
+        Créé les surfaces pygame pour l'affichage du texte
+        """
         self.lines_surfaces = []
 
         # Construction des surfaces pygame pour chaque ligne

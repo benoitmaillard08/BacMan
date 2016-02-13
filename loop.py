@@ -88,9 +88,10 @@ class Loop:
 		Permet de supprimer tout le contenu d'une page de menu
 		"""
 		self.widgets = []
-		self.level = None
 		self.focus = None
-		self.container = None
+
+	def clear_level(self):
+		self.level = None
 
 	def focus_on(self, widget):
 		"""

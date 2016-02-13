@@ -36,7 +36,7 @@ class Game:
 		Passage au niveau suivant
 		"""
 		self.n_level += 1
-		self.loop.clear()
+		self.loop.clear_level()
 		menus.InGameMenu(self.window, self.loop, self)
 		self.level = Level(self, self.n_level, self.window, self.loop)
 
@@ -64,6 +64,9 @@ class Game:
 		"""
 		Fin de la partie
 		"""
+
+		self.loop.clear_level()
+
 		self.loop.page = menus.EndGameMenu(self.window, self.loop, self)
 
 
@@ -100,7 +103,6 @@ class Level:
 
 	def render(self):
 		"""Réalise le rendu graphique de tous les éléments du jeu"""
-		print("ok")
 
 		self.window.blit(self.background, (0, 0))
 		
@@ -124,6 +126,9 @@ class Level:
 		if 0 <= y < len(self.structure):
 			if 0 <= x < len(self.structure[int(y)]):
 				return self.structure[int(y)][int(x)]
+
+		else:
+			return None
 
 	def prepare_walls(self):
 		"""

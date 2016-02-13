@@ -29,6 +29,7 @@ class Menu:
         self.margin_top = 200
         self.margin_bottom = 100
 
+        self.loop.clear()
         self.content() # Définition du contenu
 
         # Affichage du contenu du conteneur
@@ -120,7 +121,7 @@ class GameMenu(Menu):
         self.container.add_widget(Button(self, self.loop, "Retour", lambda: self.next_page(MainMenu)))
 
     def launch_game(self):
-        self.loop.clear() # Suppression des boutons etc de la boucle
+        # self.loop.clear() # Suppression des boutons etc de la boucle
         game = process.Game(self.window, self.loop)
 
 
@@ -174,10 +175,10 @@ class HighscoresPage(Menu):
     """
     Classe créant la page affichant les highscores du jeu ET du joueur s'il est loggé.
     """
-    def __init__(self, window, loop):
-        Menu.__init__(self, window, loop)
+    def content(self):
+        self.container.add_widget(TextDisplay(self, self.loop, "En cours de développement"))
+        self.container.add_widget(Button(self, self.loop, "Retour", lambda: self.next_page(MainMenu)))
 
-        ### Elements ici
 
 class InGameMenu(Menu):
     def __init__(self, window, loop, game):
@@ -219,11 +220,8 @@ class EndGameMenu(Menu):
         Menu.__init__(self, window, loop)
 
     def content(self):
-        text = """
-        Jeu terminé !
-        Vous avez obtenu le score de {} points
-        et atteint le niveau {}
-        """.format(self.game.score, self.game.level.n_level)
-
+        text = """Jeu terminé !
+Vous avez obtenu le score de {} points
+et atteint le niveau {}""".format(self.game.score, self.game.level.n_level)
         self.container.add_widget(TextDisplay(self, self.loop, text))
-        self.container.add_widget(Button(self, self.loop, "Retour", self.next_page(GameMenu)))
+        self.container.add_widget(Button(self, self.loop, "Retour", lambda: self.next_page(GameMenu)))
