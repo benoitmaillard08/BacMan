@@ -38,6 +38,7 @@ CTRLS_TEXT = 'ressources/controls.txt'
 
 PLAYERS_DATAS = 'players.txt'
 SCORES = 'scores.txt'
+DATABASE = 'pacman_datas.sq3'
 
 
 
