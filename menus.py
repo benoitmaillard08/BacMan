@@ -7,7 +7,7 @@ from pygame.locals import *
 import constantes
 import loop
 from widget import *
-import data
+import database
 
 
 class Menu:
@@ -78,28 +78,28 @@ class LoginPage(Menu):
         self.container.add_widget(Button(self, self.loop, "Entrer", lambda : LoginPage.test(self)))
         self.container.add_widget(Button(self, self.loop, "Retour", lambda: self.next_page(MainMenu)))
 
-    def test(self, onRegisterPage=False):
+    # def test(self, onRegisterPage=False):
 
-        tested_infos = data.Register(self.pseudo.content, self.password.content).test_infos(onRegisterPage)
+    #     tested_infos = database.Register(self.pseudo.content, self.password.content).test_infos(onRegisterPage)
 
-        if  tested_infos == 'Logged':
-            # + message <Pseudo! Nous attendions ton retour ...>
-            self.next_page(GameMenu)
+    #     if  tested_infos == 'Logged':
+    #         # + message <Pseudo! Nous attendions ton retour ...>
+    #         self.next_page(GameMenu)
 
-        elif tested_infos == 'NotRegistered' and onRegisterPage == False:   # Test si l'utilisateur est déjà sur la page pour s'enregistrer
-            self.next_page(RegisterPage)
-            # + message <Veuillez vous enregistrer d'abord!>
+    #     elif tested_infos == 'NotRegistered' and onRegisterPage == False:   # Test si l'utilisateur est déjà sur la page pour s'enregistrer
+    #         self.next_page(RegisterPage)
+    #         # + message <Veuillez vous enregistrer d'abord!>
 
-        elif tested_infos == 'NewRegistered':
-            self.next_page(GameMenu)
-            # + message <Bienvenue Pseudo!>
-        elif tested_infos == 'TakenPassword':
-            # message d'alerte <Pseudo déjà utilisé>
-            pass
+    #     elif tested_infos == 'NewRegistered':
+    #         self.next_page(GameMenu)
+    #         # + message <Bienvenue Pseudo!>
+    #     elif tested_infos == 'TakenPassword':
+    #         # message d'alerte <Pseudo déjà utilisé>
+    #         pass
 
-        else:
-            # Message d'erreur <Mauvais MdP!>
-            pass
+    #     else:
+    #         # Message d'erreur <Mauvais MdP!>
+    #         pass
             
 
 class RegisterPage(Menu):
