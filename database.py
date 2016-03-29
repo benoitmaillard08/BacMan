@@ -16,18 +16,18 @@ class Database:
 
         try:    #Test de création des tables Players et Scores, pour éviter l'erreur si le programme a déjà été lancé une fois.
             self.cur.execute("""CREATE TABLE Players (      
-                playerID INT PRIMARY KEY AUTO_INCREMENT,
+                playerID INTEGER PRIMARY KEY AUTOINCREMENT,
                 pseudo VARCHAR(16) NOT NULL,
                 password VARCHAR(16) NOT NULL)
                 """)
             self.cur.execute("""CREATE TABLE Scores (
-                scoreID INT PRIMARY KEY AUTO_INCREMENT,
+                scoreID INTEGER PRIMARY KEY AUTOINCREMENT,
                 pseudo VARCHAR(16) NOT NULL,
-                score INT,
-                date DATE AUTO_INCREMENT)
+                score INTEGER,
+                date DATETIME)
                 """)
         except:
-            break # Rien n'est fait, vu que les tables ont déjà été créées.
+            pass # Rien n'est fait, vu que les tables ont déjà été créées.
         else:
             self.conn.commit()  #Les nouvelles tables sont enregistrées
 
@@ -37,8 +37,9 @@ class Database:
         newPlayer(str pseudo, str mdp) --> None.
         Permet d'enregistrer un nouveau joueur dans la base de données.
         """
-        self.cur.execute("INSERT INTO Players(pseudo, password) VALUES (''"+ str(pseudo) + "'',''" + str(mdp) + "'');")
+        self.cur.execute("INSERT INTO Players(pseudo, password) VALUES ('{}','{}');".format(pseudo, mdp))
         self.conn.commit()
+        print('Nouveau joueur enregistré')
         
 
     def testPlayer(self, pseudo, mdp):
@@ -49,24 +50,39 @@ class Database:
         - Joueur enregistré mais mauvais MdP : 1
         - Joueur non-enregistré : 2
         """
-        pass
+        self.cur.execute("SELECT * FROM Players")
+        players_list = self.cur.fetchall() #Tous les joueurs enregistrés sont regroupés dans cette liste, sous forme de tuples
+        flag = 2 #Le flag est défini comme si le joueur n'était pas encore enregistré
+        for elt in players_list:
+            if elt[1] == pseudo and elt[2] == mdp:
+                flag = 0    #Le joueur est déjà enregistré et le mdp correspond
+            elif elt[1] == pseudo and elt[2] != mdp:
+                flag = 1
+                
+        return flag
 
     def newScore(self, pseudo, score):
         """
         newScore(str pseudo, int score) --> None.
         Permet d'entrer un nouveau score dans la table des scores, avec une auto-implémentation de la date.
         """
-        pass
+        self.cur.execute("INSERT INTO Scores(pseudo, score) VALUES ('{}', {});".format(pseudo, score))
+        self.conn.commit()
 
     def getScores(self, pseudo=None):
         """
         mewScore(str pseudo) --> list.
-        Permet d'obtenir la liste des 5 meilleurs scores, soit de tous les joueurs, soit du joueur <pseudo>.
+        Permet d'obtenir la liste des 5 meilleurs scores, soit de tous les joueurs ('*'), soit du joueur <pseudo>.
         La méthode retourne une liste de tuple, contenant le pseudo, le score et la date des records.
         """
-        pass
+        if pseudo:
+            self.cur.execute("SELECT * FROM Scores WHERE pseudo = '{}' ORDER BY score DESC".format(pseudo))
+        else:
+            self.cur.execute("SELECT * FROM Scores ORDER BY score DESC")
+            
+        scores_list = self.cur.fetchall()
+        while len(scores_list) > 5:
+            del scores_list[-1]
+        
+        return scores_list
 
-
-##### MAIN #####
-
-Database()
