@@ -77,29 +77,6 @@ class LoginPage(Menu):
         self.password = self.container.add_widget(TextInput(self, self.loop, "Password", None))
         self.container.add_widget(Button(self, self.loop, "Entrer", lambda : LoginPage.test(self)))
         self.container.add_widget(Button(self, self.loop, "Retour", lambda: self.next_page(MainMenu)))
-
-    # def test(self, onRegisterPage=False):
-
-    #     tested_infos = database.Register(self.pseudo.content, self.password.content).test_infos(onRegisterPage)
-
-    #     if  tested_infos == 'Logged':
-    #         # + message <Pseudo! Nous attendions ton retour ...>
-    #         self.next_page(GameMenu)
-
-    #     elif tested_infos == 'NotRegistered' and onRegisterPage == False:   # Test si l'utilisateur est déjà sur la page pour s'enregistrer
-    #         self.next_page(RegisterPage)
-    #         # + message <Veuillez vous enregistrer d'abord!>
-
-    #     elif tested_infos == 'NewRegistered':
-    #         self.next_page(GameMenu)
-    #         # + message <Bienvenue Pseudo!>
-    #     elif tested_infos == 'TakenPassword':
-    #         # message d'alerte <Pseudo déjà utilisé>
-    #         pass
-
-    #     else:
-    #         # Message d'erreur <Mauvais MdP!>
-    #         pass
             
 
 class RegisterPage(Menu):
@@ -143,40 +120,24 @@ class CtrlsPage(Menu):
         self.container.add_widget(TextDisplay(self, self.loop, controls_text))
         self.container.add_widget(Button(self, self.loop, "Retour", lambda: self.next_page(GameMenu)))
 
-    # def display(self):
-    #     """
-    #     Affichage du texte et des images expliquant les contrôles du jeu.
-    #     """
-    #     #Chargement et placement du titre
-    #     font = pygame.font.Font(constantes.MENUFONT_DIR, constantes.MENUFONT_SIZE)
-    #     size = font.size(constantes.RULES_TITLE)[0]
-    #     title = font.render(constantes.RULES_TITLE, 0, constantes.RGB_WHITE)
-    #     self.window.blit(title, ((self.window.get_width()//2 - size//2), 225))
-
-    #     #Chargement et placement des zones de textes
-    #     font = pygame.font.Font(constantes.TEXTFONT_DIR, constantes.TEXTFONT_SIZE)
-    #     size = []
-    #     line = 325 #Coordonnée Y de la première ligne
-    #     i = 0
-    #     for elt in constantes.CTRLS_TEXT: 
-
-    #         size.append(font.size(elt)[0]) # Enregistrement des tailles des zones de texte dans la liste <size>
-    #         render = font.render(elt, 0, constantes.RGB_WHITE) # Rendu du texte à ses coordonnées
-    #         self.window.blit(render, (self.window.get_width()//2 - size[i], line))
-
-    #         # Chargement et placement des images
-    #         pic = pygame.image.load(constantes.CTRLS_PIC_DIR[i]).convert_alpha()
-    #         self.window.blit(pic,(self.window.get_width()//2+84-pic.get_rect()[2]//2, line-(pic.get_rect()[3]//3))) # Placé de façon à être à la même hauteur que le texte
-    #         line += 100                             #/\ se place par rapport à la largeur de la plus grosse image
-    #         i += 1
-
 
 class HighscoresPage(Menu):
     """
-    Classe créant la page affichant les highscores du jeu ET du joueur s'il est loggé.
+    Classe créant la page affichant les highscores du jeu ou du joueur s'il est loggé.
     """
     def content(self):
-        self.container.add_widget(TextDisplay(self, self.loop, "En cours de développement"))
+        scores_list = database.Database().getScores()
+        toDisplay = 'Rang    Pseudo    Score    Date\n\n'
+        rang = 1
+        if len(scores_list) == 0:
+            toDisplay += "Pas de score, à toi de jouer!"
+        else:
+            for elt in scores_list:
+                toDisplay += str(rang) +'      '+str(elt[1])+"    "+str(elt[2])+"      "+str(elt[3])+'\n'
+                rang += 1
+
+
+        self.container.add_widget(TextDisplay(self, self.loop, toDisplay))
         self.container.add_widget(Button(self, self.loop, "Retour", lambda: self.next_page(MainMenu)))
 
 
