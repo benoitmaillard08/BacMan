@@ -10,6 +10,7 @@ class Loop:
 	def __init__(self, level=None):
 		self.window_opened = True
 		self.level = level
+		self.player = "blm08"
 		self.loop_running = False
 
 		self.widgets = []
@@ -40,34 +41,39 @@ class Loop:
 				if event.type == pygame.QUIT:
 					self.window_opened = False
 
-				# Gestion des cliqs
-				elif event.type == pygame.MOUSEBUTTONDOWN:
-					if event.button == 1: # Clic gauche
-						if self.focus: # Si un widget a le focus, le focus lui est retiré
-							self.focus.remove_focus()
-							self.focus = None
+				else:
+					self.page.event(event)
 
-						for widget in self.widgets:
-							if widget.check_coords(event.pos): # On regarde si le cliq est dans le bouton
-								widget.action() # Exécution de l'action associée au bouton
-								break
+				# # Gestion des cliqs
+				# elif event.type == pygame.MOUSEBUTTONDOWN:
+				# 	print("TEST")
+				# 	if event.button == 1: # Clic gauche
+				# 		if self.focus: # Si un widget a le focus, le focus lui est retiré
+				# 			self.focus.remove_focus()
+				# 			self.focus = None
 
-				# Gestion des touches du clavier
-				elif event.type == pygame.KEYDOWN:
-					if self.level: # Si un niveau est lancé
-						if event.key in ARROW_KEYS: # Changement de direction de pacman
-							self.level.pacman.change_direction(ARROW_KEYS[event.key])
+				# 		for widget in self.widgets:
+				# 			if widget.check_coords(event.pos): # On regarde si le cliq est dans le bouton
+				# 				widget.action() # Exécution de l'action associée au bouton
+				# 				break
 
-						# Touche P enfoncée --> pause / relance
-						if event.key == 112:
-							if not self.level.pause:
-								self.level.pause = True
-							else:
-								self.level.pause = False
+				# # Gestion des touches du clavier
+				# elif event.type == pygame.KEYDOWN:
+				# 	if self.level: # Si un niveau est lancé
+				# 		if event.key in ARROW_KEYS: # Changement de direction de pacman
+				# 			self.level.pacman.change_direction(ARROW_KEYS[event.key])
 
-					else: # Transmission des touches enfoncées pour les champs de formulaire
-						if self.focus:
-							self.focus.keydown(event)
+				# 		# Touche P enfoncée --> pause / relance
+				# 		if event.key == 112:
+				# 			print("TEST")
+				# 			if not self.level.pause:
+				# 				self.level.pause = True
+				# 			else:
+				# 				self.level.pause = False
+
+				# 	else: # Transmission des touches enfoncées pour les champs de formulaire
+				# 		if self.focus:
+				# 			self.focus.keydown(event)
 
 			t2 = time.clock() # Fin du chrono de l'itération
 

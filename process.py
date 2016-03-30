@@ -5,77 +5,12 @@ from shortcuts import *
 import time
 import menus
 
-""" Gestion du processus 'In Game' du jeu >BacMan the baccalaureates Adventure!< """
-
-class Game:
-	"""
-	Classe permettant la gestion du déroulement de la partie
-	"""
-	def __init__(self, window, loop):
-		self.n_level = 0
-
-		self.lives = 3
-		self.score = 0
-		self.window = window
-		self.loop = loop
-
-		self.next_level() # Lancement du premier niveau
-
-	def end_level(self):
-		"""
-		Prépare le message d'info à la fin du niveau
-		"""
-
-		# Menu de fin de niveau
-		self.loop.page = menus.NextLevelMenu(self.window, self.loop, self)
-
-		self.level = None
-
-	def next_level(self):
-		"""
-		Passage au niveau suivant
-		"""
-		self.n_level += 1
-		self.loop.clear_level()
-		menus.InGameMenu(self.window, self.loop, self)
-		self.level = Level(self, self.n_level, self.window, self.loop)
-
-	def update_score(self, points):
-		"""
-		Mise à jour du score
-		"""
-		self.score += points
-
-		self.loop.page.update_score()
-
-	def update_lives(self):
-		"""
-		Mise à jour du nombre de vies
-		"""
-		self.lives -= 1
-
-		self.loop.page.update_lives()
-
-		# Lorsque les vies du joueur atteignent 0, le jeu est fini
-		if self.lives == 0:	
-			self.end_game()
-
-	def end_game(self):
-		"""
-		Fin de la partie
-		"""
-
-		self.loop.clear_level()
-
-		self.loop.page = menus.EndGameMenu(self.window, self.loop, self)
-
-
 class Level:
 	"""Classe permettant de créer un niveau"""
 
-	def __init__(self, game, n_level, window, loop):
+	def __init__(self, master, n_level, window, loop):
 
-		self.game = game
+		self.master = master
 		self.n_level = n_level # Numéro du level
 		self.window = window
 		self.background = pygame.image.load(GAME_BACKGROUND)

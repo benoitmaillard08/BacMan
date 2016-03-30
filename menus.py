@@ -21,29 +21,21 @@ class Menu:
 
         self.background = pygame.image.load(constantes.PATH_PIC_PAGES).convert()
 
-        self.container = Container(self, self.loop)
+        self.container = Container(self, 200, 100)
+
+        self.event_widgets = [] # Liste contenant tous les widgets liés à des évènements
 
         self.loop.page = self
+        self.focus = None
 
-        # Marges du conteneur
-        self.margin_top = 200
-        self.margin_bottom = 100
+        # Ajoute un widget pour que le pseudo du joueur apparaisse sur toutes les pages du menu
+        # self.pseudo = self.add_widget(TextDisplay(self, self.loop, "Connecté en tant que {}".format(self.loop.player)))
 
-        self.loop.clear()
-        self.content() # Définition du contenu
+    def next_page(self, page, *args, **kwargs):
+        page(self.window, self.loop, *args, **kwargs) # Instanciation de la page
 
-        # Affichage du contenu du conteneur
-        self.container.set_margin(self.margin_top, self.margin_bottom)
-        self.container.calculate_coords()
-
-        # Lancement de la boucle d'évènement si celle-ci est arrêtée
-        if not self.loop.loop_running:
-            self.loop.run_loop()
-
-    def next_page(self, page):
-        self.loop.clear() # Suppression des boutons etc de la boucle
-
-        page(self.window, self.loop) # Instanciation de la page
+    def tic(self):
+        self.render()
 
     def render(self):
         if self.background:
@@ -51,32 +43,73 @@ class Menu:
 
         self.container.render()
 
+    def add_widget(self, widget):
+        if widget.event:
+            self.event_widgets.append(widget)
+
+        # Tous les widgets sont ajoutés au container 
+        self.container.add_widget(widget)
+
+        return widget
+
+    def event(self, event):
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button == 1: # Clic gauche
+                if self.focus: # Si un widget a le focus, le focus lui est retiré
+                    self.focus.remove_focus()
+                    self.focus = None
+
+                for widget in self.event_widgets:
+                    if widget.check_coords(event.pos): # On regarde si l'utilisateur a cliqué sur un widget
+                        widget.action()
+                        break
+
+        elif event.type == pygame.KEYDOWN:
+            # Si un widget a le focus sur la page
+            if self.focus:
+                self.focus.keydown(event)
+
+            else:
+                self.keydown(event)
+
+    def keydown(self, event):
+        pass
+
+    def focus_on(self, widget):
+        self.focus = widget
+
 class MainMenu(Menu):
-    def content(self):
+    def __init__(self, *args, **kwargs):
+        Menu.__init__(self, *args, **kwargs)
         # Changement du fond
         self.background = pygame.image.load(constantes.PATH_PIC_MAIN_MENU).convert()
         
         # Marges du haut et du bas pour le conteneur (espace occupé par des éléments du fonds)
-        self.margin_top = 260
-        self.margin_bottom = 100
+        self.container.set_margin(260, 100)
 
         # Widgets de la page
-        self.container.add_widget(Button(self, self.loop, "Connexion", lambda: self.next_page(LoginPage)))
-        self.container.add_widget(Button(self, self.loop, "Inscription", lambda: self.next_page(RegisterPage)))
-        self.container.add_widget(Button(self, self.loop, "Top Scores", lambda: self.next_page(HighscoresPage)))
-        self.container.add_widget(Button(self, self.loop, "Quitter", self.loop.close_window))
-        self.container.add_widget(Button(self, self.loop, "Jeu direct", lambda: self.next_page(GameMenu))) #Bouton momentané
+        self.add_widget(Button(self, self.loop, "Connexion", lambda: self.next_page(LoginPage)))
+        self.add_widget(Button(self, self.loop, "Inscription", lambda: self.next_page(RegisterPage)))
+        self.add_widget(Button(self, self.loop, "Top Scores", lambda: self.next_page(HighscoresPage)))
+        self.add_widget(Button(self, self.loop, "Quitter", self.loop.close_window))
+        self.add_widget(Button(self, self.loop, "Jeu direct", lambda: self.next_page(GameMenu))) #Bouton momentané
+
+        # Lancement de la boucle d'évènement si celle-ci n'a pas encore été lancée (ouverture du programme)
+        if not self.loop.loop_running:
+            self.loop.run_loop()
 
 class LoginPage(Menu):
     """
     Classe créant la page permettant à un joueur existant de se logger.
     """
 
-    def content(self):
-        self.pseudo = self.container.add_widget(TextInput(self, self.loop, "Pseudo", None))
-        self.password = self.container.add_widget(TextInput(self, self.loop, "Password", None))
-        self.container.add_widget(Button(self, self.loop, "Entrer", lambda : LoginPage.test(self)))
-        self.container.add_widget(Button(self, self.loop, "Retour", lambda: self.next_page(MainMenu)))
+    def __init__(self, *args, **kwargs):
+        Menu.__init__(self, *args, **kwargs)
+
+        self.pseudo = self.add_widget(TextInput(self, self.loop, "Pseudo", None))
+        self.password = self.add_widget(PasswordInput(self, self.loop, "Password", None))
+        self.add_widget(Button(self, self.loop, "Entrer", lambda : LoginPage.test(self)))
+        self.add_widget(Button(self, self.loop, "Retour", lambda: self.next_page(MainMenu)))
 
     def test(self, onRegisterPage=False):
 
@@ -106,42 +139,45 @@ class RegisterPage(Menu):
     """
     Classe créant la page permettant à un nouveau joueur de créer un nouveau profil.
     """
-    def content(self):
+    def __init__(self, *args, **kwargs):
+        Menu.__init__(self, *args, **kwargs)
 
-        self.pseudo = self.container.add_widget(TextInput(self, self.loop, "Pseudo", None))
-        self.password = self.container.add_widget(TextInput(self, self.loop, "Password", None))
-        self.container.add_widget(Button(self, self.loop, "Entrer", lambda : LoginPage.test(self, onRegisterPage=True)))
-        self.container.add_widget(Button(self, self.loop, "Retour", lambda: self.next_page(MainMenu)))
+        self.pseudo = self.add_widget(TextInput(self, self.loop, "Pseudo", None))
+        self.password = self.add_widget(PasswordInput(self, self.loop, "Password", None))
+        self.add_widget(Button(self, self.loop, "Entrer", lambda : LoginPage.test(self, onRegisterPage=True)))
+        self.add_widget(Button(self, self.loop, "Retour", lambda: self.next_page(MainMenu)))
 
 class GameMenu(Menu):
-    def content(self):
-        self.container.add_widget(Button(self, self.loop, "Jouer", self.launch_game))
-        self.container.add_widget(Button(self, self.loop, "Controles", lambda: self.next_page(CtrlsPage)))
-        self.container.add_widget(Button(self, self.loop, "Regles", lambda: self.next_page(RulesPage)))
-        self.container.add_widget(Button(self, self.loop, "Retour", lambda: self.next_page(MainMenu)))
+    def __init__(self, *args, **kwargs):
+        Menu.__init__(self, *args, **kwargs)
 
-    def launch_game(self):
-        # self.loop.clear() # Suppression des boutons etc de la boucle
-        game = process.Game(self.window, self.loop)
+        self.add_widget(Button(self, self.loop, "Jouer", lambda: self.next_page(InGameMenu)))
+        self.add_widget(Button(self, self.loop, "Controles", lambda: self.next_page(CtrlsPage)))
+        self.add_widget(Button(self, self.loop, "Regles", lambda: self.next_page(RulesPage)))
+        self.add_widget(Button(self, self.loop, "Retour", lambda: self.next_page(MainMenu)))
 
 
 class RulesPage(Menu):
-    def content(self):
+    def __init__(self, *args, **kwargs):
+        Menu.__init__(self, *args, **kwargs)
+
         rules_text = open(constantes.RULES_TEXT, 'r').read()
 
-        self.container.add_widget(TextDisplay(self, self.loop, rules_text))
-        self.container.add_widget(Button(self, self.loop, "Retour", lambda: self.next_page(GameMenu)))
+        self.add_widget(TextDisplay(self, self.loop, rules_text))
+        self.add_widget(Button(self, self.loop, "Retour", lambda: self.next_page(GameMenu)))
 
 
 class CtrlsPage(Menu):
     """
     Classe créant la page d'explication des contrôles du jeu
     """
-    def content(self):
+    def __init__(self, *args, **kwargs):
+        Menu.__init__(self, *args, **kwargs)
+
         controls_text = open(constantes.CTRLS_TEXT, 'r').read()
 
-        self.container.add_widget(TextDisplay(self, self.loop, controls_text))
-        self.container.add_widget(Button(self, self.loop, "Retour", lambda: self.next_page(GameMenu)))
+        self.add_widget(TextDisplay(self, self.loop, controls_text))
+        self.add_widget(Button(self, self.loop, "Retour", lambda: self.next_page(GameMenu)))
 
     # def display(self):
     #     """
@@ -175,53 +211,93 @@ class HighscoresPage(Menu):
     """
     Classe créant la page affichant les highscores du jeu ET du joueur s'il est loggé.
     """
-    def content(self):
-        self.container.add_widget(TextDisplay(self, self.loop, "En cours de développement"))
-        self.container.add_widget(Button(self, self.loop, "Retour", lambda: self.next_page(MainMenu)))
+    def __init__(self, *args, **kwargs):
+        Menu.__init__(self, *args, **kwargs)
+
+        self.add_widget(TextDisplay(self, self.loop, "En cours de développement"))
+        self.add_widget(Button(self, self.loop, "Retour", lambda: self.next_page(MainMenu)))
 
 
 class InGameMenu(Menu):
-    def __init__(self, window, loop, game):
-        self.game = game
+    def __init__(self, window, loop, game_data={"score" : 0, "lives": 3, "n_level": 1}):
         Menu.__init__(self, window, loop)
 
-    def content(self):
-        self.margin_top = 672
-        self.margin_bottom = 0
+        self.container.set_margin(672, 10)
 
-        self.score = self.container.add_widget(TextDisplay(self, self.loop, "Score : {}".format(self.game.score)))
-        self.lives = self.container.add_widget(TextDisplay(self, self.loop, "Vies restantes : {}".format(self.game.lives)))
+        self.game_data = game_data
+
+        self.score_widget = self.add_widget(TextDisplay(self, self.loop, "Score : {}".format(self.game_data["score"])))
+        self.lives_widget = self.add_widget(TextDisplay(self, self.loop, "Vies restantes : {}".format(self.game_data["lives"])))
 
         self.background = None
 
-    def update_score(self):
-        self.score.text = "Score : {}".format(self.game.score)
-        self.score.update_text()
+        self.level = process.Level(self, self.game_data["n_level"], window, loop)
+
+    def update_score(self, points):
+        self.game_data["score"] += points
+
+        self.score_widget.text = "Score : {}".format(self.game_data["score"])
+        self.score_widget.update_text()
 
     def update_lives(self):
-        self.lives.text = "Vies restantes : {}".format(self.game.lives)
-        self.lives.update_text()
+        self.game_data["lives"] -= 1
+
+        if self.game_data["lives"] == 0:
+            self.next_page(EndGameMenu, self.game_data)
+
+        else:
+            self.lives_widget.text = "Vies restantes : {}".format(self.game_data["lives"])
+            self.lives_widget.update_text()
+
+    def keydown(self, event):
+        if event.key in constantes.ARROW_KEYS:
+            self.level.pacman.change_direction(constantes.ARROW_KEYS[event.key])
+
+        elif event.key == 112:
+            if not self.level.pause:
+                self.pause()
+            else:
+                self.resume()
+
+    def tic(self):
+        self.level.game_tic()
+
+        self.render()
+
+    def end_level(self):
+        self.next_page(NextLevelMenu, self.game_data)
+
+    def pause(self):
+        pass
+
+    def resume(self):
+        pass
+
 
 
 class NextLevelMenu(Menu):
-    def __init__(self, window, loop, game):
-        self.game = game
-
+    def __init__(self, window, loop, game_data):
         Menu.__init__(self, window, loop)
 
-    def content(self):
-        self.container.add_widget(TextDisplay(self, self.loop, "Bravo ! Vous avez réussi le niveau {}".format(self.game.level.n_level)))
-        self.container.add_widget(Button(self, self.loop, "Continuer", self.game.next_level))
+        self.game_data = game_data
+
+        self.add_widget(TextDisplay(self, self.loop, "Bravo ! Vous avez réussi le niveau {}".format(self.game_data["n_level"])))
+        self.add_widget(Button(self, self.loop, "Continuer", self.next_level))
+
+    def next_level(self):
+        self.game_data["n_level"] += 1
+
+        self.next_page(InGameMenu, self.game_data)
 
 class EndGameMenu(Menu):
-    def __init__(self, window, loop, game):
-        self.game = game
-
+    def __init__(self, window, loop, game_data):
         Menu.__init__(self, window, loop)
 
-    def content(self):
+        self.game_data = game_data
+
         text = """Jeu terminé !
 Vous avez obtenu le score de {} points
-et atteint le niveau {}""".format(self.game.score, self.game.level.n_level)
-        self.container.add_widget(TextDisplay(self, self.loop, text))
-        self.container.add_widget(Button(self, self.loop, "Retour", lambda: self.next_page(GameMenu)))
+et atteint le niveau {}""".format(self.game_data["score"], self.game_data["n_level"])
+
+        self.add_widget(TextDisplay(self, self.loop, text))
+        self.add_widget(Button(self, self.loop, "Retour", lambda: self.next_page(GameMenu)))

@@ -60,7 +60,7 @@ class StandardSquare(Square):
 			self.level.n_pills -= 1
 
 			if self.level.n_pills == 0:
-				self.level.game.end_level()
+				self.level.master.end_level()
 
 	def render(self):
 		"""
@@ -114,7 +114,7 @@ class StandardPill(Pill):
 		"""
 		Augmente le score de la partie du nombre de points de la pastille
 		"""
-		self.level.game.update_score(self.points)
+		self.level.master.update_score(self.points)
 
 class PowerPill(Pill):
 	def __init__(self, level):
@@ -312,7 +312,7 @@ class PacMan(Char):
 					for ghost in self.level.ghosts:
 						ghost.reset()
 
-					self.level.game.update_lives() # Le nombre de vies de pacman est mis à jour
+					self.level.master.update_lives() # Le nombre de vies de pacman est mis à jour
 
 				break
 

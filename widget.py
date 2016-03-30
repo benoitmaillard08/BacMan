@@ -8,9 +8,8 @@ class Container:
     Classe créant un conteneur de boutons pour que ceux-ci soient centrés horizontalement et verticalement
     """
 
-    def __init__(self, page, loop, margin_top=0, margin_bottom=0):
+    def __init__(self, page, margin_top=0, margin_bottom=0):
         self.page = page
-        self.loop = loop
 
         self.margin_top = margin_top
         self.margin_bottom = margin_bottom
@@ -22,6 +21,8 @@ class Container:
         Ajoute un widget au container
         """
         self.l_widgets.append(widget)
+
+        self.calculate_coords()
 
         return widget
 
@@ -77,6 +78,7 @@ class Button:
         self.page = page    # variable 'background' de la classe 'MainMenu'
         self.action = callback # fonction à exécuter lors du clic sur le bouton
         self.loop = loop
+        self.event = True
 
         # Chargement de la texture du bouton
         self.surface = pygame.image.load(directory).convert_alpha()
@@ -86,9 +88,6 @@ class Button:
         self.label_surface = self.font.render(self.label, 0, constantes.RGB_WHITE)
 
         self.text_surface = self.label_surface
-
-        # Ajout du bouton dans la boucle pour que celle-ci détecte les clics sur le bouton
-        self.loop.add_widget(self)
 
     def render(self):
         """
@@ -138,7 +137,7 @@ class Button:
             return False
 
 class TextInput(Button):
-    def __init__(self, page, loop, label, callback, max_length=20):
+    def __init__(self, page, loop, label, callback, max_length=15):
         Button.__init__(self, page, loop, label, callback)
 
         # Lors d'un cliq sur le champ, ce dernier obtient le focus
@@ -152,9 +151,8 @@ class TextInput(Button):
         """
         Place le focus sur le widget
         """
-        self.loop.focus_on(self)
 
-        self.focus = True
+        self.page.focus_on(self)
 
         self.text_surface = self.content_surface
 
@@ -162,7 +160,6 @@ class TextInput(Button):
         """
         Retire le focus du widget
         """
-        self.focus = False
 
         if len(self.content) == 0:
             self.text_surface = self.label_surface
@@ -171,7 +168,6 @@ class TextInput(Button):
         """
         Signale un évènement au widget
         """
-
         # Touches alphanumériques
         if chr(event.key) in constantes.KEYS and len(self.content) < self.max_length:
             self.content = self.content + chr(event.key)
@@ -182,16 +178,28 @@ class TextInput(Button):
                 self.content = self.content[:-1]
 
         # Touche enter
-        elif event.key == 13:
-            self.page.submit()
+        #elif event.key == 13:
+        #    self.page.submit()
 
+        self.update_text()
+
+
+    def update_text(self):
         # Mise à jour de la surface pygame pour le texte
         self.content_surface = self.font.render(self.content, 0, constantes.RGB_WHITE)
 
         self.text_surface = self.content_surface
 
 class PasswordInput(TextInput):
-    pass
+    def update_text(self):
+
+        # Chaîne de la longueur du contenu du champ avec des *
+        self.string = "*" * len(self.content)
+
+        # Mise à jour de la surface avec les ***
+        self.content_surface = self.font.render(self.string, 0, constantes.RGB_WHITE)
+
+        self.text_surface = self.content_surface
 
 
 class TextDisplay:
@@ -210,14 +218,12 @@ class TextDisplay:
         self.loop = loop
         self.text = text
 
+        self.event = False
+
         # Chargement de la police + taille de la police
         self.font = pygame.font.Font(constantes.TEXTFONT_DIR, constantes.TEXTFONT_SIZE)
 
         self.update_text()
-
-        # Ajout du widget dans la boucle
-        self.loop.add_widget(self)
-
 
     def render(self):
         """
