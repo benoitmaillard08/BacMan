@@ -329,9 +329,9 @@ class Ghost(Char):
 
 		self.pictures = []
 
-		# Chargement des images correspondant aux différents stades d'animation
+	def load_picture(self):
 		for n in range(1, 7):
-			self.pictures.append(load_terrain(GHOST_PATTERN.format(n)))
+			self.pictures.append(load_terrain(GHOST_PATTERN.format(self.name, n)))
 
 		self.n_frame = 0
 
@@ -396,10 +396,35 @@ class Ghost(Char):
 		"""
 		self.pause = time
 
-class Blinky(Ghost): pass
+class Blinky(Ghost):
+	def __init__(self, *args, **kwargs):
+		Ghost.__init__(self, *args, **kwargs)
 
-class Pinky(Ghost): pass
+		self.name = "blinky"
 
-class Clyde(Ghost): pass
+		self.load_picture()
 
-class Inky(Ghost): pass
+class Pinky(Ghost):
+	def __init__(self, *args, **kwargs):
+		Ghost.__init__(self, *args, **kwargs)
+
+		self.name = "pinky"
+		print("test")
+
+		self.load_picture()
+
+class Clyde(Ghost):
+	def __init__(self, *args, **kwargs):
+		Ghost.__init__(self, *args, **kwargs)
+
+		self.name = "clyde"
+
+		self.load_picture()
+
+class Inky(Ghost):
+	def __init__(self, *args, **kwargs):
+		Ghost.__init__(self, *args, **kwargs)
+
+		self.name = "inky"
+
+		self.load_picture()

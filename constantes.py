@@ -16,28 +16,20 @@ BONUS_PILL = "B"
 # Menu
 WINDOW_X = 800 #pixels
 WINDOW_Y = 800
-PATH_PIC_MAIN_MENU = "ressources/main_menu.png"
-PATH_PIC_BUTTON = "ressources/button_2.png"
-PATH_PIC_EMPTY_BUTTON = "ressources/empty_button.png"
+PATH_PIC_MAIN_MENU = "ressources/pictures/menus/main_menu.png"
+PATH_PIC_BUTTON = "ressources/pictures/menus/button_2.png"
+PATH_PIC_EMPTY_BUTTON = "ressources/pictures/menus/empty_button.png"
 
 ####Pages####
-PATH_PIC_PAGES = "ressources/pages_bg.png"
+PATH_PIC_PAGES = "ressources/pictures/menus/pages_bg.png"
 
 #Règles
 RULES_TITLE = 'Reglement'
-RULES_TEXT = 'ressources/rules.txt'
+RULES_TEXT = 'ressources/texts/rules.txt'
 
-CTRLS_TEXT = 'ressources/controls.txt'
-
-#Contrôles
-# CTRLS_TEXT = ['Contrôles =','Pause =', 'Quitter =']
-# CTRLS_PIC_DIR = ['ressources/arrow_keys.png','ressources/p_key.png','ressources/esc_key.png']
-#############
+CTRLS_TEXT = 'ressources/texts/controls.txt'
 
 # Base(s) de données
-
-PLAYERS_DATAS = 'players.txt'
-SCORES = 'scores.txt'
 DATABASE = 'pacman_datas.sq3'
 
 
@@ -47,12 +39,12 @@ DATABASE = 'pacman_datas.sq3'
 
 
 
-#Postions boutons (Tuples)
+# Postions boutons (Tuples)
 POS_BUT = (100, 400)
 
-# Chemin Police
-MENUFONT_DIR = "ressources/8bit_font.ttf"
-TEXTFONT_DIR = "ressources/monofonto.ttf"
+# Polices
+MENUFONT_DIR = "ressources/fonts/8bit_font.ttf"
+TEXTFONT_DIR = "ressources/fonts/monofonto.ttf"
 
 MENUFONT_SIZE = 40 #pixels
 TEXTFONT_SIZE = 25
@@ -79,7 +71,7 @@ FILENAME_PATTERN = "n{}.level"
 WALLS_PATTERN = "wall-{}"
 PACMAN_PATTERN = "pacman-{} {}"
 FRUIT_PATTERN = "fruit {}"
-GHOST_PATTERN = "ghost {}"
+GHOST_PATTERN = "ghost-{} {}"
 
 #-----------------------------------
 
