@@ -2,6 +2,7 @@
 
 import sqlite3
 import constantes
+import time
 
 class Database:
     "Classe gérant les entrées et sorties de la base de données du jeu"
@@ -26,7 +27,8 @@ class Database:
                 scoreID INTEGER PRIMARY KEY AUTOINCREMENT,
                 pseudo VARCHAR(16) NOT NULL,
                 score INTEGER,
-                date DATETIME)
+                level INTEGER,
+                datetime DATETIME)
                 """)
         except:
             pass # Rien n'est fait, vu que les tables ont déjà été créées.
@@ -62,12 +64,12 @@ class Database:
                 
         return flag
 
-    def newScore(self, pseudo, score):
+    def newScore(self, pseudo, score, level):
         """
         newScore(str pseudo, int score) --> None.
         Permet d'entrer un nouveau score dans la table des scores, avec une auto-implémentation de la date.
         """
-        self.cur.execute("INSERT INTO Scores(pseudo, score) VALUES (?, ?);", (pseudo, score))
+        self.cur.execute("INSERT INTO Scores(pseudo, score, level, datetime) VALUES (?, ?, ?, ?);", (pseudo, score, level, time.strftime("%Y-%m-%d")))
         self.conn.commit()
 
     def getScores(self, pseudo=None):

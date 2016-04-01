@@ -295,8 +295,8 @@ class InGameMenu(Menu):
     def end_game(self):
         self.pause_game()
         db = database.Database()
-        # Enregistrement du score dans la base de données
-        db.newScore(self.user, self.game_data["score"])
+        # Enregistrement du score et du niveau dans la base de données
+        db.newScore(self.user, self.game_data["score"], self.game_data["n_level"])
         db.close() # Fermeture de la connexion à la db
 
         # Affichage du message de fin de partie
