@@ -6,7 +6,7 @@
 #                       Créé par                      #
 #        Benoît Léo Maillard & Mikaël Ruffieux        #
 #                        -----                        #
-#                      version 0.1                    #
+#                      version 0.8                    #
 #                                                     #
 #######################################################
 

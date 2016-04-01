@@ -18,7 +18,9 @@ class Database:
             self.cur.execute("""CREATE TABLE Players (      
                 playerID INTEGER PRIMARY KEY AUTOINCREMENT,
                 pseudo VARCHAR(16) NOT NULL,
-                password VARCHAR(16) NOT NULL)
+                password VARCHAR(16) NOT NULL,
+                nom VARCHAR(16) NOT NULL,
+                prenom VARCHAR(16) NOT NULL)
                 """)
             self.cur.execute("""CREATE TABLE Scores (
                 scoreID INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -32,14 +34,13 @@ class Database:
             self.conn.commit()  #Les nouvelles tables sont enregistrées
 
 
-    def newPlayer(self, pseudo, mdp):
+    def newPlayer(self, pseudo, mdp, nom, prenom):
         """
         newPlayer(str pseudo, str mdp) --> None.
         Permet d'enregistrer un nouveau joueur dans la base de données.
         """
-        self.cur.execute("INSERT INTO Players(pseudo, password) VALUES ('{}','{}');".format(pseudo, mdp))
+        self.cur.execute("INSERT INTO Players(pseudo, password, nom, prenom) VALUES (?,?,?,?);", (pseudo, mdp, nom, prenom))
         self.conn.commit()
-        print('Nouveau joueur enregistré')
         
 
     def testPlayer(self, pseudo, mdp):
@@ -66,7 +67,7 @@ class Database:
         newScore(str pseudo, int score) --> None.
         Permet d'entrer un nouveau score dans la table des scores, avec une auto-implémentation de la date.
         """
-        self.cur.execute("INSERT INTO Scores(pseudo, score) VALUES ('{}', {});".format(pseudo, score))
+        self.cur.execute("INSERT INTO Scores(pseudo, score) VALUES (?, ?);", (pseudo, score))
         self.conn.commit()
 
     def getScores(self, pseudo=None):

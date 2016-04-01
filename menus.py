@@ -111,10 +111,10 @@ class LoginPage(Menu):
         self.add_widget(Button(self, self.loop, "Entrer", self.test))
         self.add_widget(Button(self, self.loop, "Retour", lambda: self.next_page(MainMenu)))
 
-    def test(self, onRegisterPage=False):
+    def test(self):
 
 
-        test = data.Register(self.pseudo.content, self.password.content).test_infos(onRegisterPage)
+        test = database.testPlayer(self.pseudo.content, self.password.content)
 
         if  tested_infos == 'Logged':
             # + message <Pseudo! Nous attendions ton retour ...>
@@ -143,6 +143,8 @@ class RegisterPage(Menu):
     def __init__(self, *args, **kwargs):
         Menu.__init__(self, *args, **kwargs)
 
+        self.nom = self.add_widget(TextInput(self, self.loop, "Nom", None))
+        self.prenom = self.add_widget(TextInput(self, self.loop, "", None))
         self.pseudo = self.add_widget(TextInput(self, self.loop, "Pseudo", None))
         self.password = self.add_widget(PasswordInput(self, self.loop, "Password", None))
         self.add_widget(Button(self, self.loop, "Entrer", lambda : LoginPage.test(self, onRegisterPage=True)))
