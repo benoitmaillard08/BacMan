@@ -252,6 +252,8 @@ class HighscoresPage(Menu):
         db = database.Database()
         best_scores = db.getScores()
 
+        best_scores[0:0] = [["Rang", "Pseudo", "Score", "Date"], [""]*4]
+
 
         self.add_widget(Table(self, best_scores))
         self.add_widget(Button(self, "Retour", lambda: self.next_page(MainMenu)))
