@@ -27,6 +27,7 @@ class Database:
                 scoreID INTEGER PRIMARY KEY AUTOINCREMENT,
                 pseudo VARCHAR(16) NOT NULL,
                 score INTEGER,
+                level INTEGER,
                 datetime DATETIME)
                 """)
         except:
@@ -63,12 +64,12 @@ class Database:
                 
         return flag
 
-    def newScore(self, pseudo, score):
+    def newScore(self, pseudo, score, level):
         """
         newScore(str pseudo, int score) --> None.
         Permet d'entrer un nouveau score dans la table des scores, avec une auto-implémentation de la date.
         """
-        self.cur.execute("INSERT INTO Scores(pseudo, score, datetime) VALUES (?, ?, ?);", (pseudo, score, time.strftime("%Y-%m-%d")))
+        self.cur.execute("INSERT INTO Scores(pseudo, score, level, datetime) VALUES (?, ?, ?, ?);", (pseudo, score, level, time.strftime("%Y-%m-%d")))
         self.conn.commit()
 
     def getScores(self, pseudo=None):
