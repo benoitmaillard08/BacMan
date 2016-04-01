@@ -10,7 +10,6 @@ class Loop:
 	def __init__(self, level=None):
 		self.window_opened = True
 		self.level = level
-		self.player = "blm08"
 		self.loop_running = False
 
 		self.widgets = []

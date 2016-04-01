@@ -15,9 +15,10 @@ class Menu:
         Classe créant les différents menus du jeu
     """
 
-    def __init__(self, window, loop):
+    def __init__(self, window, loop, user=""):
         self.loop = loop
         self.window = window
+        self.user = user
 
         self.background = pygame.image.load(constantes.PATH_PIC_PAGES).convert()
 
@@ -25,14 +26,18 @@ class Menu:
 
         self.event_widgets = [] # Liste contenant tous les widgets liés à des évènements
 
+        if self.user:
+            self.add_widget(TextDisplay(self, "Connecté en tant que {}\n".format(self.user)))
+
         self.loop.page = self
         self.focus = None
 
         # Ajoute un widget pour que le pseudo du joueur apparaisse sur toutes les pages du menu
-        # self.pseudo = self.add_widget(TextDisplay(self, self.loop, "Connecté en tant que {}".format(self.loop.player)))
+        # self.pseudo = self.add_widget(TextDisplay(self, "Connecté en tant que {}".format(self.loop.player)))
 
     def next_page(self, page, *args, **kwargs):
-        page(self.window, self.loop, *args, **kwargs) # Instanciation de la page
+        print("next : " + self.user)
+        page(self.window, self.loop, self.user, *args, **kwargs) # Instanciation de la page
 
     def tic(self):
         self.render()
@@ -78,6 +83,18 @@ class Menu:
     def focus_on(self, widget):
         self.focus = widget
 
+    def empty(self):
+        self.container.empty()
+        self.event_widgets = []
+
+    def alert(self, message, action, button_label="Ok"):
+        self.empty()
+
+        print("alert : " + self.user)
+
+        self.add_widget(TextDisplay(self, message))
+        self.add_widget(Button(self, button_label, action))
+
 class MainMenu(Menu):
     def __init__(self, *args, **kwargs):
         Menu.__init__(self, *args, **kwargs)
@@ -88,11 +105,10 @@ class MainMenu(Menu):
         self.container.set_margin(260, 100)
 
         # Widgets de la page
-        self.add_widget(Button(self, self.loop, "Connexion", lambda: self.next_page(LoginPage)))
-        self.add_widget(Button(self, self.loop, "Inscription", lambda: self.next_page(RegisterPage)))
-        self.add_widget(Button(self, self.loop, "Top Scores", lambda: self.next_page(HighscoresPage)))
-        self.add_widget(Button(self, self.loop, "Quitter", self.loop.close_window))
-        self.add_widget(Button(self, self.loop, "Jeu direct", lambda: self.next_page(GameMenu))) #Bouton momentané
+        self.add_widget(Button(self, "Connexion", lambda: self.next_page(LoginPage)))
+        self.add_widget(Button(self, "Inscription", lambda: self.next_page(RegisterPage)))
+        self.add_widget(Button(self, "Top Scores", lambda: self.next_page(HighscoresPage)))
+        self.add_widget(Button(self, "Quitter", self.loop.close_window))
 
         # Lancement de la boucle d'évènement si celle-ci n'a pas encore été lancée (ouverture du programme)
         if not self.loop.loop_running:
@@ -106,34 +122,38 @@ class LoginPage(Menu):
     def __init__(self, *args, **kwargs):
         Menu.__init__(self, *args, **kwargs)
 
-        self.pseudo = self.add_widget(TextInput(self, self.loop, "Pseudo", None))
-        self.password = self.add_widget(PasswordInput(self, self.loop, "Password", None))
-        self.add_widget(Button(self, self.loop, "Entrer", self.test))
-        self.add_widget(Button(self, self.loop, "Retour", lambda: self.next_page(MainMenu)))
+        self.user_input = self.add_widget(TextInput(self, "Pseudo", None))
+        self.password = self.add_widget(PasswordInput(self, "Password", None))
+        self.add_widget(Button(self, "Entrer", self.submit))
+        self.add_widget(Button(self, "Retour", lambda: self.next_page(MainMenu)))
 
-    def test(self, onRegisterPage=False):
+    def submit(self):
+        user = self.user_input.get()
+        password = self.password.get()
 
+        if user and password:
 
-        test = data.Register(self.pseudo.content, self.password.content).test_infos(onRegisterPage)
+            db = database.Database()
 
-        if  tested_infos == 'Logged':
-            # + message <Pseudo! Nous attendions ton retour ...>
-            self.next_page(GameMenu)
+            test = db.testPlayer(user, password)
 
-        elif tested_infos == 'NotRegistered' and onRegisterPage == False:   # Test si l'utilisateur est déjà sur la page pour s'enregistrer
-            self.next_page(RegisterPage)
-            # + message <Veuillez vous enregistrer d'abord!>
+            if test == 0:
+                self.user = user
 
-        elif tested_infos == 'NewRegistered':
-            self.next_page(GameMenu)
-            # + message <Bienvenue Pseudo!>
-        elif tested_infos == 'TakenPassword':
-            # message d'alerte <Pseudo déjà utilisé>
-            pass
+                message = """Authentification réalisée avec succès !
+Vous êtes désormais connecté sous le pseudo {}""".format(user)
+                
+                print("submit : " + self.user)
+                self.alert(message, lambda : self.next_page(GameMenu))
+
+            elif test == 1:
+                self.alert("Le mot de passe ne correspond pas\nau nom d'utilisateur !", lambda : self.next_page(LoginPage))
+
+            else:
+                self.alert("Ce nom d'utilisateur n'existe pas !", lambda : self.next_page(LoginPage))
 
         else:
-            # Message d'erreur <Mauvais MdP!>
-            pass
+            self.alert("Veuillez remplir tous les champs !", lambda : self.next_page(LoginPage))
             
 
 class RegisterPage(Menu):
@@ -143,19 +163,48 @@ class RegisterPage(Menu):
     def __init__(self, *args, **kwargs):
         Menu.__init__(self, *args, **kwargs)
 
-        self.pseudo = self.add_widget(TextInput(self, self.loop, "Pseudo", None))
-        self.password = self.add_widget(PasswordInput(self, self.loop, "Password", None))
-        self.add_widget(Button(self, self.loop, "Entrer", lambda : LoginPage.test(self, onRegisterPage=True)))
-        self.add_widget(Button(self, self.loop, "Retour", lambda: self.next_page(MainMenu)))
+        self.user_input = self.add_widget(TextInput(self, "Pseudo", None))
+        self.password = self.add_widget(PasswordInput(self, "Password", None))
+        self.confirm = self.add_widget(PasswordInput(self, "Confirmation", None))
+
+        self.add_widget(Button(self, "Entrer", self.submit))
+        self.add_widget(Button(self, "Retour", lambda: self.next_page(MainMenu)))
+
+    def submit(self):
+        user = self.user_input.get()
+        password = self.password.get()
+        confirm = self.confirm.get()
+
+        if user and password and confirm:
+            db = database.Database()
+
+            # Si le nom d'utilisateur existe déjà (code 0 et 1 avec db.testplayer)
+            if not db.testPlayer(user) == 2:
+                self.alert("Ce nom d'utilisateur est déjà utilisé !", lambda : self.next_page(RegisterPage))
+
+            # Si le mot de passe n'est pas le même deux fois
+            elif not password == confirm:
+                self.alert("Le mot de passe fourni dans les deux champs\ndoit être identique", lambda : self.next_page(RegisterPage))
+
+            else:
+                db.newPlayer(user, password)
+                self.user = user
+
+                message = """Enregistrement réalisée avec succès !
+Vous êtes désormais connecté sous le pseudo {}""".format(user)
+                self.alert(message, lambda : self.next_page(GameMenu))
+
+        else:
+            self.alert("Veuillez remplir tous les champs !", lambda : self.next_page(RegisterPage))
 
 class GameMenu(Menu):
     def __init__(self, *args, **kwargs):
         Menu.__init__(self, *args, **kwargs)
 
-        self.add_widget(Button(self, self.loop, "Jouer", lambda: self.next_page(InGameMenu)))
-        self.add_widget(Button(self, self.loop, "Controles", lambda: self.next_page(CtrlsPage)))
-        self.add_widget(Button(self, self.loop, "Regles", lambda: self.next_page(RulesPage)))
-        self.add_widget(Button(self, self.loop, "Retour", lambda: self.next_page(MainMenu)))
+        self.add_widget(Button(self, "Jouer", lambda: self.next_page(InGameMenu)))
+        self.add_widget(Button(self, "Controles", lambda: self.next_page(CtrlsPage)))
+        self.add_widget(Button(self, "Regles", lambda: self.next_page(RulesPage)))
+        self.add_widget(Button(self, "Retour", lambda: self.next_page(MainMenu)))
 
 
 class RulesPage(Menu):
@@ -164,8 +213,8 @@ class RulesPage(Menu):
 
         rules_text = open(constantes.RULES_TEXT, 'r').read()
 
-        self.add_widget(TextDisplay(self, self.loop, rules_text))
-        self.add_widget(Button(self, self.loop, "Retour", lambda: self.next_page(GameMenu)))
+        self.add_widget(TextDisplay(self, rules_text))
+        self.add_widget(Button(self, "Retour", lambda: self.next_page(GameMenu)))
 
 
 class CtrlsPage(Menu):
@@ -177,8 +226,8 @@ class CtrlsPage(Menu):
 
         controls_text = open(constantes.CTRLS_TEXT, 'r').read()
 
-        self.add_widget(TextDisplay(self, self.loop, controls_text))
-        self.add_widget(Button(self, self.loop, "Retour", lambda: self.next_page(GameMenu)))
+        self.add_widget(TextDisplay(self, controls_text))
+        self.add_widget(Button(self, "Retour", lambda: self.next_page(GameMenu)))
 
 
 class HighscoresPage(Menu):
@@ -189,38 +238,43 @@ class HighscoresPage(Menu):
     def __init__(self, *args, **kwargs):
         Menu.__init__(self, *args, **kwargs)
 
-        self.add_widget(TextDisplay(self, self.loop, "En cours de développement"))
-        self.add_widget(Button(self, self.loop, "Retour", lambda: self.next_page(MainMenu)))
+        # scores_list = database.Database().getScores()
+        # toDisplay = 'Rang    Pseudo    Score    Date\n\n'
+        # rang = 1
 
-    def content(self):
-        scores_list = database.Database().getScores()
-        toDisplay = 'Rang    Pseudo    Score    Date\n\n'
-        rang = 1
+        # if len(scores_list) == 0:
+        #     toDisplay += "Pas de score, à toi de jouer!"
+        # else:
+        #     for elt in scores_list:
+        #         toDisplay += str(rang) +'      '+str(elt[1])+"    "+str(elt[2])+"      "+str(elt[3])+'\n'
+        #         rang += 1
 
-        if len(scores_list) == 0:
-            toDisplay += "Pas de score, à toi de jouer!"
-        else:
-            for elt in scores_list:
-                toDisplay += str(rang) +'      '+str(elt[1])+"    "+str(elt[2])+"      "+str(elt[3])+'\n'
-                rang += 1
+        db = database.Database()
+        best_scores = db.getScores()
 
 
-        self.add_widget(TextDisplay(self, self.loop, toDisplay))
-        self.add_widget(Button(self, self.loop, "Retour", lambda: self.next_page(MainMenu)))
+        self.add_widget(Table(self, best_scores))
+        self.add_widget(Button(self, "Retour", lambda: self.next_page(MainMenu)))
 
 
 class InGameMenu(Menu):
-    def __init__(self, window, loop, game_data={"score" : 0, "lives": 3, "n_level": 1}):
-        Menu.__init__(self, window, loop)
+    def __init__(self, window, loop, user, game_data=None):
+        Menu.__init__(self, window, loop, user)
+
+        print("ingame :" + self.user)
+
+        if not game_data:
+            self.game_data = {"score" : 0, "lives": 3, "n_level": 1}
+        else:
+            self.game_data = game_data
 
         self.container.set_margin(672, 10)
 
-        self.game_data = game_data
-
-        self.score_widget = self.add_widget(TextDisplay(self, self.loop, "Score : {}".format(self.game_data["score"])))
-        self.lives_widget = self.add_widget(TextDisplay(self, self.loop, "Vies restantes : {}".format(self.game_data["lives"])))
+        self.score_widget = self.add_widget(TextDisplay(self, "Score : {}".format(self.game_data["score"])))
+        self.lives_widget = self.add_widget(TextDisplay(self, "Vies restantes : {}".format(self.game_data["lives"])))
 
         self.background = None
+        self.pause = False
 
         self.level = process.Level(self, self.game_data["n_level"], window, loop)
 
@@ -234,21 +288,42 @@ class InGameMenu(Menu):
         self.game_data["lives"] -= 1
 
         if self.game_data["lives"] == 0:
-            self.next_page(EndGameMenu, self.game_data)
+            self.end_game()
 
         else:
             self.lives_widget.text = "Vies restantes : {}".format(self.game_data["lives"])
             self.lives_widget.update_text()
 
-    def keydown(self, event):
-        if event.key in constantes.ARROW_KEYS:
-            self.level.pacman.change_direction(constantes.ARROW_KEYS[event.key])
+    def end_game(self):
+        self.pause_game()
+        db = database.Database()
+        # Enregistrement du score dans la base de données
+        db.newScore(self.user, self.game_data["score"])
+        db.close() # Fermeture de la connexion à la db
 
-        elif event.key == 112:
-            if not self.level.pause:
-                self.pause()
-            else:
-                self.resume()
+        # Affichage du message de fin de partie
+        message = """Jeu terminé !
+Vous avez obtenu le score de {} points
+et atteint le niveau {}""".format(self.game_data["score"], self.game_data["n_level"])
+        
+        self.alert(message, lambda : self.next_page(MainMenu), "Menu principal")
+
+    def keydown(self, event):
+        if not self.pause:
+            if event.key in constantes.ARROW_KEYS:
+                self.level.pacman.change_direction(constantes.ARROW_KEYS[event.key])
+
+            elif event.key == 112:
+                if not self.pause:
+                    self.pause_game()
+
+                    self.add_widget(Button(self, "Reprendre", self.resume))
+                    self.add_widget(Button(self, "Menu principal", self.leave_game))
+                    self.add_widget(self.score_widget)
+                    self.add_widget(self.lives_widget)
+
+                else:
+                    self.resume()
 
     def tic(self):
         self.level.game_tic()
@@ -256,39 +331,32 @@ class InGameMenu(Menu):
         self.render()
 
     def end_level(self):
-        self.next_page(NextLevelMenu, self.game_data)
+        message = "Bravo ! Vous avez réussi le niveau {}".format(self.game_data["n_level"])
 
-    def pause(self):
-        pass
+        self.pause_game()
+        self.alert(message, lambda : self.next_page(InGameMenu))
 
-    def resume(self):
-        pass
-
-
-
-class NextLevelMenu(Menu):
-    def __init__(self, window, loop, game_data):
-        Menu.__init__(self, window, loop)
-
-        self.game_data = game_data
-
-        self.add_widget(TextDisplay(self, self.loop, "Bravo ! Vous avez réussi le niveau {}".format(self.game_data["n_level"])))
-        self.add_widget(Button(self, self.loop, "Continuer", self.next_level))
-
-    def next_level(self):
         self.game_data["n_level"] += 1
 
-        self.next_page(InGameMenu, self.game_data)
+    def pause_game(self):
+        self.empty()
+        self.pause = True
+        self.background = pygame.image.load(constantes.PATH_PIC_PAGES).convert()
 
-class EndGameMenu(Menu):
-    def __init__(self, window, loop, game_data):
-        Menu.__init__(self, window, loop)
+        self.container.set_margin(200, 100)
 
-        self.game_data = game_data
+    def resume(self):
+        self.empty()
+        self.background = None
+        self.container.set_margin(672, 10)
 
-        text = """Jeu terminé !
-Vous avez obtenu le score de {} points
-et atteint le niveau {}""".format(self.game_data["score"], self.game_data["n_level"])
+        self.add_widget(self.score_widget)
+        self.add_widget(self.lives_widget)
 
-        self.add_widget(TextDisplay(self, self.loop, text))
-        self.add_widget(Button(self, self.loop, "Retour", lambda: self.next_page(GameMenu)))
+        self.pause = False
+
+    def leave_game(self):
+        self.empty()
+        self.add_widget(TextDisplay(self, "Voulez-vous vraiment retourner\nau menu principal ?"))
+        self.add_widget(Button(self, "Oui", lambda : self.next_page(MainMenu)))
+        self.add_widget(Button(self, "Annuler", self.pause))

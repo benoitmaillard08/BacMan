@@ -62,12 +62,15 @@ class Container:
         for widget in self.l_widgets:
             widget.render()
 
+    def empty(self):
+        self.l_widgets = []
+
 
 class Button:
     """
     Classe d'instenciation des boutons
     """
-    def __init__(self, page, loop, label, callback, directory=constantes.PATH_PIC_BUTTON):
+    def __init__(self, page, label, callback, directory=constantes.PATH_PIC_BUTTON):
         """
         __init__() --> None.
         """
@@ -77,7 +80,6 @@ class Button:
         self.label = label
         self.page = page    # variable 'background' de la classe 'MainMenu'
         self.action = callback # fonction à exécuter lors du clic sur le bouton
-        self.loop = loop
         self.event = True
 
         # Chargement de la texture du bouton
@@ -137,8 +139,8 @@ class Button:
             return False
 
 class TextInput(Button):
-    def __init__(self, page, loop, label, callback, max_length=15):
-        Button.__init__(self, page, loop, label, callback)
+    def __init__(self, page, label, callback, max_length=15):
+        Button.__init__(self, page, label, callback)
 
         # Lors d'un cliq sur le champ, ce dernier obtient le focus
         self.action = self.set_focus
@@ -190,6 +192,9 @@ class TextInput(Button):
 
         self.text_surface = self.content_surface
 
+    def get(self):
+        return self.content
+
 class PasswordInput(TextInput):
     def update_text(self):
 
@@ -207,7 +212,7 @@ class TextDisplay:
     Classe d'instenciation d'une zone de texte. 
     """
 
-    def __init__(self, page, loop, text):
+    def __init__(self, page, text):
 
         """
         __init__() --> None.
@@ -215,7 +220,6 @@ class TextDisplay:
         self.coords = (0, 0)
 
         self.page = page
-        self.loop = loop
         self.text = text
 
         self.event = False
@@ -285,3 +289,44 @@ class TextDisplay:
             line_surface = self.font.render(line, 0, constantes.RGB_WHITE)
             self.lines_surfaces.append(line_surface)
 
+class Table(TextDisplay):
+    def __init__(self, page, data):
+        TextDisplay.__init__(self, page, "")
+
+        # Si les sous-listes de data n'ont pas toutes la même longeur (case vide),
+        # il faut rajouter des éléments vides pour que la fonction zip() fonctionne correctement
+        max_length = max(data, key=len)
+        for row in data:
+            diff = len(max_length) - len(row)
+
+            if diff > 0:
+                row.append("" * diff)
+
+        print(len(data))
+        for row in data:
+            print("col : " + str(len(row)))
+
+        # Données du tableau inversées --> Les colonnes deviennent les lignes et vice versa
+        inverted_data = list(zip(*data))
+
+        print(inverted_data)
+
+        # Liste des strings pour chaque ligne
+        data_str = [""] * len(data)
+
+        for col in inverted_data:
+
+            # Nombre de caractères nécessaires pour la colonne
+            col_length = len(max(str(col), key=len)) + 1
+
+            print("colonne : {} chars".format(col_length))
+
+            for i in range(len(col)):
+                # Ajout des espaces nécessaires
+                spaces_to_add = " " * (col_length - len(str(col[i])))
+                data_str[i] += (str(col[i]) + spaces_to_add)
+
+        # Toutes les lignes sont appondues avec un retour à la ligne entre chacune
+        self.text = "\n".join(data_str)
+
+        self.update_text()
