@@ -326,10 +326,8 @@ et atteint le niveau {}""".format(self.game_data["score"], self.game_data["n_lev
         message = "Bravo ! Vous avez réussi le niveau {}".format(self.game_data["n_level"])
 
         self.pause_game()
-        self.alert(message, lambda : self.next_page(InGameMenu))
-
         self.game_data["n_level"] += 1
-
+        self.alert(message, lambda : self.next_page(InGameMenu, self.game_data))
     def pause_game(self):
         self.empty()
         self.pause = True
