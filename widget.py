@@ -295,16 +295,15 @@ class Table(TextDisplay):
 
         # Si les sous-listes de data n'ont pas toutes la même longeur (case vide),
         # il faut rajouter des éléments vides pour que la fonction zip() fonctionne correctement
-        max_length = max(data, key=len)
-        for row in data:
-            diff = len(max_length) - len(row)
+        # max_length = max(data, key=len)
+        # for row in data:
+        #     diff = len(str(max_length)) - len(row)
 
-            if diff > 0:
-                row.append("" * diff)
+        #     if diff > 0:
+        #         row.append("" * diff)
 
-        print(len(data))
-        for row in data:
-            print("col : " + str(len(row)))
+        # for row in data:
+        #     print("col : " + str(len(row)))
 
         # Données du tableau inversées --> Les colonnes deviennent les lignes et vice versa
         inverted_data = list(zip(*data))
@@ -317,9 +316,7 @@ class Table(TextDisplay):
         for col in inverted_data:
 
             # Nombre de caractères nécessaires pour la colonne
-            col_length = len(max(str(col), key=len)) + 1
-
-            print("colonne : {} chars".format(col_length))
+            col_length = len(str(max(col, key=lambda n: len(str(n))))) + 5
 
             for i in range(len(col)):
                 # Ajout des espaces nécessaires
@@ -327,6 +324,9 @@ class Table(TextDisplay):
                 data_str[i] += (str(col[i]) + spaces_to_add)
 
         # Toutes les lignes sont appondues avec un retour à la ligne entre chacune
-        self.text = "\n".join(data_str)
+        for i in range(len(data_str)):
+            data_str[i] = data_str[i][:-5] # On supprime les espaces inutiles à la fin de chaque ligne
+
+        self.text = "\n".join(data_str) # Les lignes sont appondues avec un retour à la ligne entre chaque
 
         self.update_text()
