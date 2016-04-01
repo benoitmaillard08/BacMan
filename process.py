@@ -32,7 +32,7 @@ class Level:
 		# qui se rapportent au niveau
 		loop.level = self
 
-		self.pause = False # Indique si le jeu est en pause
+		self.in_game_pause = False # Indique si le jeu est en pause
 		self.delay = 0
 
 
@@ -79,22 +79,22 @@ class Level:
 		"""
 		Effectue une itération du jeu comprenant les mouvements et le rendu de chaque élément
 		"""
-		if not self.pause:
-			for ghost in self.ghosts:
-				ghost.move()
+		if not self.master.pause:
+			if not self.delay:
+				for ghost in self.ghosts:
+					ghost.move()
 
-			self.pacman.move()
+				self.pacman.move()
 
-		else:
-			# Gestion de la mise en pause temporaire
-			if self.delay == 1:
-				self.delay = 0
-				self.pause = False
+			else:
+				# Gestion de la mise en pause temporaire
+				if self.delay == 1:
+					self.delay = 0
 
-			elif self.delay:
-				self.delay -= 1
+				elif self.delay:
+					self.delay -= 1
 
-		self.render()
+			self.render()
 
 	def pause_ghosts(self):
 		"""
@@ -103,11 +103,8 @@ class Level:
 		for ghost in self.ghosts:
 			ghost.stop(100)
 
-	def pause_game(self, time=0):
+	def pause_game(self, time):
 		"""
 		Permet de mettre en pause le jeu temporairement avec une durée indiquée ou non
 		"""
-		if time:
-			self.delay = time
-		
-		self.pause = True
+		self.delay = time

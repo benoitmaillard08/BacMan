@@ -43,7 +43,7 @@ class Database:
         self.conn.commit()
         
 
-    def testPlayer(self, pseudo, mdp):
+    def testPlayer(self, pseudo, mdp=''):
         """
         testPlayer(str pseudo, str mdp) --> int.
         Permet de tester si le joueur est bien enregistré, et si le mot de passe correspond. La méthode retourne les entiers suivants:
@@ -87,3 +87,6 @@ class Database:
         
         return scores_list
 
+    def close(self):
+        self.cur.close()
+        self.conn.close()
