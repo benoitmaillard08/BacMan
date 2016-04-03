@@ -45,7 +45,7 @@ class Loop:
 
 				# # Gestion des cliqs
 				# elif event.type == pygame.MOUSEBUTTONDOWN:
-				# 	print("TEST")
+				# 	
 				# 	if event.button == 1: # Clic gauche
 				# 		if self.focus: # Si un widget a le focus, le focus lui est retiré
 				# 			self.focus.remove_focus()
@@ -64,7 +64,7 @@ class Loop:
 
 				# 		# Touche P enfoncée --> pause / relance
 				# 		if event.key == 112:
-				# 			print("TEST")
+				# 			
 				# 			if not self.level.pause:
 				# 				self.level.pause = True
 				# 			else:

@@ -409,7 +409,7 @@ class Pinky(Ghost):
 		Ghost.__init__(self, *args, **kwargs)
 
 		self.name = "pinky"
-		print("test")
+		
 
 		self.load_picture()
 

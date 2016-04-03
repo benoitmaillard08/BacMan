@@ -79,9 +79,9 @@ class Database:
         La méthode retourne une liste de tuple, contenant le pseudo, le score et la date des records.
         """
         if pseudo:
-            self.cur.execute("SELECT pseudo, score, date FROM Scores WHERE pseudo = '{}' ORDER BY score DESC".format(pseudo))
+            self.cur.execute("SELECT pseudo, score, level, datetime FROM Scores WHERE pseudo = '{}' ORDER BY score DESC".format(pseudo))
         else:
-            self.cur.execute("SELECT pseudo, score, date FROM Scores ORDER BY score DESC")
+            self.cur.execute("SELECT pseudo, score, level, datetime FROM Scores ORDER BY score DESC")
             
         scores_list = self.cur.fetchall()
         while len(scores_list) > 5:
