@@ -17,7 +17,10 @@ class Square:
 		self.render_coords = (self.x*SQUARE_SIZE, self.y*SQUARE_SIZE)
 
 	def render(self):
-		pass
+		"""
+		Affiche le rendu de la case
+		"""
+		self.level.window.blit(self.picture, self.render_coords)
 
 	def adjacent_square(self, index):
 		"""
@@ -33,6 +36,7 @@ class StandardSquare(Square):
 	def __init__(self, level, x, y):
 		Square.__init__(self, level, x, y)
 		self.is_empty = True # Le fantôme peut passer sur la case
+		self.is_door = False # Les fantômes peuvent passer par la porte mais pas pacman
 		self.pill = None
 		self.picture = load_terrain("blank")
 		self.tp = () # Coordonnées utilisés si la case permet la téléportation
@@ -55,6 +59,9 @@ class StandardSquare(Square):
 		"""
 		if self.pill:
 			self.pill.effect()
+
+			self.pill.sound.play() # Le son correspondant à la pastille est joué
+
 			self.pill = None # La pillule est supprimée
 
 			self.level.n_pills -= 1
@@ -92,11 +99,12 @@ class Wall(Square):
 
 		self.picture = load_terrain(WALLS_PATTERN.format(picture_code))
 
-	def render(self):
-		"""
-		Affiche le rendu de la case
-		"""
-		self.level.window.blit(self.picture, self.render_coords)
+class GhostDoor(StandardSquare):
+		def __init__(self, level, x, y):
+			StandardSquare.__init__(self, level, x, y)
+			self.is_door = True
+
+			self.picture = load_terrain("ghost-door")
 
 ##############################
 # Classes pour les pastilles #
@@ -109,6 +117,7 @@ class StandardPill(Pill):
 		self.level = level
 		self.points = 10 # Nombre de points gagnés avec le pellet
 		self.picture = load_terrain("pellet") # Chargement de l'image
+		self.sound = load_sound("pellet1")
 
 	def effect(self):
 		"""
@@ -120,6 +129,7 @@ class PowerPill(Pill):
 	def __init__(self, level):
 		self.level = level
 		self.picture = load_terrain("pellet-power")
+		self.sound = load_sound("powerpellet")
 
 	def effect(self):
 		"""
@@ -134,6 +144,9 @@ class BonusPill(StandardPill):
 
 	def __init__(self, level):
 		self.level = level
+		self.sound = load_sound("eatfruit")
+
+
 		# Si le niveau dépasse 7, ses caractéristiques sont les mêmes que le 7
 
 		n_level = level.n_level
@@ -271,12 +284,12 @@ class PacMan(Char):
 				next = square.adjacent_square(self.direction)
 
 				# Si la case dans la direction souhaitée est vide
-				if next_wanted and next_wanted.is_empty:
+				if next_wanted and next_wanted.is_empty and not next_wanted.is_door:
 					self.direction = self.next_direction
 					self.moving = True # Au cas où Pacman était arrêté, il repart
 
 				# Si la case dans la direction actuelle est un mur, pacman s'arrête
-				elif next and not next.is_empty:
+				elif next and (not next.is_empty or next.is_door):
 					self.stop()
 
 				self.tp_flag = False # Pacman peut être téléporté à nouveau
@@ -304,15 +317,17 @@ class PacMan(Char):
 				if ghost.pause > 0: # Si le fantômes est immobilisé
 					ghost.pause = 0 # Le fantômes n'est plus immobilisé
 					ghost.reset() # Le fantômes est renvoyé à sa position initiale
+
+
 				else:
 					self.level.pause_game(50) # Le jeu est mis en pause pour 50 tics
+
+					self.level.master.update_lives() # Le nombre de vies de pacman est mis à jour
 
 					# Pacman et les fantomes retournent à leur position initiale
 					self.reset()
 					for ghost in self.level.ghosts:
 						ghost.reset()
-
-					self.level.master.update_lives() # Le nombre de vies de pacman est mis à jour
 
 				break
 

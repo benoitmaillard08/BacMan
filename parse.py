@@ -63,6 +63,9 @@ class ParseLevel:
 				if char == WALL:
 					square = entities.Wall(self.level_ref, x, y)
 
+				elif char == GHOST_DOOR:
+					square = entities.GhostDoor(self.level_ref, x, y)
+
 				else:
 					# S'il ne s'agit pas d'un mur, on instancie une case standard
 					square = entities.StandardSquare(self.level_ref, x, y)
@@ -89,6 +92,7 @@ class ParseLevel:
 						# S'il s'agit du premier point, les coordonnées sont placés dans le dictionnaire
 						else:
 							tp_coords[char] = (x, y)
+
 					else:
 						### Caractère inconnu : erreur
 						pass
