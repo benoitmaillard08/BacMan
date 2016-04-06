@@ -32,6 +32,20 @@ class Square:
 
 		return self.level.get_square(square_x, square_y)
 
+	def empty_adj_squares(self, direction):
+		empty_adj_squares = [] # Listes des directions possibles (excepté la direction opposée)
+					
+		# On regarde si les cases à droite, devant et à gauche sont libres
+		for n in range(-1, 2):
+			test_dir = (direction + n) % 4
+			adj = self.adjacent_square(test_dir)
+
+			if adj and adj.is_empty: # si la case est libre, elle est ajoutée à la liste
+				empty_adj_squares.append(test_dir)
+
+		return empty_adj_squares
+
+
 class StandardSquare(Square):
 	def __init__(self, level, x, y):
 		Square.__init__(self, level, x, y)
@@ -344,6 +358,8 @@ class Ghost(Char):
 
 		self.pictures = []
 
+		self.lane = []
+
 	def load_picture(self):
 		for n in range(1, 7):
 			self.pictures.append(load_terrain(GHOST_PATTERN.format(self.name, n)))
@@ -373,21 +389,22 @@ class Ghost(Char):
 				# Récupération de la case actuelle
 				square = self.level.get_square(self.x, self.y)
 
-				empty_adj_squares = [] # Listes des directions possibles (excepté la direction opposée)
-
 				# Si c'est une case de téléportation, le fantôme se téléporte
 				if square.tp and not self.tp_flag:
 					self.set_coords(*square.tp)
 					self.tp_flag = True # Indique que le fantome vient d'être téléporté
 
 				else:
-					# On regarde si les cases à droite, devant et à gauche sont libres
-					for n in range(-1, 2):
-						direction = (self.direction + n) % 4
-						adj = square.adjacent_square(direction)
+					# new_dir = self.reach_square(square, self.level.get_square(1, 1), self.direction)
+					# print(self.level.get_square(1, 1))
 
-						if adj and adj.is_empty: # si la case est libre, elle est ajoutée à la liste
-							empty_adj_squares.append(direction)
+					# if new_dir:
+					# 	print("new dir : " + str(new_dir))
+					# 	self.direction = new_dir
+
+					# else:
+						
+					empty_adj_squares = square.empty_adj_squares(self.direction)
 
 					# Si les cases devant et sur les côtés sont occupées, le fantôme rebrousse chemin
 					if len(empty_adj_squares) == 0:
@@ -404,6 +421,31 @@ class Ghost(Char):
 				self.y += self.speed * DIRECTIONS[self.direction][1] / SQUARE_SIZE
 		else:
 			self.pause -= 1
+
+	def reach_square(self, square, objective, direction):
+
+		# Si la case actuelle correspond à la case visée, l'objectif est atteint
+		if square == objective:
+			return direction
+
+		else:
+			empty_adj_squares = square.empty_adj_squares(direction)
+
+			# S'il s'agit d'un cul de sac, il faut revenir en arrière
+			if len(empty_adj_squares) == 0:
+				return None
+
+			else:
+				for new_dir in empty_adj_squares:
+					next_square = square.adjacent_square(new_dir)
+
+					if self.reach_square(next_square, objective, new_dir):
+						return new_dir
+
+					
+				return None
+
+
 
 	def stop(self, time):
 		"""

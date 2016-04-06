@@ -105,11 +105,11 @@ class MainMenu(Menu):
         self.container.set_margin(260, 100)
 
         # Widgets de la page
-        if self.user:
-            self.add_widget(Button(self, "Menu de jeu", lambda : self.next_page(GameMenu)))
-        else:
-            self.add_widget(Button(self, "Connexion", lambda: self.next_page(LoginPage)))
-            self.add_widget(Button(self, "Inscription", lambda: self.next_page(RegisterPage)))
+        #if self.user:
+        self.add_widget(Button(self, "Menu de jeu", lambda : self.next_page(GameMenu)))
+        #else:
+            #self.add_widget(Button(self, "Connexion", lambda: self.next_page(LoginPage)))
+            #self.add_widget(Button(self, "Inscription", lambda: self.next_page(RegisterPage)))
 
         self.add_widget(Button(self, "Top Scores", lambda: self.next_page(HighscoresPage)))
         self.add_widget(Button(self, "Quitter", self.loop.close_window))
