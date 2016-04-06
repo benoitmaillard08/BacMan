@@ -8,6 +8,9 @@ from shortcuts import *
 ##########################
 
 class Square:
+	"""
+	Classe abstraite représentant une case du jeu
+	"""
 	def __init__(self, level, x, y):
 		self.level = level
 		self.x = x
@@ -18,12 +21,14 @@ class Square:
 
 	def render(self):
 		"""
+		render() --> None
 		Affiche le rendu de la case
 		"""
 		self.level.window.blit(self.picture, self.render_coords)
 
 	def adjacent_square(self, index):
 		"""
+		adjacent_square(int index) --> Square
 		Retourne la case adjacente dans la direction <index>
 		L'index est un entier entre 0 et 3 --> 0 = haut, 1 = droite, 2 = bas, 3 = gauche
 		"""
@@ -33,7 +38,12 @@ class Square:
 		return self.level.get_square(square_x, square_y)
 
 	def empty_adj_squares(self, direction):
-		empty_adj_squares = [] # Listes des directions possibles (excepté la direction opposée)
+		"""
+		empty_adj_squares(int direction) --> int
+		Retourne les directions possibles (0,1,2,3) vers les cases adjacentes excepté
+		la direction opposée à la direction actuelle 
+		"""
+		empty_adj_squares = []
 					
 		# On regarde si les cases à droite, devant et à gauche sont libres
 		for n in range(-1, 2):
@@ -47,6 +57,11 @@ class Square:
 		return empty_adj_squares
 
 	def __add__(self, tuple_add):
+		"""
+		__add__(tuple tuple_add) --> Square
+		Retourne la case augmentée/diminuée des valeurs de tuple_add
+
+		"""
 		x = self.x + tuple_add[0]
 		y = self.y + tuple_add[1]
 
@@ -54,6 +69,9 @@ class Square:
 
 
 class StandardSquare(Square):
+	"""
+	Classe représentant une case sans mur
+	"""
 	def __init__(self, level, x, y):
 		Square.__init__(self, level, x, y)
 		self.is_empty = True # Le fantôme peut passer sur la case
@@ -64,21 +82,24 @@ class StandardSquare(Square):
 
 	def add_pill(self, pill):
 		"""
+		add_pill(Pill pill) --> None
 		Permet d'ajouter la pastille <pill> sur la case
 		"""
 		self.pill = pill
 
 	def add_tp_coords(self, x, y):
 		"""
+		add_tp_coords(int x, int y) --> None
 		Transforme la case en point de téléportation vers les coordonnées <x> et <y>
 		"""
 		self.tp = (x, y)
 
 	def eat(self):
 		"""
+		eat() --> None
 		Supprime la pastille de la case et déclenche l'effet de celle-ci
 		"""
-		if self.pill:
+		if self.pill: # Effet de la pillule
 			self.pill.effect()
 
 			self.pill.sound.play() # Le son correspondant à la pastille est joué
@@ -87,11 +108,13 @@ class StandardSquare(Square):
 
 			self.level.n_pills -= 1
 
+			# S'il n'y a plus la moindre pastille, le niveau est terminé
 			if self.level.n_pills == 0:
 				self.level.master.end_level()
 
 	def render(self):
 		"""
+		render() --> None
 		Affiche le rendu de la case
 		"""
 		self.level.window.blit(self.picture, self.render_coords)
@@ -100,12 +123,16 @@ class StandardSquare(Square):
 			self.level.window.blit(self.pill.picture, self.render_coords)
 
 class Wall(Square):
+	"""
+	Classe représentant une case contenant un mur
+	"""
 	def __init__(self, level, x, y):
 		Square.__init__(self, level, x, y)
 		self.is_empty = False # Le fantôme ne peut pas passer sur la case
 
 	def select_picture(self):
 		"""
+		select_picture() --> None
 		Définit l'image à utiliser d'après les cases adjacentes
 		"""
 		picture_code = ""
@@ -121,6 +148,10 @@ class Wall(Square):
 		self.picture = load_terrain(WALLS_PATTERN.format(picture_code))
 
 class GhostDoor(StandardSquare):
+	"""
+	Classe représentant une case contenant une porte
+	Seuls les fantômes peuvent traverser cette case
+	"""
 		def __init__(self, level, x, y):
 			StandardSquare.__init__(self, level, x, y)
 			self.is_door = True
@@ -134,6 +165,9 @@ class GhostDoor(StandardSquare):
 class Pill: pass
 
 class StandardPill(Pill):
+	"""
+	Classe représentant une pastille standard
+	"""
 	def __init__(self, level):
 		self.level = level
 		self.points = 10 # Nombre de points gagnés avec le pellet
@@ -142,11 +176,17 @@ class StandardPill(Pill):
 
 	def effect(self):
 		"""
+		effet() --> None
 		Augmente le score de la partie du nombre de points de la pastille
 		"""
 		self.level.master.update_score(self.points)
+		self.sound.play()
 
 class PowerPill(Pill):
+	"""
+	Classe représentant une pastille de puissance qui endort
+	momentanément les fantômes
+	"""
 	def __init__(self, level):
 		self.level = level
 		self.picture = load_terrain("pellet-power")
@@ -154,12 +194,17 @@ class PowerPill(Pill):
 
 	def effect(self):
 		"""
+		effect() --> None
 		Immobilise les fantômes pendant 100 tics
 		"""
 		for ghost in self.level.ghosts:
 			ghost.stop(100)
 
 class BonusPill(StandardPill):
+	"""
+	Classe représentant une pastille fruit qui rapporte un plus
+	grand nombre de points à pacman
+	"""
 	# Index de l'image et nombre de points correspondant aux niveaux jusqu'à 7
 	TYPES = [(0, 100), (1, 300), (2, 500), (2, 500), (3, 700), (3, 700), (4, 1000)]
 
@@ -187,6 +232,9 @@ class BonusPill(StandardPill):
 ################################
 
 class Char:
+	"""
+	Classe abstraite représentant un personnage du jeu
+	"""
 	def __init__(self, level):
 		self.level = level
 
@@ -199,6 +247,7 @@ class Char:
 
 	def set_coords(self, x, y):
 		"""
+		set_coords(int x, int y) --> None
 		Redéfinit les coordonnées du personnage
 		"""
 		self.x = x
@@ -212,6 +261,7 @@ class Char:
 
 	def reset(self):
 		"""
+		reset() --> None
 		Permet de réinitialiser la position du personnage
 		"""
 		self.x = self.init_x
@@ -219,11 +269,15 @@ class Char:
 
 	def render(self):
 		"""
+		render() --> None
 		Affiche le rendu du personnage
 		"""
 		self.level.window.blit(self.get_picture(), (self.x*SQUARE_SIZE, self.y*SQUARE_SIZE))
 
 class PacMan(Char):
+	"""
+	Classe représentant Pacman
+	"""
 	PICTURE_DIRECTIONS = ("u", "r", "d", "l")
 
 	def __init__(self, level):
@@ -255,6 +309,7 @@ class PacMan(Char):
 
 	def get_picture(self):
 		"""
+		get_picture() --> pygame.image
 		Renvoie l'image correspondant au stade d'animation de pacman
 		"""
 		# Lorsque le stade 8 est atteint, l'index est remis à 0
@@ -272,18 +327,21 @@ class PacMan(Char):
 
 	def stop(self):
 		"""
+		stop() --> None
 		Met en pause le mouvement de pacman
 		"""
 		self.moving = False
 
 	def change_direction(self, direction):
 		"""
+		change_direction(int direction)
 		Permet de changer la direction de pacman
 		"""
 		self.next_direction = direction
 
 	def move(self):
 		"""
+		move() --> None
 		Mouvement de Pacman
 		"""
 		# Si pacman se trouve exactement sur une case
@@ -331,6 +389,7 @@ class PacMan(Char):
 
 	def check_ghosts(self):
 		"""
+		check_ghosts() --> None
 		Gère les collisions avec les fantômes
 		"""
 		for ghost in self.level.ghosts:
@@ -338,7 +397,10 @@ class PacMan(Char):
 				if ghost.pause > 0: # Si le fantômes est immobilisé
 					ghost.pause = 0 # Le fantômes n'est plus immobilisé
 					ghost.reset() # Le fantômes est renvoyé à sa position initiale
+
 					self.level.master.update_score(ghost.points)
+
+					load_sound('eatgh').play()
 
 
 				else:
@@ -357,6 +419,9 @@ class PacMan(Char):
 
 
 class Ghost(Char):
+	"""
+	Classe abstraite représentant un fantôme
+	"""
 	def __init__(self, level):
 		Char.__init__(self, level)
 
@@ -369,6 +434,11 @@ class Ghost(Char):
 		self.lane = []
 
 	def load_picture(self):
+		"""
+		load_picture() --> None
+
+		Charge l'image associée au fantôme
+		"""
 		for n in range(1, 7):
 			self.pictures.append(load_terrain(GHOST_PATTERN.format(self.name, n)))
 
@@ -376,6 +446,7 @@ class Ghost(Char):
 
 	def get_picture(self):
 		"""
+		get_picture() --> pygame.image
 		Renvoie l'image correspondant au stade d'animation du fantômes
 		"""
 		if self.n_frame > 5:
@@ -389,6 +460,7 @@ class Ghost(Char):
 
 	def move(self):
 		"""
+		move() --> None
 		Mouvement du fantôme
 		"""
 		if self.pause == 0:
@@ -404,22 +476,6 @@ class Ghost(Char):
 
 				else:
 					self.set_direction(square)
-					print(square)
-
-					# if new_dir >= 0 and not (square.x, square.y) == (pacman.x, pacman.y):
-					# 	self.direction = new_dir
-					# 	print(new_dir, square.x, square.y)
-
-					# else:
-					# 	empty_adj_squares = square.empty_adj_squares(self.direction)
-
-					# 	# Si les cases devant et sur les côtés sont occupées, le fantôme rebrousse chemin
-					# 	if len(empty_adj_squares) == 0:
-					# 		self.direction = (self.direction + 2) % 4
-
-					# 	# Sinon, une directions est choisie aléatoirement dans celles qui sont possibles
-					# 	else:
-					# 		self.direction = empty_adj_squares[random.randint(0, len(empty_adj_squares) - 1)]
 
 					self.tp_flag = False # Le fantôme peut à nouveau être téléporté
 
@@ -430,6 +486,11 @@ class Ghost(Char):
 			self.pause -= 1
 
 	def random_direction(self, square, fav_direction=-1):
+		"""
+		random_direction(Square square, int fav_direction)
+		Donne au fantôme une direction aléatoire lorsque la direction
+		prioritaire fav_direction n'est pas disponible (si elle existe)
+		"""
 		empty_adj_squares = square.empty_adj_squares(self.direction)
 
 		# Si les cases devant et sur les côtés sont occupées, le fantôme rebrousse chemin
@@ -445,6 +506,10 @@ class Ghost(Char):
 			self.direction = empty_adj_squares[random.randint(0, len(empty_adj_squares) - 1)]
 
 	def distance_from(self, square, objective):
+		"""
+		distance_from(Square square, Square objective) --> int
+		Renvoie la distance entre les cases square et objective
+		"""
 		# distance par rapport à l'objectif
 		diff_x = objective.x - self.x
 		diff_y = objective.y - self.y
@@ -452,10 +517,15 @@ class Ghost(Char):
 		return ((diff_x)**2 + (diff_y)**2)**0.5
 
 	def get_to_square(self, square, objective):
+		"""
+		get_to_square(Square square, Square objective) --> None
+		Permet au fantôme d'essayer d'atteindre l'objectif 
+		objective
+		"""
 
 		# Si la distance vaut moins que 10, on tente le backtracking
 		if self.distance_from(square, objective) < 15:
-			new_dir = self.reach_square(square, objective, self.direction)
+			new_dir = self.backtracking(square, objective, self.direction)
 
 			if new_dir >= 0 and not (square.x, square.y) == (objective.x, objective.y):
 				self.direction = new_dir
@@ -485,26 +555,37 @@ class Ghost(Char):
 			# On se déplace aléatoirement avec la direction prioritaire
 			self.random_direction(square, fav_direction)
 
-	def reach_square(self, square, objective, direction, lane=[], square_range=0):
+	def backtracking(self, square, objective, direction, lane=[], square_range=0):
+		"""
+		backtracking(Square square, Square objective, int direction, list lane, int square_range) --> int
+		Tente de trouver un chemin de square vers objective par backtracking
+		direction : direction actuelle
+		lane : coordonnées des cases déja parcourues
+		square_range : longueur du chemin
+		"""
 		
 
 		# Si la case actuelle correspond à la case visée, l'objectif est atteint
 		if (square.x, square.y) == (objective.x, objective.y):
-			print("!!!!", self.name, square_range, lane)
 			return direction
 
-		elif square_range > 15:
+		elif square_range > 15: # Si la longueur du chemin excède 15, on laisse tomber (performance)
 			return -1
 
 		else:
+			# Directions disponibles
 			empty_adj_squares = square.empty_adj_squares(direction)
 
+			# On parcourt les directions disponibles
 			for new_dir in empty_adj_squares:
+				# Case adjacente dans la direction
 				next_square = square.adjacent_square(new_dir)
 
+				# Si on se retrouve sur une case déjà parcourue, on abandonne (boucle)
 				if (next_square.x, next_square.y) in lane:
 					continue
 
+				# Par récursivité, si le résultat est concluant, on retourne la direction qui a fonctionné
 				elif self.reach_square(next_square, objective, new_dir, list(lane) + [(next_square.x, next_square.y)], square_range + 1) >= 0:
 					return new_dir
 
@@ -514,11 +595,15 @@ class Ghost(Char):
 
 	def stop(self, time):
 		"""
+		stop(int time) --> None
 		Met le fantôme en pause pour une certaine durée
 		"""
 		self.pause = time
 
 class Blinky(Ghost):
+	"""
+	Fantôme qui se dirige de manière aléatoire
+	"""
 	def __init__(self, *args, **kwargs):
 		Ghost.__init__(self, *args, **kwargs)
 
@@ -528,9 +613,16 @@ class Blinky(Ghost):
 		self.load_picture()
 
 	def set_direction(self, square):
+		"""
+		set_direction(Square square)
+		Définit la direction du fantôme
+		"""
 		self.random_direction(square)
 
 class Pinky(Ghost):
+	"""
+	Fantôme qui tente de poursuivre pacman dès que celui-ci est assez proche
+	"""
 	def __init__(self, *args, **kwargs):
 		Ghost.__init__(self, *args, **kwargs)
 
@@ -541,12 +633,19 @@ class Pinky(Ghost):
 		self.load_picture()
 
 	def set_direction(self, square):
+		"""
+		set_direction(Square square)
+		Définit la direction du fantôme
+		"""
 		pacman = self.level.get_pacman_square()
 
 		self.get_to_square(square, pacman)
 
 
 class Clyde(Ghost):
+	"""
+	Fantome qui tente de couper la route à pacman
+	"""
 	def __init__(self, *args, **kwargs):
 		Ghost.__init__(self, *args, **kwargs)
 
@@ -556,6 +655,10 @@ class Clyde(Ghost):
 		self.load_picture()
 
 	def set_direction(self, square):
+		"""
+		set_direction(Square square)
+		Définit la direction du fantôme
+		"""
 		pacman = self.level.get_pacman_square()
 
 		# Si clyde va dans la direction opposée à pacman
@@ -580,6 +683,10 @@ class Clyde(Ghost):
 
 
 	def find_forward_square(self, square, distance):
+		"""
+		find_forward_square(Square square, int distance)
+		Tente d'anticiper le mouvement de pacman
+		"""
 		# Clyde tente d'atteindre une case située 5 cases en avant de pacman.
 		# Valeurs de l'abscisse et de l'ordonnée à ajouter à la case de pacman
 		x_forward = DIRECTIONS[self.level.pacman.direction][0] * distance
@@ -603,6 +710,9 @@ class Clyde(Ghost):
 
 
 class Inky(Ghost):
+	"""
+	Fantôme essayant d'aller le plus loin possible de pacman
+	"""
 	def __init__(self, *args, **kwargs):
 		Ghost.__init__(self, *args, **kwargs)
 
@@ -612,6 +722,10 @@ class Inky(Ghost):
 		self.load_picture()
 
 	def set_direction(self, square):
+		"""
+		set_direction(Square square)
+		Définit la direction du fantôme
+		"""
 		pacman = self.level.get_pacman_square()
 		
 		# Si pacman est dans la partie droite de la grille,

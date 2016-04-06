@@ -26,6 +26,7 @@ class Level:
 
 		self.prepare_walls() # Préparation de l'affichage des différentes textures de murs
 
+		# Premier rendu du niveau
 		self.render()
 
 		# On signale à la boucle qu'il faut gérer les animation et les évènements
@@ -36,11 +37,14 @@ class Level:
 		self.delay = 0
 
 		# Distance à partir de laquelle certains fantômes poursuivent pacman
-		self.distance = n_level + 20
+		self.distance = n_level + 3
 
 
 	def render(self):
-		"""Réalise le rendu graphique de tous les éléments du jeu"""
+		"""
+		render() --> None
+		Réalise le rendu graphique de tous les éléments du jeu
+		"""
 
 		self.window.blit(self.background, (0, 0))
 		
@@ -59,6 +63,7 @@ class Level:
 
 	def get_square(self, x, y):
 		"""
+		get_square(int x, int y) --> entities.Square
 		Retourne l'objet case corresondant aux coordonnées
 		"""
 		if 0 <= y < len(self.structure):
@@ -69,12 +74,17 @@ class Level:
 			return None
 
 	def get_pacman_square(self):
+		"""
+		get_pacman_square() --> entities.Square
+		Retourne la case sur laquelle se trouve pacman
+		"""
 		x, y = int(round(self.pacman.x)), int(round(self.pacman.y))
 
 		return self.get_square(x, y)
 
 	def prepare_walls(self):
 		"""
+		prepare_walls() --> None
 		Prépare le rendu des murs selons les cases adjacentes
 		"""
 		for line in self.structure:
@@ -85,10 +95,14 @@ class Level:
 
 	def game_tic(self):
 		"""
+		game_tic() --> None
 		Effectue une itération du jeu comprenant les mouvements et le rendu de chaque élément
 		"""
+		# Si le jeu n'est pas en pause
 		if not self.master.pause:
+			# Si le jeu n'est pas en pause pour un temps défini
 			if not self.delay:
+				# Mouvements des personnages
 				for ghost in self.ghosts:
 					ghost.move()
 
@@ -102,10 +116,12 @@ class Level:
 				elif self.delay:
 					self.delay -= 1
 
+		# Rendu des éléments du jeu
 		self.render()
 
 	def pause_ghosts(self):
 		"""
+		pause_ghosts() --> None
 		Permet de mettre en pause les fantômes lorsque PM mange un pastille de puissance
 		"""
 		for ghost in self.ghosts:
@@ -113,6 +129,7 @@ class Level:
 
 	def pause_game(self, time):
 		"""
+		pause_game(int time) --> None
 		Permet de mettre en pause le jeu temporairement avec une durée indiquée ou non
 		"""
 		self.delay = time

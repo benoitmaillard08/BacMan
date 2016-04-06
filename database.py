@@ -90,5 +90,9 @@ class Database:
         return scores_list
 
     def close(self):
+        """
+        close() --> None
+        Ferme la connexion à la base de données
+        """
         self.cur.close()
         self.conn.close()

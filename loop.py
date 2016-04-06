@@ -50,8 +50,6 @@ class Loop:
 			# il faut encore attendre pour que le jeu soit fluide
 			if time_remaining > 0:
 				time.sleep(time_remaining)
-			else:
-				print(time_remaining)
 
 			pygame.display.flip() # Rafraichissement du rendu
 

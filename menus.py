@@ -12,7 +12,7 @@ import database
 
 class Menu:
     """
-        Classe créant les différents menus du jeu
+    Classe créant les différents menus du jeu
     """
 
     def __init__(self, window, loop, user=""):
@@ -105,11 +105,11 @@ class MainMenu(Menu):
         self.container.set_margin(260, 100)
 
         # Widgets de la page
-        #if self.user:
-        self.add_widget(Button(self, "Menu de jeu", lambda : self.next_page(GameMenu)))
-        #else:
-            #self.add_widget(Button(self, "Connexion", lambda: self.next_page(LoginPage)))
-            #self.add_widget(Button(self, "Inscription", lambda: self.next_page(RegisterPage)))
+        if self.user:
+            self.add_widget(Button(self, "Menu de jeu", lambda : self.next_page(GameMenu)))
+        else:
+            self.add_widget(Button(self, "Connexion", lambda: self.next_page(LoginPage)))
+            self.add_widget(Button(self, "Inscription", lambda: self.next_page(RegisterPage)))
 
         self.add_widget(Button(self, "Top Scores", lambda: self.next_page(HighscoresPage)))
         self.add_widget(Button(self, "Quitter", self.loop.close_window))
@@ -139,6 +139,7 @@ class LoginPage(Menu):
 
             db = database.Database()
             test = db.testPlayer(user, password)
+            db.close()
 
             if test == 0:
                 self.user = user
@@ -201,6 +202,8 @@ class RegisterPage(Menu):
 Vous êtes désormais connecté sous le pseudo {}""".format(user)
                 self.alert(message, lambda : self.next_page(GameMenu))
 
+            db.close()
+
         else:
             self.alert("Veuillez remplir tous les champs !", lambda : self.next_page(RegisterPage))
 
@@ -257,6 +260,8 @@ class HighscoresPage(Menu):
             if self.user:
                 self.add_widget(Button(self, "Scores perso", lambda : self.next_page(HighscoresPage)))
 
+        db.close()
+
         best_scores = [list(t) for t in best_scores]
 
         for i in range(len(best_scores)):
@@ -282,13 +287,31 @@ class InGameMenu(Menu):
 
         self.end = False
 
-        self.score_widget = self.add_widget(TextDisplay(self, "Score : {}".format(self.game_data["score"])))
-        self.lives_widget = self.add_widget(TextDisplay(self, "Vies restantes : {}".format(self.game_data["lives"])))
+        #self.score_widget = self.add_widget(TextDisplay(self, "Score : {}".format(self.game_data["score"])))
+        #self.lives_widget = self.add_widget(TextDisplay(self, "Vies restantes : {}".format(self.game_data["lives"])))
+
+        self.update_table()
 
         self.background = None
         self.pause = False
 
         self.level = process.Level(self, self.game_data["n_level"], window, loop)
+
+        self.music = pygame.mixer.Sound(constantes.SOUND_DIR + 'level{}.wav'.format(self.game_data["n_level"]))
+        self.volume = 1.0 
+        self.music.play(loops=1000)
+
+
+    def update_table(self):
+        data = [
+            ["Pseudo", "Niveau", "Score", "Vies restantes"],
+            [self.user, self.game_data["n_level"], self.game_data["score"], self.game_data["lives"]]
+        ]
+
+        # On efface le tableau avant de le recréer
+        self.empty()
+
+        self.add_widget(Table(self, data))
 
     def update_score(self, points):
         # ancien score
@@ -299,9 +322,8 @@ class InGameMenu(Menu):
         if self.game_data["score"] > (old_score//10000+1)*10000:
             self.update_lives(1)
 
-        # Le widget du score est mis à jour
-        self.score_widget.text = "Score : {}".format(self.game_data["score"])
-        self.score_widget.update_text()
+        # Le tableau est mis à jour
+        self.update_table()
 
     def update_lives(self, update=-1):
         self.game_data["lives"] += update
@@ -310,11 +332,12 @@ class InGameMenu(Menu):
             self.end_game()
 
         else:
-            self.lives_widget.text = "Vies restantes : {}".format(self.game_data["lives"])
-            self.lives_widget.update_text()
+            # Le tableau est mis à jour
+            self.update_table()
 
     def end_game(self):
         self.end = True
+        self.music.stop()
 
         self.background = self.background = pygame.image.load(constantes.PATH_PIC_PAGES).convert()
         self.container.set_margin(200, 100)
@@ -342,6 +365,9 @@ et atteint le niveau {}""".format(self.game_data["score"], self.game_data["n_lev
 
                 else:
                     self.resume()
+            elif event.key == 109:
+                self.volume += 1
+                self.music.set_volume(self.volume%2) # À l'activation de la touche 'M', le volume de la musique uniquement se règle à 0 ou 1.
 
     def tic(self):
         if not self.end:
@@ -370,21 +396,23 @@ et atteint le niveau {}""".format(self.game_data["score"], self.game_data["n_lev
 
         self.add_widget(Button(self, "Reprendre", self.resume))
         self.add_widget(Button(self, "Menu principal", self.leave_game))
-        self.add_widget(self.score_widget)
-        self.add_widget(self.lives_widget)
 
     def resume(self):
         self.empty()
         self.background = None
         self.container.set_margin(672, 10)
 
-        self.add_widget(self.score_widget)
-        self.add_widget(self.lives_widget)
+        self.update_table()
 
         self.pause = False
 
     def leave_game(self):
         self.empty()
         self.add_widget(TextDisplay(self, "Voulez-vous vraiment retourner\nau menu principal ?"))
-        self.add_widget(Button(self, "Oui", lambda : self.next_page(MainMenu)))
+        self.add_widget(Button(self, "Oui", lambda : self.rage_quit()))
         self.add_widget(Button(self, "Annuler", self.pause_game))
+
+    def rage_quit(self):
+        #Quitte definitivement la partie en cours
+        self.music.stop()
+        self.next_page(MainMenu)

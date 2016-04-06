@@ -45,6 +45,7 @@ class ParseLevel:
 
 	def parse(self):
 		"""
+		parse() --> None
 		Parsing du code du niveau
 		"""
 
