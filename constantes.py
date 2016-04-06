@@ -19,6 +19,7 @@ WINDOW_Y = 800
 PATH_PIC_MAIN_MENU = "ressources/pictures/menus/main_menu.png"
 PATH_PIC_BUTTON = "ressources/pictures/menus/button_2.png"
 PATH_PIC_EMPTY_BUTTON = "ressources/pictures/menus/empty_button.png"
+PAUSE_BACKGROUND = "ressources/pictures/menus/pause_menu.png"
 
 ####Pages####
 PATH_PIC_PAGES = "ressources/pictures/menus/pages_bg.png"
@@ -65,6 +66,8 @@ GAME_BACKGROUND = PIC_DIR + "background/bg.gif"
 TERRAIN_DIR = PIC_DIR + "terrain/"
 TEXT_DIR = PIC_DIR + "text/"
 
+SOUND_DIR = "ressources/sounds/"
+
 LEVELS_DIR = "levels/"
 
 FILENAME_PATTERN = "n{}.level"
@@ -78,6 +81,8 @@ GHOST_PATTERN = "ghost-{} {}"
 # Différents types de cases
 
 WALL = "#"
+
+GHOST_DOOR = "-"
 
 PILL = "*"
 POWER_PILL = "%"

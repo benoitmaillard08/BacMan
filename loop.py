@@ -43,46 +43,18 @@ class Loop:
 				else:
 					self.page.event(event)
 
-				# # Gestion des cliqs
-				# elif event.type == pygame.MOUSEBUTTONDOWN:
-				# 	print("TEST")
-				# 	if event.button == 1: # Clic gauche
-				# 		if self.focus: # Si un widget a le focus, le focus lui est retiré
-				# 			self.focus.remove_focus()
-				# 			self.focus = None
-
-				# 		for widget in self.widgets:
-				# 			if widget.check_coords(event.pos): # On regarde si le cliq est dans le bouton
-				# 				widget.action() # Exécution de l'action associée au bouton
-				# 				break
-
-				# # Gestion des touches du clavier
-				# elif event.type == pygame.KEYDOWN:
-				# 	if self.level: # Si un niveau est lancé
-				# 		if event.key in ARROW_KEYS: # Changement de direction de pacman
-				# 			self.level.pacman.change_direction(ARROW_KEYS[event.key])
-
-				# 		# Touche P enfoncée --> pause / relance
-				# 		if event.key == 112:
-				# 			print("TEST")
-				# 			if not self.level.pause:
-				# 				self.level.pause = True
-				# 			else:
-				# 				self.level.pause = False
-
-				# 	else: # Transmission des touches enfoncées pour les champs de formulaire
-				# 		if self.focus:
-				# 			self.focus.keydown(event)
-
 			t2 = time.clock() # Fin du chrono de l'itération
 
 			tic_duration = t2 - t1 # Temps restant avant le rafraichissement optimal de la fenêtre
 			time_remaining = 0.06 - tic_duration
 
+
 			# Si l'itération a duré moins longtemps que la durée optimale prévue,
 			# il faut encore attendre pour que le jeu soit fluide
 			if time_remaining > 0:
 				time.sleep(time_remaining)
+			else:
+				print(time_remaining)
 
 			pygame.display.flip() # Rafraichissement du rendu
 

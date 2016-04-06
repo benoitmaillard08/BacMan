@@ -303,12 +303,12 @@ class Table(TextDisplay):
         #         row.append("" * diff)
 
         # for row in data:
-        #     print("col : " + str(len(row)))
+        #     
 
         # Données du tableau inversées --> Les colonnes deviennent les lignes et vice versa
         inverted_data = list(zip(*data))
 
-        print(inverted_data)
+        
 
         # Liste des strings pour chaque ligne
         data_str = [""] * len(data)

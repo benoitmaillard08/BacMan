@@ -94,7 +94,7 @@ class Level:
 				elif self.delay:
 					self.delay -= 1
 
-			self.render()
+		self.render()
 
 	def pause_ghosts(self):
 		"""
