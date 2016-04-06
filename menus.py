@@ -291,13 +291,20 @@ class InGameMenu(Menu):
         self.level = process.Level(self, self.game_data["n_level"], window, loop)
 
     def update_score(self, points):
+        # ancien score
+        old_score = self.game_data["score"]
         self.game_data["score"] += points
 
+        # Tous les 10'000 points, une vie est rajoutée
+        if self.game_data["score"] > (old_score//10000+1)*10000:
+            self.update_lives(1)
+
+        # Le widget du score est mis à jour
         self.score_widget.text = "Score : {}".format(self.game_data["score"])
         self.score_widget.update_text()
 
-    def update_lives(self):
-        self.game_data["lives"] -= 1
+    def update_lives(self, update=-1):
+        self.game_data["lives"] += update
 
         if self.game_data["lives"] == 0:
             self.end_game()
@@ -351,6 +358,7 @@ et atteint le niveau {}""".format(self.game_data["score"], self.game_data["n_lev
         self.container.set_margin(200, 100)
 
         self.game_data["n_level"] += 1
+        self.game_data["score"] += 500
         self.alert(message, lambda : self.next_page(InGameMenu, self.game_data))
 
     def pause_game(self):

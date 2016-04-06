@@ -26,12 +26,9 @@ class Loop:
 		# Tant que l'utilisateur n'appuie pas sur la croix de fermeture
 		while self.window_opened:
 			t1 = time.clock() # Lancement du chrono de l'itération
-
-			if self.level: # Si un niveau est lancé
-				self.level.game_tic()
 			
 			if self.page: # Si une page de menu est ouverte
-				self.page.render()
+				self.page.tic()
 
 			# Gestion des évènements
 			for event in pygame.event.get():

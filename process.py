@@ -35,6 +35,9 @@ class Level:
 		self.in_game_pause = False # Indique si le jeu est en pause
 		self.delay = 0
 
+		# Distance à partir de laquelle certains fantômes poursuivent pacman
+		self.distance = n_level + 20
+
 
 	def render(self):
 		"""Réalise le rendu graphique de tous les éléments du jeu"""
@@ -64,6 +67,11 @@ class Level:
 
 		else:
 			return None
+
+	def get_pacman_square(self):
+		x, y = int(round(self.pacman.x)), int(round(self.pacman.y))
+
+		return self.get_square(x, y)
 
 	def prepare_walls(self):
 		"""

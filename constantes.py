@@ -57,7 +57,7 @@ RGB_BLACK = (0,0,0)
 
 #------------------------------------------------------------
 
-N_SQUARES_X = 28
+N_SQUARES_X = 25
 N_SQUARES_Y = 21
 
 PIC_DIR = "ressources/pictures/"

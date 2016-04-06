@@ -43,7 +43,14 @@ class Square:
 			if adj and adj.is_empty: # si la case est libre, elle est ajoutée à la liste
 				empty_adj_squares.append(test_dir)
 
+
 		return empty_adj_squares
+
+	def __add__(self, tuple_add):
+		x = self.x + tuple_add[0]
+		y = self.y + tuple_add[1]
+
+		return self.level.get_square(x, y)
 
 
 class StandardSquare(Square):
@@ -331,6 +338,7 @@ class PacMan(Char):
 				if ghost.pause > 0: # Si le fantômes est immobilisé
 					ghost.pause = 0 # Le fantômes n'est plus immobilisé
 					ghost.reset() # Le fantômes est renvoyé à sa position initiale
+					self.level.master.update_score(ghost.points)
 
 
 				else:
@@ -395,24 +403,23 @@ class Ghost(Char):
 					self.tp_flag = True # Indique que le fantome vient d'être téléporté
 
 				else:
-					# new_dir = self.reach_square(square, self.level.get_square(1, 1), self.direction)
-					# print(self.level.get_square(1, 1))
+					self.set_direction(square)
+					print(square)
 
-					# if new_dir:
-					# 	print("new dir : " + str(new_dir))
+					# if new_dir >= 0 and not (square.x, square.y) == (pacman.x, pacman.y):
 					# 	self.direction = new_dir
+					# 	print(new_dir, square.x, square.y)
 
 					# else:
-						
-					empty_adj_squares = square.empty_adj_squares(self.direction)
+					# 	empty_adj_squares = square.empty_adj_squares(self.direction)
 
-					# Si les cases devant et sur les côtés sont occupées, le fantôme rebrousse chemin
-					if len(empty_adj_squares) == 0:
-						self.direction = (self.direction + 2) % 4
+					# 	# Si les cases devant et sur les côtés sont occupées, le fantôme rebrousse chemin
+					# 	if len(empty_adj_squares) == 0:
+					# 		self.direction = (self.direction + 2) % 4
 
-					# Sinon, une directions est choisie aléatoirement dans celles qui sont possibles
-					else:
-						self.direction = empty_adj_squares[random.randint(0, len(empty_adj_squares) - 1)]
+					# 	# Sinon, une directions est choisie aléatoirement dans celles qui sont possibles
+					# 	else:
+					# 		self.direction = empty_adj_squares[random.randint(0, len(empty_adj_squares) - 1)]
 
 					self.tp_flag = False # Le fantôme peut à nouveau être téléporté
 
@@ -422,28 +429,86 @@ class Ghost(Char):
 		else:
 			self.pause -= 1
 
-	def reach_square(self, square, objective, direction):
+	def random_direction(self, square, fav_direction=-1):
+		empty_adj_squares = square.empty_adj_squares(self.direction)
+
+		# Si les cases devant et sur les côtés sont occupées, le fantôme rebrousse chemin
+		if len(empty_adj_squares) == 0:
+			self.direction = (self.direction + 2) % 4
+
+		# S'il y a une direction prioritaire possible, on la prend
+		elif fav_direction >= 0 and fav_direction in empty_adj_squares:
+			self.direction = fav_direction
+
+		# Sinon, une direction est choisie aléatoirement dans celles qui sont possibles
+		else:
+			self.direction = empty_adj_squares[random.randint(0, len(empty_adj_squares) - 1)]
+
+	def distance_from(self, square, objective):
+		# distance par rapport à l'objectif
+		diff_x = objective.x - self.x
+		diff_y = objective.y - self.y
+
+		return ((diff_x)**2 + (diff_y)**2)**0.5
+
+	def get_to_square(self, square, objective):
+
+		# Si la distance vaut moins que 10, on tente le backtracking
+		if self.distance_from(square, objective) < 15:
+			new_dir = self.reach_square(square, objective, self.direction)
+
+			if new_dir >= 0 and not (square.x, square.y) == (objective.x, objective.y):
+				self.direction = new_dir
+			else:
+				self.random_direction(square)
+
+		# Sinon, on cherche la meilleure direction à prendre pour
+		# s'approcher de l'objectif
+		else:
+			# Si la différence en abscisse est plus
+			# importante, on tente de réduire celle-ci
+			if abs(objective.x - self.x) > abs(objective.y - self.y):
+				if objective.x - self.x > 0:
+					fav_direction = 1
+
+				else:
+					fav_direction = 3
+
+			# Pareil pour l'ordonnée
+			else:
+				if objective.y - self.y > 0:
+					fav_direction = 2
+
+				else:
+					fav_direction = 0
+
+			# On se déplace aléatoirement avec la direction prioritaire
+			self.random_direction(square, fav_direction)
+
+	def reach_square(self, square, objective, direction, lane=[], square_range=0):
+		
 
 		# Si la case actuelle correspond à la case visée, l'objectif est atteint
-		if square == objective:
+		if (square.x, square.y) == (objective.x, objective.y):
+			print("!!!!", self.name, square_range, lane)
 			return direction
+
+		elif square_range > 15:
+			return -1
 
 		else:
 			empty_adj_squares = square.empty_adj_squares(direction)
 
-			# S'il s'agit d'un cul de sac, il faut revenir en arrière
-			if len(empty_adj_squares) == 0:
-				return None
+			for new_dir in empty_adj_squares:
+				next_square = square.adjacent_square(new_dir)
 
-			else:
-				for new_dir in empty_adj_squares:
-					next_square = square.adjacent_square(new_dir)
+				if (next_square.x, next_square.y) in lane:
+					continue
 
-					if self.reach_square(next_square, objective, new_dir):
-						return new_dir
+				elif self.reach_square(next_square, objective, new_dir, list(lane) + [(next_square.x, next_square.y)], square_range + 1) >= 0:
+					return new_dir
 
-					
-				return None
+			return -1
 
 
 
@@ -458,30 +523,111 @@ class Blinky(Ghost):
 		Ghost.__init__(self, *args, **kwargs)
 
 		self.name = "blinky"
+		self.points = 800
 
 		self.load_picture()
+
+	def set_direction(self, square):
+		self.random_direction(square)
 
 class Pinky(Ghost):
 	def __init__(self, *args, **kwargs):
 		Ghost.__init__(self, *args, **kwargs)
 
 		self.name = "pinky"
+		self.points = 200
 		
 
 		self.load_picture()
+
+	def set_direction(self, square):
+		pacman = self.level.get_pacman_square()
+
+		self.get_to_square(square, pacman)
+
 
 class Clyde(Ghost):
 	def __init__(self, *args, **kwargs):
 		Ghost.__init__(self, *args, **kwargs)
 
 		self.name = "clyde"
+		self.points = 400
 
 		self.load_picture()
+
+	def set_direction(self, square):
+		pacman = self.level.get_pacman_square()
+
+		# Si clyde va dans la direction opposée à pacman
+		# et que celui-ci est suffisamment proche, clyde tente de l'attrapper
+		p_direction = self.level.pacman.direction
+		distance = self.distance_from(square, pacman)
+
+		if not p_direction == self.direction and distance < 5:
+			self.get_to_square(square, pacman)
+			
+		else:
+			# Sinon, clyde tente d'anticiper le déplacement de pacman
+			# et de lui couper la route
+		 	forward_square = self.find_forward_square(square, distance)
+
+		 	if forward_square:
+		 		self.get_to_square(square, forward_square)
+
+		 	# S'il n'est pas possible de couper la route, le mouvement se fait aléatoirement
+		 	else:
+		 		self.random_direction(square)
+
+
+	def find_forward_square(self, square, distance):
+		# Clyde tente d'atteindre une case située 5 cases en avant de pacman.
+		# Valeurs de l'abscisse et de l'ordonnée à ajouter à la case de pacman
+		x_forward = DIRECTIONS[self.level.pacman.direction][0] * distance
+		y_forward = DIRECTIONS[self.level.pacman.direction][1] * distance
+
+		# Case située 5 cases en avant de pacman
+		square_forward = self.level.get_pacman_square() + (x_forward, y_forward)
+		
+		# On vérifie que la case existe (elle peut être en dehors de la grille)
+		if square_forward:
+			# Si la case est un mur, on essaie avec les cases d'à côté
+			for plus_x in [0, -1, 1]:
+				for plus_y in [0, -1, 1]:
+					square_to_reach = square_forward + (plus_x, plus_y)
+
+					if square_to_reach and square_to_reach.is_empty:
+						return square_to_reach
+
+		return None
+
+
 
 class Inky(Ghost):
 	def __init__(self, *args, **kwargs):
 		Ghost.__init__(self, *args, **kwargs)
 
 		self.name = "inky"
+		self.points = 1600
 
 		self.load_picture()
+
+	def set_direction(self, square):
+		pacman = self.level.get_pacman_square()
+		
+		# Si pacman est dans la partie droite de la grille,
+		# Inky va aller se cacher tout à gauche et vice versa.
+		# Raisonnement analogue pour le haut/bas
+		if pacman.x > 12:
+			objective_x = 1
+		else:
+			objective_x = N_SQUARES_X - 2
+
+		if pacman.y > 12:
+			objective_y = 1
+		else:
+			objective_y = N_SQUARES_Y - 2
+
+		objective = self.level.get_square(objective_x, objective_y)
+
+		self.get_to_square(square, objective)
+
