@@ -290,6 +290,10 @@ class InGameMenu(Menu):
 
         self.level = process.Level(self, self.game_data["n_level"], window, loop)
 
+        self.music = pygame.mixer.Sound(constantes.SOUND_DIR + 'level{}.wav'.format(self.game_data["n_level"]))
+        self.volume = 1.0 
+        self.music.play(loops=1000)
+
     def update_score(self, points):
         self.game_data["score"] += points
 
@@ -308,6 +312,7 @@ class InGameMenu(Menu):
 
     def end_game(self):
         self.end = True
+        self.music.stop()
 
         self.background = self.background = pygame.image.load(constantes.PATH_PIC_PAGES).convert()
         self.container.set_margin(200, 100)
@@ -335,6 +340,9 @@ et atteint le niveau {}""".format(self.game_data["score"], self.game_data["n_lev
 
                 else:
                     self.resume()
+            elif event.key == 109:
+                self.volume += 1
+                self.music.set_volume(self.volume%2) # À l'activation de la touche 'M', le volume de la musique uniquement se règle à 0 ou 1.
 
     def tic(self):
         if not self.end:
@@ -378,5 +386,10 @@ et atteint le niveau {}""".format(self.game_data["score"], self.game_data["n_lev
     def leave_game(self):
         self.empty()
         self.add_widget(TextDisplay(self, "Voulez-vous vraiment retourner\nau menu principal ?"))
-        self.add_widget(Button(self, "Oui", lambda : self.next_page(MainMenu)))
+        self.add_widget(Button(self, "Oui", lambda : self.rageQuit()))
         self.add_widget(Button(self, "Annuler", self.pause_game))
+
+    def rageQuit(self):
+        #Quitte definitivement la partie en cours
+        self.music.stop()
+        self.next_page(MainMenu)

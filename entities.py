@@ -74,7 +74,7 @@ class StandardSquare(Square):
 		if self.pill:
 			self.pill.effect()
 
-			#self.pill.sound.play() # Le son correspondant à la pastille est joué
+			self.pill.sound.play() # Le son correspondant à la pastille est joué
 
 			self.pill = None # La pillule est supprimée
 
@@ -332,6 +332,8 @@ class PacMan(Char):
 				if ghost.pause > 0: # Si le fantômes est immobilisé
 					ghost.pause = 0 # Le fantômes n'est plus immobilisé
 					ghost.reset() # Le fantômes est renvoyé à sa position initiale
+					load_sound('eatgh').play()
+
 
 
 				else:
