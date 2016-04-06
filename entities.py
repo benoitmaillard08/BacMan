@@ -152,11 +152,11 @@ class GhostDoor(StandardSquare):
 	Classe représentant une case contenant une porte
 	Seuls les fantômes peuvent traverser cette case
 	"""
-		def __init__(self, level, x, y):
-			StandardSquare.__init__(self, level, x, y)
-			self.is_door = True
+	def __init__(self, level, x, y):
+		StandardSquare.__init__(self, level, x, y)
+		self.is_door = True
 
-			self.picture = load_terrain("ghost-door")
+		self.picture = load_terrain("ghost-door")
 
 ##############################
 # Classes pour les pastilles #
@@ -586,7 +586,7 @@ class Ghost(Char):
 					continue
 
 				# Par récursivité, si le résultat est concluant, on retourne la direction qui a fonctionné
-				elif self.reach_square(next_square, objective, new_dir, list(lane) + [(next_square.x, next_square.y)], square_range + 1) >= 0:
+				elif self.backtracking(next_square, objective, new_dir, list(lane) + [(next_square.x, next_square.y)], square_range + 1) >= 0:
 					return new_dir
 
 			return -1
