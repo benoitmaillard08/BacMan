@@ -282,9 +282,35 @@ class GameMenu(Menu):
         Menu.__init__(self, *args, **kwargs)
 
         self.add_widget(Button(self, "Jouer", lambda: self.next_page(InGameMenu)))
+        self.add_widget(Button(self, "Niveaux", lambda: self.next_page(LevelSelector)))
         self.add_widget(Button(self, "Controles", lambda: self.next_page(CtrlsPage)))
         self.add_widget(Button(self, "Regles", lambda: self.next_page(RulesPage)))
         self.add_widget(Button(self, "Retour", lambda: self.next_page(MainMenu)))
+
+# class LevelSelector(Menu):
+#     """
+#     Page permettant au joueur de commencer une partie au niveau souhaité.
+#     """
+#     def __init__(self, *args, **kwargs):
+#         Menu.__init__(self, *args, **kwargs)
+
+#         # Création des zones de texte/boutons
+#         self.add_widget(TextDisplay(self, "Choisissez votre niveau."))
+#         try:
+#             bestLevel = database.Database().getScores(self.user)[0][2]  # On recherche le meilleur score du joueur.
+#         except:
+#             bestLevel = 0 # S'il n'a pas encore joué, il peut seulement accéder au niveau 1.
+
+#         for elt in range(bestLevel):
+#             self.add_widget(Button(self, str(elt+1), lambda: self.next_page(InGameMenu, self.gameDataInit(elt))))
+        
+
+#         self.add_widget(Button(self, "Retour", lambda: self.next_page(GameMenu)))
+
+#     def gameDataInit(self, elt):
+#         self.game_data = {"score" : 0, "lives": 3, "n_level": elt+1}
+#         return self.game_data
+
 
 
 class RulesPage(Menu):
@@ -298,6 +324,7 @@ class RulesPage(Menu):
         rules_text = open(constantes.RULES_TEXT, 'r').read()
 
         self.add_widget(TextDisplay(self, rules_text))
+
         self.add_widget(Button(self, "Retour", lambda: self.next_page(GameMenu)))
 
 
@@ -421,6 +448,8 @@ class InGameMenu(Menu):
         # Tous les 10'000 points, une vie est rajoutée
         if self.game_data["score"] > (old_score//10000+1)*10000:
             self.update_lives(1)
+            self.music = pygame.mixer.Sound(constantes.SOUND_DIR + 'extralife.wav')
+            self.music.play()
 
         # Le tableau est mis à jour
         self.update_table()
