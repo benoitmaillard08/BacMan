@@ -384,7 +384,11 @@ class InGameMenu(Menu):
         self.level = process.Level(self, self.game_data["n_level"], window, loop)
 
         # Lancement de la musique
-        self.music = pygame.mixer.Sound(constantes.SOUND_DIR + 'level{}.wav'.format(self.game_data["n_level"]))
+        try:
+            self.music = pygame.mixer.Sound(constantes.SOUND_DIR + 'level{}.wav'.format(self.game_data["n_level"]))
+        except: # S'il n'a a pas de musique pour le niveau, on prend celle du lvl 1 (pour le plus grand plaisir du joueur :D )
+            self.music = pygame.mixer.Sound(constantes.SOUND_DIR + 'level1.wav')
+
         self.volume = 1.0
         self.music.play(loops=10000) # la musique doit être jouée en boucle
 
@@ -501,6 +505,8 @@ et atteint le niveau {}""".format(self.game_data["score"], self.game_data["n_lev
         end_level() --> None
         Met fin au niveau et affiche un message pour passer au niveau suivant
         """
+        self.music.stop()
+
         message = "Bravo ! Vous avez réussi le niveau {}".format(self.game_data["n_level"])
 
         self.end = True # le niveau est terminé

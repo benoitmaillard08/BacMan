@@ -198,7 +198,8 @@ class PowerPill(Pill):
 		Immobilise les fantômes pendant 100 tics
 		"""
 		for ghost in self.level.ghosts:
-			ghost.stop(100)
+			stop_time = 100 / self.level.n_level
+			ghost.stop(stop_time)
 
 class BonusPill(StandardPill):
 	"""
