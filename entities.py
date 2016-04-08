@@ -195,11 +195,13 @@ class PowerPill(Pill):
 	def effect(self):
 		"""
 		effect() --> None
-		Immobilise les fantômes pendant 100 tics
+		Immobilise les fantômes pendant un certain temps
 		"""
 		for ghost in self.level.ghosts:
-			stop_time = 100 / self.level.n_level
-			ghost.stop(stop_time)
+			print(self.level.n_level)
+			stop_time = 600 / (self.level.n_level + 5)
+			print(stop_time)
+			ghost.stop(100)
 
 class BonusPill(StandardPill):
 	"""
