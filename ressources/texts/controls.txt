@@ -1,2 +1,3 @@
 Mouvements de Pac-Man : Flèches directionnelles
 Pause : P
+Activer / désactiver la musique : M

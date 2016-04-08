@@ -639,7 +639,12 @@ class Pinky(Ghost):
 		"""
 		pacman = self.level.get_pacman_square()
 
-		self.get_to_square(square, pacman)
+		# Si pacman est suffisamment proche
+		if self.distance_from(square, pacman) < self.level.distance:
+			self.get_to_square(square, pacman)
+
+		else:
+			self.random_direction(square)
 
 
 class Clyde(Ghost):
@@ -674,7 +679,8 @@ class Clyde(Ghost):
 			# et de lui couper la route
 		 	forward_square = self.find_forward_square(square, distance)
 
-		 	if forward_square:
+		 	# Si une case a été trouvée et que celle-ci n'est pas trop loin
+		 	if forward_square and self.distance_from(square, forward_square) < self.level.distance + 5:
 		 		self.get_to_square(square, forward_square)
 
 		 	# S'il n'est pas possible de couper la route, le mouvement se fait aléatoirement

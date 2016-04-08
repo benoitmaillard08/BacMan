@@ -37,7 +37,7 @@ class Level:
 		self.delay = 0
 
 		# Distance à partir de laquelle certains fantômes poursuivent pacman
-		self.distance = n_level + 3
+		self.distance = n_level + 5
 
 
 	def render(self):

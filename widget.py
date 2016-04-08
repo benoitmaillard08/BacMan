@@ -5,7 +5,7 @@ from pygame.locals import *
 class Container:
     MARGIN = 10
     """
-    Classe créant un conteneur de boutons pour que ceux-ci soient centrés horizontalement et verticalement
+    Conteneur de widgets pour que ceux-ci soient centrés horizontalement et verticalement
     """
 
     def __init__(self, page, margin_top=0, margin_bottom=0):
@@ -14,20 +14,24 @@ class Container:
         self.margin_top = margin_top
         self.margin_bottom = margin_bottom
 
+        # Liste des widgets du container
         self.l_widgets = []
 
     def add_widget(self, widget):
         """
+        add_widget(Widget widget) --> Widget
         Ajoute un widget au container
         """
         self.l_widgets.append(widget)
 
+        # Place le widget
         self.calculate_coords()
 
         return widget
 
     def set_margin(self, top, bottom):
         """
+        set_margin(int top, int bottom) --> None
         Permet de définir une marge en haut et en bas de la fenêtre qui ne
         doit pas être occupée par des widgets
         """
@@ -36,6 +40,7 @@ class Container:
 
     def calculate_coords(self):
         """
+        calculate_coords() --> None
         Calcul des coordonnées des widgets
         """
         # Hauteur de la pile d'éléments
@@ -57,18 +62,23 @@ class Container:
 
     def render(self):
         """
+        render() --> None
         Rendu de tous les widgets du container
         """
         for widget in self.l_widgets:
             widget.render()
 
     def empty(self):
+        """
+        empty() --> None
+        Supprime tous les widgets du container
+        """
         self.l_widgets = []
 
 
 class Button:
     """
-    Classe d'instenciation des boutons
+    Bouton avec du texte et une action à réaliser lors du cliq
     """
     def __init__(self, page, label, callback, directory=constantes.PATH_PIC_BUTTON):
         """
@@ -93,6 +103,7 @@ class Button:
 
     def render(self):
         """
+        render() --> None
         Rendu du widget
         """
 
@@ -111,24 +122,28 @@ class Button:
 
     def get_height(self):
         """
+        get_height() --> int
         Retourne la hauteur du widget
         """
         return self.surface.get_height()
 
     def get_width(self):
         """
+        get_width() --> int
         Retourne la largeur du widget
         """
         return self.surface.get_width()
 
     def set_coords(self, x, y):
         """
+        set_coords(int x, int y) --> None
         Définit les coordonnées du widget
         """
         self.coords = (x, y)
 
     def check_coords(self, coords):
         """
+        check_coords(tuple coords) --> bool
         Renvoie True si les coordonnées en argument sont à l'intérieur la surface du widget
         """
         if self.coords[0] < coords[0] < self.coords[0] + self.surface.get_width():
@@ -139,6 +154,9 @@ class Button:
             return False
 
 class TextInput(Button):
+    """
+    Champ de formulaire
+    """
     def __init__(self, page, label, callback, max_length=15):
         Button.__init__(self, page, label, callback)
 
@@ -151,6 +169,7 @@ class TextInput(Button):
 
     def set_focus(self):
         """
+        set_focus() --> None
         Place le focus sur le widget
         """
 
@@ -160,14 +179,16 @@ class TextInput(Button):
 
     def remove_focus(self):
         """
+        remove_focus() --> None
         Retire le focus du widget
         """
-
+        # Si aucun texte n'a été rentré, on réaffiche le label
         if len(self.content) == 0:
             self.text_surface = self.label_surface
 
     def keydown(self, event):
         """
+        keydown(pygame.event event) --> None
         Signale un évènement au widget
         """
         # Touches alphanumériques
@@ -179,24 +200,35 @@ class TextInput(Button):
             if self.content:
                 self.content = self.content[:-1]
 
-        # Touche enter
-        #elif event.key == 13:
-        #    self.page.submit()
-
         self.update_text()
 
 
     def update_text(self):
+        """
+        update_text() --> None
+        Met à jour le contenu du champ
+        """
         # Mise à jour de la surface pygame pour le texte
         self.content_surface = self.font.render(self.content, 0, constantes.RGB_WHITE)
 
         self.text_surface = self.content_surface
 
     def get(self):
+        """
+        get() --> str
+        Retourne le contenu du champ
+        """
         return self.content
 
 class PasswordInput(TextInput):
+    """
+    Champ de formulaire avec contenu caché (pour les mots de passe)
+    """
     def update_text(self):
+        """
+        update_text() --> None
+        Met à jour le contenu du champ en affichant des "*"
+        """
 
         # Chaîne de la longueur du contenu du champ avec des *
         self.string = "*" * len(self.content)
@@ -209,14 +241,10 @@ class PasswordInput(TextInput):
 
 class TextDisplay:
     """
-    Classe d'instenciation d'une zone de texte. 
+    Zone d'affichage de texte
     """
 
     def __init__(self, page, text):
-
-        """
-        __init__() --> None.
-        """
         self.coords = (0, 0)
 
         self.page = page
@@ -231,6 +259,7 @@ class TextDisplay:
 
     def render(self):
         """
+        render() --> None
         Rendu du widget
         """
 
@@ -246,6 +275,7 @@ class TextDisplay:
 
     def get_height(self):
         """
+        get_height() --> int
         Retourne la hauteur du widget
         """
 
@@ -258,6 +288,7 @@ class TextDisplay:
 
     def get_width(self):
         """
+        get_width() --> None
         Retourne la largeur du widget
         """
         max_width = 0
@@ -271,15 +302,22 @@ class TextDisplay:
 
     def set_coords(self, x, y):
         """
+        set_coords(int x, int y) --> None
         Définit les coordonnées du widget
         """
         self.coords = (x, y)
 
     def check_coords(self, event):
+        """
+        check_coords(pygame.event event) --> bool
+        Retourne False à chaque fois car ce widget n'est pas
+        concerné par les évènements
+        """
         return False
 
     def update_text(self):
         """
+        update_text() --> None
         Créé les surfaces pygame pour l'affichage du texte
         """
         self.lines_surfaces = []
@@ -290,25 +328,14 @@ class TextDisplay:
             self.lines_surfaces.append(line_surface)
 
 class Table(TextDisplay):
+    """
+    Widget permettant d'afficher des données (liste de listes) sous forme de tableau
+    """
     def __init__(self, page, data):
         TextDisplay.__init__(self, page, "")
 
-        # Si les sous-listes de data n'ont pas toutes la même longeur (case vide),
-        # il faut rajouter des éléments vides pour que la fonction zip() fonctionne correctement
-        # max_length = max(data, key=len)
-        # for row in data:
-        #     diff = len(str(max_length)) - len(row)
-
-        #     if diff > 0:
-        #         row.append("" * diff)
-
-        # for row in data:
-        #     
-
         # Données du tableau inversées --> Les colonnes deviennent les lignes et vice versa
         inverted_data = list(zip(*data))
-
-        
 
         # Liste des strings pour chaque ligne
         data_str = [""] * len(data)

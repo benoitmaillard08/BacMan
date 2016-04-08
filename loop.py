@@ -9,16 +9,13 @@ class Loop:
 	"""
 	def __init__(self, level=None):
 		self.window_opened = True
-		self.level = level
 		self.loop_running = False
 
-		self.widgets = []
-
-		self.focus = None
 		self.page = None
 
 	def run_loop(self):
 		"""
+		run_loop() --> None
 		Lance la boucle
 		"""
 		self.loop_running = True
@@ -55,30 +52,10 @@ class Loop:
 
 		pygame.display.quit()
 
-	def clear(self):
-		"""
-		Permet de supprimer tout le contenu d'une page de menu
-		"""
-		self.widgets = []
-		self.focus = None
-
-	def clear_level(self):
-		self.level = None
-
-	def focus_on(self, widget):
-		"""
-		Donne le focus à un widget
-		"""
-		self.focus = widget
 
 	def close_window(self):
 		"""
+		close_window() --> None
 		Indique que la fenêtre doit être fermée
 		"""
 		self.window_opened = False
-
-	def add_widget(self, widget):
-		"""
-		Permet d'ajouter un widget à la liste des widgets pris en compte par la boucle
-		"""
-		self.widgets.append(widget)

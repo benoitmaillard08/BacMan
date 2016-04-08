@@ -105,18 +105,21 @@ class ParseLevel:
 
 	def get_structure(self):
 		"""
+		get_structure() --> list
 		Retourne la liste à deux dimensions correspondant aux cases du niveau
 		"""
 		return self.structure
 
 	def get_pacman(self):
 		"""
+		get_pacman() --> entities.Pacman
 		Retourne l'objet PacMan
 		"""
 		return self.chars[PACMAN]
 
 	def get_ghosts(self):
 		"""
+		get_ghosts() --> list
 		Retourne les objets fantômes
 		"""
 		ghosts = [
