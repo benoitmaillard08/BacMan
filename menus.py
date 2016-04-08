@@ -282,7 +282,7 @@ class GameMenu(Menu):
         Menu.__init__(self, *args, **kwargs)
 
         self.add_widget(Button(self, "Jouer", lambda: self.next_page(InGameMenu)))
-        self.add_widget(Button(self, "Niveaux", lambda: self.next_page(LevelSelector)))
+        #self.add_widget(Button(self, "Niveaux", lambda: self.next_page(LevelSelector)))
         self.add_widget(Button(self, "Controles", lambda: self.next_page(CtrlsPage)))
         self.add_widget(Button(self, "Regles", lambda: self.next_page(RulesPage)))
         self.add_widget(Button(self, "Retour", lambda: self.next_page(MainMenu)))
