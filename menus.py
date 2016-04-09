@@ -282,34 +282,41 @@ class GameMenu(Menu):
         Menu.__init__(self, *args, **kwargs)
 
         self.add_widget(Button(self, "Jouer", lambda: self.next_page(InGameMenu)))
-        #self.add_widget(Button(self, "Niveaux", lambda: self.next_page(LevelSelector)))
+        self.add_widget(Button(self, "Niveaux", lambda: self.next_page(LevelSelector)))
         self.add_widget(Button(self, "Controles", lambda: self.next_page(CtrlsPage)))
         self.add_widget(Button(self, "Regles", lambda: self.next_page(RulesPage)))
         self.add_widget(Button(self, "Retour", lambda: self.next_page(MainMenu)))
 
-# class LevelSelector(Menu):
-#     """
-#     Page permettant au joueur de commencer une partie au niveau souhaité.
-#     """
-#     def __init__(self, *args, **kwargs):
-#         Menu.__init__(self, *args, **kwargs)
+class LevelSelector(Menu):
+    """
+    Page permettant au joueur de commencer une partie au niveau souhaité.
+    """
+    def __init__(self, *args, **kwargs):
+        Menu.__init__(self, *args, **kwargs)
 
-#         # Création des zones de texte/boutons
-#         self.add_widget(TextDisplay(self, "Choisissez votre niveau."))
-#         try:
-#             bestLevel = database.Database().getScores(self.user)[0][2]  # On recherche le meilleur score du joueur.
-#         except:
-#             bestLevel = 0 # S'il n'a pas encore joué, il peut seulement accéder au niveau 1.
+        # Création des zones de texte/boutons
+        self.add_widget(TextDisplay(self, "Choisissez votre niveau."))
 
-#         for elt in range(bestLevel):
-#             self.add_widget(Button(self, str(elt+1), lambda: self.next_page(InGameMenu, self.gameDataInit(elt))))
-        
+        levels = '1'    #Le niveau accédable est initialement fixé à 1.
 
-#         self.add_widget(Button(self, "Retour", lambda: self.next_page(GameMenu)))
+        try:
+            bestLevel = database.Database().getBestLevel(self.user)  # On recherche le meilleur score du joueur, s'il existe.
+        except:
+            bestLevel = 0
 
-#     def gameDataInit(self, elt):
-#         self.game_data = {"score" : 0, "lives": 3, "n_level": elt+1}
-#         return self.game_data
+        i = 1
+        while i < bestLevel:    #Création de la chaîne des caractères des niveaux dispo.
+            i += 1
+            levels += '-'+str(i)
+
+        self.add_widget(TextDisplay(self, levels))
+        chosenLevel = self.add_widget(TextInput(self, "Niveau", None))
+        self.add_widget(Button(self, "Entrer", lambda: self.next_page(InGameMenu, self.gameDataInit(chosenLevel.get())))) #Le niveau choisi est lancé.
+        self.add_widget(Button(self, "Retour", lambda: self.next_page(GameMenu)))
+
+    def gameDataInit(self, lvl):
+        self.game_data = {"score" : 0, "lives": 3, "n_level": int(lvl)}
+        return self.game_data
 
 
 

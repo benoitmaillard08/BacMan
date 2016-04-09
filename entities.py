@@ -407,6 +407,7 @@ class PacMan(Char):
 
 
 				else:
+					load_sound('eatenpacman').play()
 					self.level.pause_game(50) # Le jeu est mis en pause pour 50 tics
 
 					self.level.master.update_lives() # Le nombre de vies de pacman est mis à jour

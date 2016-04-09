@@ -74,7 +74,7 @@ class Database:
 
     def getScores(self, pseudo=None):
         """
-        mewScore(str pseudo) --> list.
+        getScore(str pseudo) --> list.
         Permet d'obtenir la liste des 5 meilleurs scores, soit de tous les joueurs ('*'), soit du joueur <pseudo>.
         La méthode retourne une liste de tuple, contenant le pseudo, le score et la date des records.
         """
@@ -88,6 +88,15 @@ class Database:
             del scores_list[-1]
         
         return scores_list
+
+    def getBestLevel(self, pseudo):
+        """
+        getBestLevel(str pseudo) --> int.
+        Retourne le meilleur niveau atteint par le joueur <pseudo>.
+        """
+        self.cur.execute("SELECT pseudo, score, level, datetime FROM Scores WHERE pseudo = '{}' ORDER BY level DESC".format(pseudo))
+        datas_list = self.cur.fetchall()
+        return datas_list[0][2]
 
     def close(self):
         """
