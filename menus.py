@@ -569,6 +569,8 @@ et atteint le niveau {}""".format(self.game_data["score"], self.game_data["n_lev
 
         self.add_widget(Button(self, "Reprendre", self.resume))
         self.add_widget(Button(self, "Menu principal", self.leave_game))
+        
+        self.update_table()
 
     def resume(self):
         """
