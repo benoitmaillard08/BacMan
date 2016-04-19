@@ -198,9 +198,7 @@ class PowerPill(Pill):
 		Immobilise les fantômes pendant un certain temps
 		"""
 		for ghost in self.level.ghosts:
-			print(self.level.n_level)
 			stop_time = 600 / (self.level.n_level + 5)
-			print(stop_time)
 			ghost.stop(100)
 
 class BonusPill(StandardPill):
