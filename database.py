@@ -3,6 +3,7 @@
 import sqlite3
 import constantes
 import time
+import requests
 
 class Database:
     "Classe gérant les entrées et sorties de la base de données du jeu"
