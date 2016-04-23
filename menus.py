@@ -156,9 +156,9 @@ class MainMenu(Menu):
         # Widgets de la page
         if self.user:
             self.add_widget(Button(self, "Menu de jeu", lambda : self.next_page(GameMenu)))
-        else:
-            self.add_widget(Button(self, "Connexion", lambda: self.next_page(LoginPage)))
-            self.add_widget(Button(self, "Inscription", lambda: self.next_page(RegisterPage)))
+            
+        self.add_widget(Button(self, "Connexion", lambda: self.next_page(LoginPage)))
+        #self.add_widget(Button(self, "Inscription", lambda: self.next_page(RegisterPage)))
 
         self.add_widget(Button(self, "Top Scores", lambda: self.next_page(HighscoresPage)))
         self.add_widget(Button(self, "Quitter", self.loop.close_window))
@@ -176,7 +176,6 @@ class LoginPage(Menu):
         Menu.__init__(self, *args, **kwargs)
 
         self.user_input = self.add_widget(TextInput(self, "Pseudo", None))
-        self.password = self.add_widget(PasswordInput(self, "Password", None))
         self.add_widget(Button(self, "Entrer", self.submit))
         self.add_widget(Button(self, "Retour", lambda: self.next_page(MainMenu)))
 
@@ -188,37 +187,21 @@ class LoginPage(Menu):
         """
         # Récupération des données
         user = self.user_input.get()
-        password = self.password.get()
 
         # Si les champs ont été complétés
-        if user and password:
+        if user:
             # Connexion à la base de données
-            db = database.Database()
 
-            test = db.testPlayer(user, password)
 
-            db.close()
-
-            # Si les données sont correctes
-            if test == 0:
-                self.user = user
-
-                message = """Authentification réalisée avec succès !
+            message = """Authentification réalisée avec succès !
 Bon retour parmis nous, {}!""".format(user)
-                
-                
-                self.alert(message, lambda : self.next_page(GameMenu))
-
-            # Si le pseudo et le mdp ne correspondent pas
-            elif test == 1:
-                self.alert("Le mot de passe ne correspond pas\nau nom d'utilisateur !", lambda : self.next_page(LoginPage))
-
-            # Si le pseudo n'existe pas
-            else:
-                self.alert("Ce nom d'utilisateur n'existe pas !", lambda : self.next_page(LoginPage))
+            self.user = user
+            
+            
+            self.alert(message, lambda : self.next_page(GameMenu))
 
         else:
-            self.alert("Veuillez remplir tous les champs !", lambda : self.next_page(LoginPage))
+            self.alert("Veuillez remplir le champ !", lambda : self.next_page(LoginPage))
             
 
 class RegisterPage(Menu):
