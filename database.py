@@ -72,6 +72,10 @@ class Database:
         self.cur.execute("INSERT INTO Scores(pseudo, score, level, datetime) VALUES (?, ?, ?, ?);", (pseudo, score, level, time.strftime("%Y-%m-%d")))
         self.conn.commit()
 
+        str_req = "https://bacman-online-2-blm08-1.c9users.io/save?pseudo={}&score={}&level={}".format(pseudo, score, level)
+
+        requests.get(str_req)
+
     def getScores(self, pseudo=None):
         """
         getScore(str pseudo) --> list.
